@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="spark,工具,scala," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="上海IT技术圈" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Scala类: 类定义、字段、方法1234567891011121314151617181920212223class Counter&amp;#123; &#x2F;&#x2F;Counter是类名 	private var privateValue &#x3D; 0 &#x2F;&#x2F;定义一个私有字段	&#x2F;&#x2F;Scala没有提供getter和setter方法，可以通过定义类似getter和setter的方法，分别叫做value和value_&#x3D;	d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="scala 快速入门2">
+<meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;scala&#x2F;scala-note2&#x2F;index.html">
+<meta property="og:site_name" content="上海IT技术圈">
+<meta property="og:description" content="Scala类: 类定义、字段、方法1234567891011121314151617181920212223class Counter&amp;#123; &#x2F;&#x2F;Counter是类名 	private var privateValue &#x3D; 0 &#x2F;&#x2F;定义一个私有字段	&#x2F;&#x2F;Scala没有提供getter和setter方法，可以通过定义类似getter和setter的方法，分别叫做value和value_&#x3D;	d">
+<meta property="og:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;scala.png">
+<meta property="article:published_time" content="2019-11-30T11:29:52.000Z">
+<meta property="article:modified_time" content="2019-12-09T13:48:28.685Z">
+<meta property="article:author" content="KN">
+<meta property="article:tag" content="spark">
+<meta property="article:tag" content="工具">
+<meta property="article:tag" content="scala">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;scala.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":2,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sparkx.com.cn/scala/scala-note2/"/>
+
+
+
+
+
+  <title>scala 快速入门2 | 上海IT技术圈</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">上海IT技术圈</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">上海IT技术</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/categories/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-spark">
+          <a href="/categories/spark/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Spark
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-flink">
+          <a href="/categories/flink/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Flink
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/tools/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sparkx.com.cn/scala/scala-note2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="KN">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/author.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="上海IT技术圈">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">scala 快速入门2</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-30T19:29:52+08:00">
+                2019-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/images/scala.png" alt=""></p>
+<h1 id="Scala类"><a href="#Scala类" class="headerlink" title="Scala类:"></a>Scala类:</h1><ul>
+<li>类定义、字段、方法<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span></span>&#123; <span class="comment">//Counter是类名 </span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">var</span> privateValue = <span class="number">0</span> <span class="comment">//定义一个私有字段</span></span><br><span class="line">	<span class="comment">//Scala没有提供getter和setter方法，可以通过定义类似getter和setter的方法，分别叫做value和value_=</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">value</span> </span>= privateValue <span class="comment">//定义一个方法，方法名称就是原来我们想要的字段名称</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">value_=</span> </span>(newValue: <span class="type">Int</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newValue &gt;<span class="number">0</span> ) privateValue = newValue <span class="comment">//只有提供新值是正数，才允许修改</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">increment</span></span>():<span class="type">Unit</span> = &#123; value += <span class="number">1</span> &#125; <span class="comment">//increment是类方法,Unit后面的等号和大括号后面包含了该方法要执行的具体操作语句，如果只有一行语句，那么也可以直接去掉大括号；</span></span><br><span class="line">	<span class="comment">//def increment():Unit = value += 1 等价于上面语句</span></span><br><span class="line">	<span class="comment">//def increment() &#123;value += 1&#125; 等价于上面语句</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">increment2</span></span>(step:<span class="type">Int</span>):<span class="type">Unit</span> = &#123;value += <span class="type">Step</span>&#125;<span class="comment">//带参方法，参数为步长的值</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">current</span></span>():<span class="type">Int</span> = &#123; value &#125;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">MyCounter</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args:<span class="type">Array</span>[<span class="type">String</span>])&#123;</span><br><span class="line">		<span class="keyword">val</span> myCounter = <span class="keyword">new</span> <span class="type">Counter</span> <span class="comment">//new Counter() //使用new关键字生成对象</span></span><br><span class="line">		myCounter.increment() <span class="comment">//或者也可以不用圆括号，写成myCounter.increment</span></span><br><span class="line">		myCounter.increment2(<span class="number">5</span>)<span class="comment">// 这里使用带参方法，设置步长5，每次增加5</span></span><br><span class="line">		print(myCounter.value) <span class="comment">//不用getXxx获取字段的值</span></span><br><span class="line">		myCounter.value = <span class="number">3</span> <span class="comment">// 不用setXxx设置字段值</span></span><br><span class="line">		print(myCounter.current)	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>辅助构造器<br>Scala构造器包含一个主构造器和若干个(0个或多个)辅助构造器；<br>辅助构造器的名称this，每个辅助构造器都必须调用一个此前定义的辅助构造器或主构造器；<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">counter</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">var</span> value = <span class="number">0</span> <span class="comment">//value用来存储计时器的起始值</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">var</span> name = <span class="string">""</span> <span class="comment">//表示计数器的名称</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">var</span> mode = <span class="number">1</span> <span class="comment">//mode用来表示计数器类型(比如，1表示步数计数器，2表示时间计数器)</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">this</span></span>(name:<span class="type">String</span>)&#123;<span class="comment">//第一个辅助构造器</span></span><br><span class="line">		<span class="keyword">this</span>() <span class="comment">//调用主构造器</span></span><br><span class="line">		<span class="keyword">this</span>.name = name</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">this</span></span>(name:<span class="type">String</span>,mode:<span class="type">Int</span>)&#123;<span class="comment">//第二个辅助构造器</span></span><br><span class="line">		<span class="keyword">this</span>(name) <span class="comment">//调用前一个辅助构造器</span></span><br><span class="line">		<span class="keyword">this</span>.mode = mode</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">increment</span></span>(step:<span class="type">Int</span>):<span class="type">Unit</span> = &#123;value += step&#125;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">current</span></span>():<span class="type">Int</span> = &#123;value&#125;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">info</span></span>():<span class="type">Unit</span> = &#123;printf(<span class="string">"Name:%s and mode is %d\n"</span>,name,mode)&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">MyCounter</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(ars:<span class="type">Array</span>[<span class="type">String</span>])&#123;</span><br><span class="line">		<span class="keyword">val</span> myCounter1 = <span class="keyword">new</span> <span class="type">Counter</span> <span class="comment">//主构造器</span></span><br><span class="line">		<span class="keyword">val</span> myCounter2 = <span class="keyword">new</span> <span class="type">Counter</span>(<span class="string">"Runner"</span>) <span class="comment">//第一个辅助构造器，计数器的名称设置为Runner，用来计算跑步步数</span></span><br><span class="line">		<span class="keyword">val</span> myCounter3 = <span class="keyword">new</span> <span class="type">Counter</span>(<span class="string">"Timer"</span>,<span class="number">2</span>) <span class="comment">//第二个辅助构造器，计数器的名称设置为Timer，用来计算秒数</span></span><br><span class="line">		myCounter1.info <span class="comment">//显示计数器信息</span></span><br><span class="line">		myCounter1.increment(<span class="number">1</span>) <span class="comment">//设置步长</span></span><br><span class="line">		printf(<span class="string">"Current value is : %d\n"</span> ,myCounter1.current)<span class="comment">//显示计数器当前值</span></span><br><span class="line">		myCounter2.info <span class="comment">//显示计数器信息</span></span><br><span class="line">		myCounter2.increment(<span class="number">2</span>) <span class="comment">//设置步长</span></span><br><span class="line">		printf(<span class="string">"Current value is : %d\n"</span>,myCounter2.current) <span class="comment">//显示计数器当前值</span></span><br><span class="line">		myCounter3.info <span class="comment">//显示计数器信息</span></span><br><span class="line">		myCounter3.increment(<span class="number">3</span>) <span class="comment">//设置步长</span></span><br><span class="line">		printf(<span class="string">"Current value is : %d\n"</span>,myCounter3.current) <span class="comment">//显示计数器当前值</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">运行结果：</span><br><span class="line"><span class="type">Name</span>: and mode is <span class="number">1</span></span><br><span class="line"><span class="type">Current</span> value is : <span class="number">1</span></span><br><span class="line"><span class="type">Name</span>:<span class="type">Runner</span> and mode is <span class="number">1</span></span><br><span class="line"><span class="type">Current</span> value is : <span class="number">2</span></span><br><span class="line"><span class="type">Name</span>:<span class="type">Timer</span> and mode is <span class="number">2</span></span><br><span class="line"><span class="type">Current</span> value is : <span class="number">3</span></span><br></pre></td></tr></table></figure></li>
+<li>主构造器<br>Scala的每个类都有主构造器，但是，Scala的主构造器和Java有着明显的不同，Scala的主构造器是整个类体，需要在类名成后面罗列出构造器所需要的所有参数，这些参数被编译成字段，字段的值就是创建对象时传入的参数的值。<br>对于上面给计数器设置name和mode的例子，使用辅助构造器来对name和mode的值进行设置，现在重新使用主构造器来设置name和mode的值。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter2</span> (<span class="params">val name:<span class="type">String</span>,val mode:<span class="type">Int</span></span>)</span>&#123;<span class="comment">//直接在类名后面括号中定义name和mode</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> value = <span class="number">0</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">increment</span></span>(step:<span class="type">Int</span>):<span class="type">Unit</span> = &#123;value += step&#125;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">current</span></span>():<span class="type">Int</span> = &#123;value&#125;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">info</span></span>():<span class="type">Unit</span> = &#123;printf(<span class="string">"Name:%s and mode is %d\n"</span>,name,mode)&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">MyCounter2</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> myCounter2 = <span class="keyword">new</span> <span class="type">Counter2</span>(<span class="string">"Timer"</span>,<span class="number">2</span>)</span><br><span class="line">    myCounter2.info()</span><br><span class="line">    myCounter2.increment(<span class="number">1</span>)</span><br><span class="line">    printf(<span class="string">"Current value is:%d\n"</span>,myCounter2.current())</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">运行结果：</span><br><span class="line"><span class="type">The</span> id of zhangsan <span class="number">1.</span></span><br><span class="line"><span class="type">The</span> id of lisi <span class="number">2.</span></span><br></pre></td></tr></table></figure></li>
+<li>单例对象<br>Scala并没有提供Java那样的静态方法或静态字段，但是，可以采用object关键字实现单例对象，具备和Java静态方法同样的功能。<br>单例对象的定义和类的定义很相似，只不过使用的是object关键字定义。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">var</span> lastId = <span class="number">0</span> <span class="comment">//一个人的身份编号</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">newPersond</span></span>()=&#123;</span><br><span class="line">		lastId += <span class="number">1</span></span><br><span class="line">		lastId</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>伴生对象<br>在Java中，经常需要用到同时包含实例方法和静态方法的类，在Scala中可以通过伴生对象来实现。<br>当单例对象与某个类具有相同的名称时，它被称为这个类的“伴生对象”。<br>类和它的伴生对象必须存在于同一个文件中，而且可以相互访问是有成员(字段和方法)。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> id  = <span class="type">Person</span>.newPersonId()<span class="comment">//调用伴生对象的方法</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> name = <span class="string">""</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">this</span></span>(name:<span class="type">String</span>)&#123;</span><br><span class="line">    <span class="keyword">this</span>()</span><br><span class="line">    <span class="keyword">this</span>.name = name</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">info</span></span>()&#123;printf(<span class="string">"The id of %s %d.\n"</span>,name,id)&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> lastId = <span class="number">0</span>;<span class="comment">//身份编号</span></span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">newPersonId</span></span>()=&#123;</span><br><span class="line">    lastId += <span class="number">1</span></span><br><span class="line">    lastId</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> person1 = <span class="keyword">new</span> <span class="type">Person</span>(<span class="string">"zhangsan"</span>)</span><br><span class="line">    <span class="keyword">val</span> person2 = <span class="keyword">new</span> <span class="type">Person</span>(<span class="string">"lisi"</span>)</span><br><span class="line">    person1.info()</span><br><span class="line">    person2.info()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">运行结果：</span><br><span class="line"><span class="type">The</span> id of zhangsan <span class="number">1.</span></span><br><span class="line"><span class="type">The</span> id of lisi <span class="number">2.</span></span><br></pre></td></tr></table></figure>
+Scala源码编译后都变成JVM字节码，实际上在编译上面的源码文件后，在Scala里面的class和object在Java层面都会被合二为一，classs里面的成员成了实例成员，object成员成了静态成员。<br>伴生对象Person中的newPersonId前面的修饰符private去掉后进行编译，再反编译查看编译的代码可以看到newPersonId被编译成了Person类的static成员。<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//进入类所在目录进行编译</span></span><br><span class="line">Administrator@WIN7-<span class="number">1705071516</span> MINGW64 <span class="regexp">/d/</span>IdeaProjects<span class="regexp">/ScalaTest/</span>src<span class="regexp">/main/</span>scala<span class="regexp">/com/</span>scala<span class="regexp">/study/</span>ch1 (master)</span><br><span class="line">$ scalac Person.scala</span><br><span class="line">在D:\IdeaProjects\ScalaTest\src\main\scala\com\scala\study\ch1\com\scala\study\ch1目录下生成两个文件Person$.<span class="keyword">class</span>,Person.<span class="keyword">class</span></span><br><span class="line"><span class="comment">//使用javap命令反编译</span></span><br><span class="line">D:\IdeaProjects\ScalaTest\src\main\scala\com\scala\stud</span><br><span class="line">警告: 二进制文件Person包含com.scala.study.ch1.Person</span><br><span class="line">Compiled <span class="keyword">from</span> <span class="string">"Person.scala"</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> com.scala.study.ch1.Person &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(java.lang.String[]);</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> newPersonId();<span class="comment">//编译成了静态成员</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> info();</span><br><span class="line">  <span class="keyword">public</span> com.scala.study.ch1.Person();</span><br><span class="line">  <span class="keyword">public</span> com.scala.study.ch1.Person(java.lang.String);</span><br></pre></td></tr></table></figure></li>
+<li>apply方法和update方法<br>Scala里面经常用到对象的apply和udpate方法，实际上这两个方法都会遵循相关约定被调用，约定如下：<br>用括号传递给变量(对象)一个或多个参数时，Scala会把它转换成对apply方法的调用；<br>当对带有括号并包括一到若干个参数的对象进行赋值时，编译器将调用对象的update方法，在调用时，是把括号里的参数和等号右边的对象一起作为update方法的输入参数来执行调用；<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestApplyClass</span> &#123;</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(<span class="symbol">param:</span>String)</span></span> <span class="symbol">:String</span>  = &#123;<span class="regexp">//</span>类中定义apply方法</span><br><span class="line">    printf(<span class="string">"apply method called,param is :%s\n"</span>,param)</span><br><span class="line">    <span class="string">"hello world"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">object TestApplySingleObject&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(<span class="symbol">param1:</span>String,<span class="symbol">param2:</span>String)</span></span><span class="symbol">:String=</span>&#123;<span class="regexp">//</span>单例中定义apply方法</span><br><span class="line">    println(<span class="string">"apply methhod called"</span>)</span><br><span class="line">    param1+<span class="string">" and "</span>+ param2</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(<span class="symbol">args:</span> Array[String])</span></span>: Unit = &#123;</span><br><span class="line">    val obj = new TestApplyClass</span><br><span class="line">    println(obj(<span class="string">"test"</span>))</span><br><span class="line">    val obj2 = TestApplySingleObject(<span class="string">"zhansan"</span>,<span class="string">"lisi"</span>)</span><br><span class="line">    println(obj2)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">运行结果：</span><br><span class="line">apply method called,param is <span class="symbol">:test</span></span><br><span class="line">hello world</span><br><span class="line">apply methhod called</span><br><span class="line">zhansan <span class="keyword">and</span> lisi</span><br></pre></td></tr></table></figure>
+再来测试一个伴生类和伴生对象的apply方法实例。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestApplyClassAndObject</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ApplyTest</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>() = println(<span class="string">"apply method in class is called"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">greetingOfClass</span></span>:<span class="type">Unit</span> = &#123;</span><br><span class="line">    println(<span class="string">"greeting method in class is called"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">ApplyTest</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>()=&#123;</span><br><span class="line">    println(<span class="string">"apply method in object is called"</span>)</span><br><span class="line">    <span class="keyword">new</span> <span class="type">ApplyTest</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">TestApplyClassAndObject</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> a = <span class="type">ApplyTest</span>();<span class="comment">//这里调用伴生对象中的apply方法</span></span><br><span class="line">    a.greetingOfClass</span><br><span class="line">    a()<span class="comment">//这里调用半生类中的apply方法</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">运行结果:</span><br><span class="line">apply method in <span class="class"><span class="keyword">object</span> <span class="title">is</span> <span class="title">called</span></span></span><br><span class="line"><span class="class"><span class="title">greeting</span> <span class="title">method</span> <span class="title">in</span> <span class="title">class</span> <span class="title">is</span> <span class="title">called</span></span></span><br><span class="line"><span class="class"><span class="title">apply</span> <span class="title">method</span> <span class="title">in</span> <span class="title">class</span> <span class="title">is</span> <span class="title">called</span></span></span><br></pre></td></tr></table></figure>
+从上面代码看出，执行val a = ApplyTest()是，会导致apply方法调用并返回该方法调用的值，也就是ApplyTest的实例化对象。当执行a()时，又会导致调用伴生类的apply方法，所以，我们可以在伴生类的apply方法中写入一些处理逻辑，这样就可以把传入的参数赋值给实例化对象的变量。<br>其实，Scala中Array对象就定义了apply方法，我们可以采用val arr = Array(“Java”,”Scala”,”Spark”)方法，即不用new关键字和构造器初始化数组，而是调用伴生对象Array的apply方法完成数组初始化。<br>实际上，update方法也是类似的，比如：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> strArr = <span class="keyword">new</span> <span class="type">Array</span>[<span class="type">String</span>](<span class="number">3</span>)<span class="comment">//声明一个长度3的字符串数组，每个元素初始化null</span></span><br><span class="line">strArr(<span class="number">0</span>) = <span class="string">"Java"</span> <span class="comment">//实际上调用了伴生类Array中的update方法，执行strArr.update(0,"Java")</span></span><br></pre></td></tr></table></figure>
+之所以没有采用java中的方括号strArr[0],而是采用圆括号的形式strArr(0)是因为存在上述update机制。<br>当对带有括号并包括一到若干参数的对象进行赋值时，编译器将调用对象的update方法，在调用是，是把括号里的参数和等号右边的对象一起作为update的输入参数来执行调用。</li>
+</ul>
+<hr>
+<p><strong>声明:</strong><br>作者:上海IT技术圈<br>本文版权归作者和上海IT技术圈共有，任何人或团体、机构全部转载或者部分转载、摘录，请在文章明显位置注明作者和原文链接。</p>
+
+      
+    </div>
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="KN 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/spark/" rel="tag"><i class="fa fa-tag"></i> spark</a>
+          
+            <a href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag"><i class="fa fa-tag"></i> 工具</a>
+          
+            <a href="/tags/scala/" rel="tag"><i class="fa fa-tag"></i> scala</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/scala/scala-note/" rel="next" title="scala 快速入门1">
+                <i class="fa fa-chevron-left"></i> scala 快速入门1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/scala/scala-note3/" rel="prev" title="scala 快速入门3">
+                scala 快速入门3 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/author.png"
+                alt="KN" />
+            
+              <p class="site-author-name" itemprop="name">KN</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lujinyong168@gmail.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/lujinyong168" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5JjTeVD" target="_blank" title="进入QQ群1">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群1</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5KllGoe" target="_blank" title="进入QQ群2">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群2</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Scala类"><span class="nav-number">1.</span> <span class="nav-text">Scala类:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">上海IT技术圈</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">41.1k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<div class="powered-by">
+	<i class="fa fa-user-md"></i>
+	<span id="busuanzi_container_site_uv">
+		本站访客数:<span id="busuanzi_value_site_uv"></span>
+	</span>
+	<span class="post-meta-divider">|</span>
+	<span id="busuanzi_container_site_pv">
+		本站访问量<span id="busuanzi_value_site_pv"></span>
+	</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

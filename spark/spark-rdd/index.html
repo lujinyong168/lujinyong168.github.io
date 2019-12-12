@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="spark," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="上海IT技术圈" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="RDD是什么RDD是Resillient Distributed DataSet(弹性分布式数据集)的简称,是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型 RDD运行原理设计背景许多迭代算法（比如机器学习、图计算）和交互式数据挖掘工具，不同计算阶段之间会重用中间结果，RDD就是满足这种需求出现的，它提供一个抽象的数据结构，我们不必担心底层数据的分布式特性，只需将具体的应用逻辑表达为一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spark rdd介绍">
+<meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;spark&#x2F;spark-rdd&#x2F;index.html">
+<meta property="og:site_name" content="上海IT技术圈">
+<meta property="og:description" content="RDD是什么RDD是Resillient Distributed DataSet(弹性分布式数据集)的简称,是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型 RDD运行原理设计背景许多迭代算法（比如机器学习、图计算）和交互式数据挖掘工具，不同计算阶段之间会重用中间结果，RDD就是满足这种需求出现的，它提供一个抽象的数据结构，我们不必担心底层数据的分布式特性，只需将具体的应用逻辑表达为一">
+<meta property="og:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;spark&#x2F;spark_rdd_run.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;spark&#x2F;spark_rdd_dependency.png">
+<meta property="article:published_time" content="2019-11-28T01:35:26.000Z">
+<meta property="article:modified_time" content="2019-12-09T13:48:28.762Z">
+<meta property="article:author" content="KN">
+<meta property="article:tag" content="spark">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;spark&#x2F;spark_rdd_run.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":2,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sparkx.com.cn/spark/spark-rdd/"/>
+
+
+
+
+
+  <title>spark rdd介绍 | 上海IT技术圈</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">上海IT技术圈</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">上海IT技术</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/categories/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-spark">
+          <a href="/categories/spark/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Spark
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-flink">
+          <a href="/categories/flink/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Flink
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/tools/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sparkx.com.cn/spark/spark-rdd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="KN">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/author.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="上海IT技术圈">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">spark rdd介绍</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-28T09:35:26+08:00">
+                2019-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spark/" itemprop="url" rel="index">
+                    <span itemprop="name">spark</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  17
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="RDD是什么"><a href="#RDD是什么" class="headerlink" title="RDD是什么"></a>RDD是什么</h2><p><code>RDD</code>是Resillient Distributed DataSet(弹性分布式数据集)的简称,是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型</p>
+<h2 id="RDD运行原理"><a href="#RDD运行原理" class="headerlink" title="RDD运行原理"></a>RDD运行原理</h2><h4 id="设计背景"><a href="#设计背景" class="headerlink" title="设计背景"></a>设计背景</h4><p>许多迭代算法（比如机器学习、图计算）和交互式数据挖掘工具，不同计算阶段之间会重用中间结果，RDD就是满足这种需求出现的，它提供一个抽象的数据结构，我们不必担心底层数据的分布式特性，只需将具体的应用逻辑表达为一系列转换处理，不同RDD之间的转换操作形成依赖关系，可以实现管道化，避免中间数据存储</p>
+<h4 id="RDD概念"><a href="#RDD概念" class="headerlink" title="RDD概念"></a>RDD概念</h4><ul>
+<li><code>RDD</code>就是一个分布式对象集合，本质上是一个只读的分区记录集合，每个<code>RDD</code>可以分成多个分区，每个分区就是一个数据集片段，并且<code>RDD</code>的不同分区可以被保存到集群中不同的节点上，从而可以在集群中的不同节点上进行并行计算</li>
+<li><code>RDD</code>提供了一种高度受限的共享内存模型，即<code>RDD</code>是只读的记录分区的集合，不能直接修改，只能基于稳定的物理存储中的数据集合创建<code>RDD</code>,或者通过在其他<code>RDD</code>上执行确定的转换操作（如map、join、group by等）而创建得到新的<code>RDD</code></li>
+<li><code>RDD</code>提供了一组丰富的操作以支持常见数据运算，分为”动作”（action)和”转换”（Transformation）两种类型</li>
+<li><code>RDD</code>提供的转换接口都非常简单，都是类似map、filter、groupBy、join等粗粒度的数据转换操作，而不是针对某个数据项的细粒度修改（不适合网页爬虫）,表面上<code>RDD</code>功能受限、不够强大，实际上它已经被实践证明可以高效地表达许多框架的编程模型（比如MapReduce、SQL、Pregel)<h4 id="RDD的2种创建方式"><a href="#RDD的2种创建方式" class="headerlink" title="RDD的2种创建方式"></a>RDD的2种创建方式</h4><img src="/images/spark/spark_rdd_run.png" alt="rdd执行过程的一个实例"></li>
+<li>由一个已经存在的scala集合创建,一般只在试验性代码中使用，生产环境不大可能用到<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> rdd = sc.paralellize(<span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br></pre></td></tr></table></figure></li>
+<li>由外部存储系统的数据创建，比如本地文件，HDFS, Hbase等，常用textFile方法<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> rdd = sc.textFile(<span class="string">"hdfs:///tmp/myfile.txt"</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="RDD的2种操作"><a href="#RDD的2种操作" class="headerlink" title="RDD的2种操作"></a>RDD的2种操作</h4></li>
+<li>Transtormation算子<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>map(func</code>)</td>
+<td align="left">返回一个新的分布式数据集，由每个原元素经过func函数处理后的新元素组成</td>
+</tr>
+<tr>
+<td><code>filter(func)</code></td>
+<td align="left">返回一个新的数据集，由经过func函数处理后返回值为true的元素组成</td>
+</tr>
+<tr>
+<td><code>flatMap(func)</code></td>
+<td align="left">类似<code>map</code>，但每一个输入元素，会被映射为0个或多个输出元素，（因此func函数返回值是一个seq，而不是单一元素）</td>
+</tr>
+<tr>
+<td><code>mapPartitions(func)</code></td>
+<td align="left">类似于<code>map</code>，对<code>RDD</code>的每个分区起作用，在类型为T的<code>RDD</code>运行时，func的函数类型必须是<code>Iterator[T]=&gt;Iterator[U]</code></td>
+</tr>
+<tr>
+<td><code>mapPartitionsWithIndex(func)</code></td>
+<td align="left">和<code>mapPartitions</code>类似，但func带有一个整数参数表上分区的索引值，在类型为T的<code>RDD</code>上运行时，func的函数参数类型必须序是<code>(int,Iterator[T])=&gt;Iterator[U]</code></td>
+</tr>
+<tr>
+<td><code>smap(withReplacement,fraction,seed)</code></td>
+<td align="left">根据给定的随机种子<code>seed</code>，随机抽样出数量为<code>fraction</code>的数据</td>
+</tr>
+<tr>
+<td><code>pipe(command,[envVars])</code></td>
+<td align="left">通过管道的方式对<code>RDD</code>的每个分区使用shell命令进行操作，返回对应的结果</td>
+</tr>
+<tr>
+<td><code>union(otherDataSet)</code></td>
+<td align="left">返回一个新的数据集，由元素数据集参数联合而成</td>
+</tr>
+<tr>
+<td><code>intersection(otherDataSet)</code></td>
+<td align="left">求两个<code>RDD</code>的交集</td>
+</tr>
+<tr>
+<td><code>distinct([numPartitions])</code></td>
+<td align="left">返回一个包含源数据集中所有不重复元素的新数据集</td>
+</tr>
+<tr>
+<td><code>groupByKey([numPartitions])</code></td>
+<td align="left">在一个由(k,v)对组成的数据集上调用，返回一个(k,Seq[V])对组成的数据集。默认情况下，输出结果的并行度依赖于父<code>RDD</code>的分区数目，如果要想对key进行聚合的话，使用<code>reduceByKey</code>或者<code>combineByKey</code>会有更好的性能</td>
+</tr>
+<tr>
+<td><code>reduceByKey(func,[numPartitions])</code></td>
+<td align="left">在一个(k,v)对的数据集上使用，返回一个(k,v)对数据集，key相同值都会被使用指定的<code>reduce</code>函数聚合到一起，<code>reduce</code>任务的个数据是可以通过第二个可选参数来配置</td>
+</tr>
+<tr>
+<td><code>sortByKey([ascending],[numPartitions])</code></td>
+<td align="left">在类型为(k,v)的数据集上调用，返回以k为键进行排序的(k,v)对数据集，升序或者降序有boolean型的<code>ascending</code>参数决定</td>
+</tr>
+<tr>
+<td><code>join(otherDataSet,[numPartitions])</code></td>
+<td align="left">在类型为(k,v)和(k,w)类型的数据集上调用，返回一个(k,(v,w))对，每个key中的所有元素都在一起的数据集</td>
+</tr>
+<tr>
+<td><code>cogroup(otherDataSet,[numPartitions])</code></td>
+<td align="left">在类型为(k,v)和(k,w)类型的数据上调用，返回一个数据集，组成元素为<code>(k,Iterable[V],Iterable[W] tuples)</code></td>
+</tr>
+<tr>
+<td><code>cartesian(otherDataSet</code>)</td>
+<td align="left">笛卡尔积，但在数据集T合U上调用时，返回一个(T,U)对的数据集，所有元素交互进行笛卡尔积</td>
+</tr>
+<tr>
+<td><code>coalesce(numPartitions</code>)</td>
+<td align="left">对<code>RDD</code>中的分区减少指定数目，通常在过滤完一个大数据集之后进行操作</td>
+</tr>
+<tr>
+<td><code>repartition(numPartitions)</code></td>
+<td align="left">将<code>RDD</code>中素有<code>records</code>平均划分到<code>numPartitions</code>个<code>partition</code>中</td>
+</tr>
+</tbody></table>
+</li>
+<li>Action算子<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>reduce(func)</code></td>
+<td align="left">通过函数func聚集数据集中的所有元素，这个函数必须是关联性的，确保可以被正确的并发执行</td>
+</tr>
+<tr>
+<td><code>collect()</code></td>
+<td align="left">在driver的程序中，以数组的形式，返回数据集的所有元素，这通常会在使用<code>filter</code>或者其他操作后，返回一个足够小的数据集在使用</td>
+</tr>
+<tr>
+<td><code>count()</code></td>
+<td align="left">返回数据的元素个数</td>
+</tr>
+<tr>
+<td><code>first()</code></td>
+<td align="left">返回数据集的第一个元素(类似于take(1))</td>
+</tr>
+<tr>
+<td><code>take(n)</code></td>
+<td align="left">返回一个数组，由数据集的前n个元素组成。注意此操作目前并非并行执行的，而是<code>driver</code>程序所在集群</td>
+</tr>
+<tr>
+<td><code>takeSample(withReplacement,num,seed)</code></td>
+<td align="left">返回一个数组，在数据集中随机采样<code>num</code>个元素组成，可以选择是否用随机数替换不足的部分，<code>seed</code>用于指定随机数生成器种子</td>
+</tr>
+<tr>
+<td><code>takeOrderd(n,[ordering])</code></td>
+<td align="left">排序后的<code>limit (n)</code></td>
+</tr>
+<tr>
+<td><code>saveAsTextFile(path)</code></td>
+<td align="left">将数据集的元素，以<code>textfile</code>的形式保存到本地文件系统<code>hdfs</code>或者任何其他<code>hadoop</code>支持的文件系统，<code>spark</code>将会调用每个元素的<code>toString</code>方法，并将它转换为文件中的一行文本</td>
+</tr>
+<tr>
+<td><code>saveAsSequenceFile(path)</code></td>
+<td align="left">将数据集的元素以sequencefile的格式保存到指定的目录下、本地系统、<code>hdfs</code>或者任何其他<code>hadoop</code>支持的文件系统，<code>RDD</code>的元素必须有<code>key-value</code>对组成，并都实现了<code>hadoop</code>的<code>writable</code>接口或隐式可以转换为<code>writable</code></td>
+</tr>
+<tr>
+<td><code>saveAsObjectFlie(path)</code></td>
+<td align="left">使用java的序列化方法保存到本地文件，可以被<code>sparkContext.objextFlie()</code>加载</td>
+</tr>
+<tr>
+<td><code>countByKey()</code></td>
+<td align="left">对(k,v)类型的RDD有效，返回一个(k,Int)对的map,表示每一个可以对应的元素个数</td>
+</tr>
+<tr>
+<td><code>foreache(func)</code></td>
+<td align="left">在数据集的每一个元素上，运行函数func，通常用于更新一个累加器变量，或者和外部存储系统做交互</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h4 id="RDD特点"><a href="#RDD特点" class="headerlink" title="RDD特点"></a>RDD特点</h4><ul>
+<li>高效的容错性<ul>
+<li>现有容错机制：数据复制或者记录日志</li>
+<li>血缘关系：重新计算丢失分区无需回滚系统、重算过程在不同节点之间并行、只记录粗粒度的操作</li>
+</ul>
+</li>
+<li>中间结果持久化到内存，数据在内存中的多个<code>RDD</code>操作之间进行传递，避免了不必要的读写磁盘开销</li>
+<li>存放的数据key是Java对象，避免了不必要的对象序列化和反序列化，但是为了节约内存一般还会选序列化，比如：lz4。</li>
+</ul>
+<blockquote>
+<p>缓存数据时可以选择是否同时进行序列化。序列化后占用的空间会减少，但有序列化/反序列化的成本。<br>如果确定需要使用序列化，则同时应该设置序列化的方式，默认是使用java自带的序列化机制，可以通过kyro等框架优化序列化效率。<br>即使完全无其它属性，一个java对象都要占据8个字节的内存，包括：锁标志位、经历了几次gc、类的类信息等，因此序列化可节省此部分的空间。</p>
+</blockquote>
+<h4 id="RDD源码"><a href="#RDD源码" class="headerlink" title="RDD源码"></a>RDD源码</h4><p>RDD 位置: <code>org.apache.spark.rdd.RDD</code></p>
+<ul>
+<li>RDD是一个抽象类定义了所有RDD共有的一些属性和方法，定义如下：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">RDD</span>[<span class="type">T</span>: <span class="type">ClassTag</span>](<span class="params"></span></span></span><br><span class="line"><span class="class"><span class="params">    @transient private var _sc: <span class="type">SparkContext</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    @transient private var deps: <span class="type">Seq</span>[<span class="type">Dependency</span>[_]]</span></span></span><br><span class="line"><span class="class"><span class="params">  </span>) <span class="keyword">extends</span> <span class="title">Serializable</span> <span class="keyword">with</span> <span class="title">Logging</span> </span>&#123; ......&#125;</span><br></pre></td></tr></table></figure>
+<code>@transient private var _sc: SparkContex</code> 在主构建函数中定义，表示RDD所在运行环境，可用于获取配置，清理环境等。<br><code>@transient private var deps: Seq[Dependency[_]]</code> 定义了这个RDD对父RDD的依赖关系。</li>
+<li>RDD有5个主要属性:<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//注释说明</span></span><br><span class="line"> *  - <span class="type">A</span> list of partitions</span><br><span class="line"> *  - <span class="type">A</span> function <span class="keyword">for</span> computing each split</span><br><span class="line"> *  - <span class="type">A</span> list of dependencies on other <span class="type">RDDs</span></span><br><span class="line"> *  - <span class="type">Optionally</span>, a <span class="type">Partitioner</span> <span class="keyword">for</span> key-value <span class="type">RDDs</span> (e.g. to say that the <span class="type">RDD</span> is hash-partitioned)</span><br><span class="line"> *  - <span class="type">Optionally</span>, a list of preferred locations to compute each split on (e.g. block locations <span class="keyword">for</span></span><br><span class="line"> *    an <span class="type">HDFS</span> file)</span><br><span class="line"><span class="comment">//5个属性的源码</span></span><br><span class="line"><span class="comment">// =======================================================================</span></span><br><span class="line"><span class="comment">// Methods that should be implemented by subclasses of RDD</span></span><br><span class="line"><span class="comment">// =======================================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* :: DeveloperApi ::</span></span><br><span class="line"><span class="comment">* Implemented by subclasses to compute a given partition.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@DeveloperApi</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute</span></span>(split: <span class="type">Partition</span>, context: <span class="type">TaskContext</span>): <span class="type">Iterator</span>[<span class="type">T</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Implemented by subclasses to return the set of partitions in this RDD. This method will only</span></span><br><span class="line"><span class="comment">* be called once, so it is safe to implement a time-consuming computation in it.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* The partitions in this array must satisfy the following property:</span></span><br><span class="line"><span class="comment">*   `rdd.partitions.zipWithIndex.forall &#123; case (partition, index) =&gt; partition.index == index &#125;`</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">def</span> <span class="title">getPartitions</span></span>: <span class="type">Array</span>[<span class="type">Partition</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Implemented by subclasses to return how this RDD depends on parent RDDs. This method will only</span></span><br><span class="line"><span class="comment">* be called once, so it is safe to implement a time-consuming computation in it.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">def</span> <span class="title">getDependencies</span></span>: <span class="type">Seq</span>[<span class="type">Dependency</span>[_]] = deps</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Optionally overridden by subclasses to specify placement preferences.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">def</span> <span class="title">getPreferredLocations</span></span>(split: <span class="type">Partition</span>): <span class="type">Seq</span>[<span class="type">String</span>] = <span class="type">Nil</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/** Optionally overridden by subclasses to specify how they are partitioned. */</span></span><br><span class="line"><span class="meta">@transient</span> <span class="keyword">val</span> partitioner: <span class="type">Option</span>[<span class="type">Partitioner</span>] = <span class="type">None</span></span><br></pre></td></tr></table></figure></li>
+<li>Tranformation和Action方法<br>RDD中定义了所有RDD所共用的tranformation与action，如map, filter, reduce, first等，举个filter的例子：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Return a new RDD containing only the elements that satisfy a predicate.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>(f: <span class="type">T</span> =&gt; <span class="type">Boolean</span>): <span class="type">RDD</span>[<span class="type">T</span>] = withScope &#123;</span><br><span class="line"><span class="keyword">val</span> cleanF = sc.clean(f)</span><br><span class="line"><span class="keyword">new</span> <span class="type">MapPartitionsRDD</span>[<span class="type">T</span>, <span class="type">T</span>](</span><br><span class="line">  <span class="keyword">this</span>,</span><br><span class="line">  (_, _, iter) =&gt; iter.filter(cleanF),</span><br><span class="line">  preservesPartitioning = <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="RDD子类"><a href="#RDD子类" class="headerlink" title="RDD子类"></a>RDD子类</h4><code>CoGroupedRDD, EdgeRDD, EdgeRDDImpl, HadoopRDD, JdbcRDD, NewHadoopRDD, PartitionPruningRDD, ShuffledRDD, UnionRDD, VertexRDD, VertexRDDImpl</code><h4 id="RDD缓存方式"><a href="#RDD缓存方式" class="headerlink" title="RDD缓存方式"></a>RDD缓存方式</h4>对于一个经常被使用的RDD或者计算代价较大的RDD，将其缓存下来，会大大的提高处理速度，缓存方法有如下两种：</li>
+<li>persist()是标准的缓存方法 </li>
+<li>cache()是persist简化方法，当只使用内存作缓存时使用,看源码一目了然<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Persist RDDs of this DStream with the default storage level (MEMORY_ONLY_SER) */</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cache</span></span>(): <span class="type">DStream</span>[<span class="type">T</span>] = persist()</span><br></pre></td></tr></table></figure>
+<h4 id="12种缓存级别"><a href="#12种缓存级别" class="headerlink" title="12种缓存级别"></a>12种缓存级别</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * :: DeveloperApi ::</span></span><br><span class="line"><span class="comment"> * Flags for controlling the storage of an RDD. Each StorageLevel records whether to use memory,</span></span><br><span class="line"><span class="comment"> * or ExternalBlockStore, whether to drop the RDD to disk if it falls out of memory or</span></span><br><span class="line"><span class="comment"> * ExternalBlockStore, whether to keep the data in memory in a serialized format, and whether</span></span><br><span class="line"><span class="comment"> * to replicate the RDD partitions on multiple nodes.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * The [[org.apache.spark.storage.StorageLevel$]] singleton object contains some static constants</span></span><br><span class="line"><span class="comment"> * for commonly useful storage levels. To create your own storage level object, use the</span></span><br><span class="line"><span class="comment"> * factory method of the singleton object (`StorageLevel(...)`).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@DeveloperApi</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StorageLevel</span> <span class="title">private</span>(<span class="params"></span></span></span><br><span class="line"><span class="class"><span class="params">    private var _useDisk: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    private var _useMemory: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    private var _useOffHeap: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    private var _deserialized: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    private var _replication: <span class="type">Int</span> = 1</span>)<span class="keyword">extends</span> <span class="title">Externalizable</span> </span></span><br><span class="line"><span class="class">	......</span></span><br><span class="line"><span class="class"><span class="title">/**</span></span></span><br><span class="line"><span class="class"> <span class="title">*</span> <span class="title">Various</span> [[org.apache.spark.storage.<span class="type">StorageLevel</span>]] <span class="title">defined</span> <span class="title">and</span> <span class="title">utility</span> <span class="title">functions</span> <span class="title">for</span> <span class="title">creating</span> <span class="title">new</span> <span class="title">storage</span> <span class="title">levels</span>.</span></span><br><span class="line"><span class="class"> <span class="title">*</span> <span class="title">对应参数见构造函数</span></span></span><br><span class="line"><span class="class"> <span class="title">*/</span></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">StorageLevel</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> <span class="type">NONE</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>)  <span class="comment">//不缓存</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">DISK_ONLY</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>) <span class="comment">//只使用磁盘</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">DISK_ONLY_2</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="number">2</span>)<span class="comment">// 只使用磁盘,副本数2</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">MEMORY_ONLY</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">false</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">true</span>) <span class="comment">//只使用内存</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">MEMORY_ONLY_2</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">false</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">true</span>, <span class="number">2</span>) <span class="comment">//只使用内存，副本数2</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">MEMORY_ONLY_SER</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">false</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>) <span class="comment">//使用内存并序列化</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">MEMORY_ONLY_SER_2</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">false</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="number">2</span>) <span class="comment">//使用内存并序列化，复本数2</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">MEMORY_AND_DISK</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">true</span>) <span class="comment">//使用缓存和磁盘，缓存不足写到磁盘</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">MEMORY_AND_DISK_2</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">true</span>, <span class="number">2</span>)<span class="comment">//使用缓存和磁盘，缓存不足写到磁盘，副本数2</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">MEMORY_AND_DISK_SER</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>)<span class="comment">//使用缓存和磁盘并序列化，缓存不足写到磁盘</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">MEMORY_AND_DISK_SER_2</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="number">2</span>) <span class="comment">//使用缓存和磁盘并序列化，缓存不足写到磁盘，副本数2</span></span><br><span class="line">  <span class="keyword">val</span> <span class="type">OFF_HEAP</span> = <span class="keyword">new</span> <span class="type">StorageLevel</span>(<span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="number">1</span>) <span class="comment">//使用JVM堆外内存</span></span><br><span class="line">  ......</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+从1.6.0版本开始，Spark内存管理模型发生了变化。旧的内存管理模型由StaticMemoryManager类实现，现在称为“legacy（遗留）”。默认情况下，“Legacy”模式被禁用，这意味着在Spark 1.5.x和1.6.0上运行相同的代码会导致不同的行为。<br>为了兼容，您可以使用spark.memory.useLegacyMode参数（目前spark2.4版本中也依然保留这个静态内存管理模型）启用“旧”内存模型：<br>spark.memory.useLegacyMode=true（默认为false）<blockquote>
+<p>注意：在Spark1.x以前，默认的off_heap使用的是Tachyon。但是Spark中默认操作Tachyon的TachyonBlockManager开发完成之后，代码就不再更新。当Tachyon升级为Alluxio之后移除不使用的API，导致Spark默认off_heap不可用（spark1.6+）。<br>错误情况可参考：<a href="https://alluxio.atlassian.net/browse/ALLUXIO-1881" target="_blank" rel="noopener">https://alluxio.atlassian.net/browse/ALLUXIO-1881</a></p>
+</blockquote>
+</li>
+</ul>
+<h4 id="RDD之间的依赖关系"><a href="#RDD之间的依赖关系" class="headerlink" title="RDD之间的依赖关系"></a>RDD之间的依赖关系</h4><ul>
+<li>窄依赖表现为一个父<code>RDD</code>的分区对应于一个子<code>RDD</code>的分区或多个父<code>RDD</code>的分区对应于一个子<code>RDD</code>的分区（不依赖于全部分区）</li>
+<li>宽依赖则表现为存在一个父<code>RDD</code>的一个分区对应一个子<code>RDD</code>的多个分区<br><img src="/images/spark/spark_rdd_dependency.png" alt=""><h4 id="RDD依赖源码分析"><a href="#RDD依赖源码分析" class="headerlink" title="RDD依赖源码分析"></a>RDD依赖源码分析</h4>与依赖相关的5个类，<code>Dependency</code>、<code>NarrowDependency</code>、<code>OneToOneDependency</code>、<code>RangeDependency</code>、<code>ShuffleDependency</code>，它们位于同一个Scala文件中；<br>Dependency 位置 <code>org.apache.spark.Dependency</code> 2.4.x版。</li>
+</ul>
+<p><code>NarrowDependency(abstract class)</code>与<code>ShuffleDependency</code>直接继承<code>Dependency</code><br><code>OneToOneDependency</code>与<code>RangeDependency</code>继承自<code>NarrowDependency</code><br>所以，关于<code>Dependency</code>的真正实现有三个，2个窄依赖：<code>OneToOneDependency</code>与<code>RangeDependency</code>，一个宽依赖：<code>ShuffleDependency</code>。</p>
+<ul>
+<li>Dependency是抽象类<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * :: DeveloperApi ::</span></span><br><span class="line"><span class="comment"> * Base class for dependencies.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@DeveloperApi</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Dependency</span>[<span class="type">T</span>] <span class="keyword">extends</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">rdd</span></span>: <span class="type">RDD</span>[<span class="type">T</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="窄依赖"><a href="#窄依赖" class="headerlink" title="窄依赖"></a>窄依赖</h6></li>
+<li>NarrowDependency<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * :: DeveloperApi ::</span></span><br><span class="line"><span class="comment"> * Base class for dependencies where each partition of the child RDD depends on a small number</span></span><br><span class="line"><span class="comment"> * of partitions of the parent RDD. Narrow dependencies allow for pipelined execution.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@DeveloperApi</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">NarrowDependency</span>[<span class="type">T</span>](<span class="params">_rdd: <span class="type">RDD</span>[<span class="type">T</span>]</span>) <span class="keyword">extends</span> <span class="title">Dependency</span>[<span class="type">T</span>] </span>&#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Get the parent partitions for a child partition.</span></span><br><span class="line"><span class="comment">   * @param partitionId a partition of the child RDD</span></span><br><span class="line"><span class="comment">   * @return the partitions of the parent RDD that the child partition depends upon</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">getParents</span></span>(partitionId: <span class="type">Int</span>): <span class="type">Seq</span>[<span class="type">Int</span>]</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">rdd</span></span>: <span class="type">RDD</span>[<span class="type">T</span>] = _rdd</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+getParents根据子RDD的分区ID返回父RDD的分区ID,主构建函数中的rdd是父RDD，下同。</li>
+<li>OneToOneDependency<br>一对一依赖，即每个子RDD的分区的与父RDD的分区一一对应。重写了NarrowDependency的getParents方法，返回一个List，这个List只有一个元素，且与子RDD的分区ID相同。即子分区的ID与父分区的ID一一对应且相等<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * :: DeveloperApi ::</span></span><br><span class="line"><span class="comment"> * Represents a one-to-one dependency between partitions of the parent and child RDDs.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@DeveloperApi</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OneToOneDependency</span>[<span class="type">T</span>](<span class="params">rdd: <span class="type">RDD</span>[<span class="type">T</span>]</span>) <span class="keyword">extends</span> <span class="title">NarrowDependency</span>[<span class="type">T</span>](<span class="params">rdd</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getParents</span></span>(partitionId: <span class="type">Int</span>): <span class="type">List</span>[<span class="type">Int</span>] = <span class="type">List</span>(partitionId)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>RangeDependency<br>子RDD中的每个分区依赖于父RDD的几个分区，而父RDD的每个分区仅被一个子RDD分区所依赖，即多对一的关系。它仅仅被UnionRDD所使用。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * :: DeveloperApi ::</span></span><br><span class="line"><span class="comment"> * Represents a one-to-one dependency between ranges of partitions in the parent and child RDDs.</span></span><br><span class="line"><span class="comment"> * @param rdd the parent RDD</span></span><br><span class="line"><span class="comment"> * @param inStart the start of the range in the parent RDD</span></span><br><span class="line"><span class="comment"> * @param outStart the start of the range in the child RDD</span></span><br><span class="line"><span class="comment"> * @param length the length of the range</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@DeveloperApi</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RangeDependency</span>[<span class="type">T</span>](<span class="params">rdd: <span class="type">RDD</span>[<span class="type">T</span>], inStart: <span class="type">Int</span>, outStart: <span class="type">Int</span>, length: <span class="type">Int</span></span>)</span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">NarrowDependency</span>[<span class="type">T</span>](<span class="params">rdd</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getParents</span></span>(partitionId: <span class="type">Int</span>): <span class="type">List</span>[<span class="type">Int</span>] = &#123;</span><br><span class="line">    <span class="keyword">if</span> (partitionId &gt;= outStart &amp;&amp; partitionId &lt; outStart + length) &#123;</span><br><span class="line">      <span class="type">List</span>(partitionId - outStart + inStart)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="type">Nil</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="宽依赖"><a href="#宽依赖" class="headerlink" title="宽依赖"></a>宽依赖</h6>宽依赖只有一种：shuffleDependency，即子RDD依赖于父RDD的所有分区，父RDD的分每个区被所有子RDD的分区所依赖。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * :: DeveloperApi ::</span></span><br><span class="line"><span class="comment"> * Represents a dependency on the output of a shuffle stage. Note that in the case of shuffle,</span></span><br><span class="line"><span class="comment"> * the RDD is transient since we don't need it on the executor side.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param _rdd the parent RDD</span></span><br><span class="line"><span class="comment"> * @param partitioner partitioner used to partition the shuffle output</span></span><br><span class="line"><span class="comment"> * @param serializer [[org.apache.spark.serializer.Serializer Serializer]] to use. If not set</span></span><br><span class="line"><span class="comment"> *                   explicitly then the default serializer, as specified by `spark.serializer`</span></span><br><span class="line"><span class="comment"> *                   config option, will be used.</span></span><br><span class="line"><span class="comment"> * @param keyOrdering key ordering for RDD's shuffles</span></span><br><span class="line"><span class="comment"> * @param aggregator map/reduce-side aggregator for RDD's shuffle</span></span><br><span class="line"><span class="comment"> * @param mapSideCombine whether to perform partial aggregation (also known as map-side combine)</span></span><br><span class="line"><span class="comment"> * @param shuffleWriterProcessor the processor to control the write behavior in ShuffleMapTask</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@DeveloperApi</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ShuffleDependency</span>[<span class="type">K</span>: <span class="type">ClassTag</span>, <span class="type">V</span>: <span class="type">ClassTag</span>, <span class="type">C</span>: <span class="type">ClassTag</span>](<span class="params"></span></span></span><br><span class="line"><span class="class"><span class="params">    @transient private val _rdd: <span class="type">RDD</span>[_ &lt;: <span class="type">Product2</span>[<span class="type">K</span>, <span class="type">V</span>]],</span></span></span><br><span class="line"><span class="class"><span class="params">    val partitioner: <span class="type">Partitioner</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    val serializer: <span class="type">Serializer</span> = <span class="type">SparkEnv</span>.get.serializer,</span></span></span><br><span class="line"><span class="class"><span class="params">    val keyOrdering: <span class="type">Option</span>[<span class="type">Ordering</span>[<span class="type">K</span>]] = <span class="type">None</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    val aggregator: <span class="type">Option</span>[<span class="type">Aggregator</span>[<span class="type">K</span>, <span class="type">V</span>, <span class="type">C</span>]] = <span class="type">None</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    val mapSideCombine: <span class="type">Boolean</span> = false,</span></span></span><br><span class="line"><span class="class"><span class="params">    val shuffleWriterProcessor: <span class="type">ShuffleWriteProcessor</span> = new <span class="type">ShuffleWriteProcessor</span></span>)</span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Dependency</span>[<span class="type">Product2</span>[<span class="type">K</span>, <span class="type">V</span>]] </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (mapSideCombine) &#123;</span><br><span class="line">    require(aggregator.isDefined, <span class="string">"Map-side combine without Aggregator specified!"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">rdd</span></span>: <span class="type">RDD</span>[<span class="type">Product2</span>[<span class="type">K</span>, <span class="type">V</span>]] = _rdd.asInstanceOf[<span class="type">RDD</span>[<span class="type">Product2</span>[<span class="type">K</span>, <span class="type">V</span>]]]</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span>[spark] <span class="keyword">val</span> keyClassName: <span class="type">String</span> = reflect.classTag[<span class="type">K</span>].runtimeClass.getName</span><br><span class="line">  <span class="keyword">private</span>[spark] <span class="keyword">val</span> valueClassName: <span class="type">String</span> = reflect.classTag[<span class="type">V</span>].runtimeClass.getName</span><br><span class="line">  <span class="comment">// Note: It's possible that the combiner class tag is null, if the combineByKey</span></span><br><span class="line">  <span class="comment">// methods in PairRDDFunctions are used instead of combineByKeyWithClassTag.</span></span><br><span class="line">  <span class="keyword">private</span>[spark] <span class="keyword">val</span> combinerClassName: <span class="type">Option</span>[<span class="type">String</span>] =</span><br><span class="line">    <span class="type">Option</span>(reflect.classTag[<span class="type">C</span>]).map(_.runtimeClass.getName)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">val</span> shuffleId: <span class="type">Int</span> = _rdd.context.newShuffleId()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">val</span> shuffleHandle: <span class="type">ShuffleHandle</span> = _rdd.context.env.shuffleManager.registerShuffle(</span><br><span class="line">    shuffleId, <span class="keyword">this</span>)</span><br><span class="line"></span><br><span class="line">  _rdd.sparkContext.cleaner.foreach(_.registerShuffleForCleanup(<span class="keyword">this</span>))</span><br><span class="line">  _rdd.sparkContext.shuffleDriverComponents.registerShuffle(shuffleId)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="stage的划分"><a href="#stage的划分" class="headerlink" title="stage的划分"></a>stage的划分</h4><code>DAG</code>根据宽依赖来划分<code>stage</code>，每个宽依赖的处理均会是一个<code>stage</code>的划分点，后面专门章节讲解<code>stage</code>的划分。</li>
+</ul>
+<hr>
+<p><strong>声明:</strong><br>作者:上海IT技术圈<br>本文版权归作者和上海IT技术圈共有，任何人或团体、机构全部转载或者部分转载、摘录，请在文章明显位置注明作者和原文链接。</p>
+
+      
+    </div>
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="KN 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/spark/" rel="tag"><i class="fa fa-tag"></i> spark</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/spark/spark-note/" rel="next" title="spark简介-快速入门">
+                <i class="fa fa-chevron-left"></i> spark简介-快速入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/spark/spark-stage/" rel="prev" title="spark stage划分">
+                spark stage划分 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/author.png"
+                alt="KN" />
+            
+              <p class="site-author-name" itemprop="name">KN</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lujinyong168@gmail.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/lujinyong168" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5JjTeVD" target="_blank" title="进入QQ群1">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群1</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5KllGoe" target="_blank" title="进入QQ群2">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群2</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RDD是什么"><span class="nav-number">1.</span> <span class="nav-text">RDD是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RDD运行原理"><span class="nav-number">2.</span> <span class="nav-text">RDD运行原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设计背景"><span class="nav-number">2.0.1.</span> <span class="nav-text">设计背景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD概念"><span class="nav-number">2.0.2.</span> <span class="nav-text">RDD概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD的2种创建方式"><span class="nav-number">2.0.3.</span> <span class="nav-text">RDD的2种创建方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD的2种操作"><span class="nav-number">2.0.4.</span> <span class="nav-text">RDD的2种操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD特点"><span class="nav-number">2.0.5.</span> <span class="nav-text">RDD特点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD源码"><span class="nav-number">2.0.6.</span> <span class="nav-text">RDD源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD子类"><span class="nav-number">2.0.7.</span> <span class="nav-text">RDD子类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD缓存方式"><span class="nav-number">2.0.8.</span> <span class="nav-text">RDD缓存方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12种缓存级别"><span class="nav-number">2.0.9.</span> <span class="nav-text">12种缓存级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD之间的依赖关系"><span class="nav-number">2.0.10.</span> <span class="nav-text">RDD之间的依赖关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD依赖源码分析"><span class="nav-number">2.0.11.</span> <span class="nav-text">RDD依赖源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#窄依赖"><span class="nav-number">2.0.11.0.1.</span> <span class="nav-text">窄依赖</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#宽依赖"><span class="nav-number">2.0.11.0.2.</span> <span class="nav-text">宽依赖</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stage的划分"><span class="nav-number">2.0.12.</span> <span class="nav-text">stage的划分</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">上海IT技术圈</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">41.1k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<div class="powered-by">
+	<i class="fa fa-user-md"></i>
+	<span id="busuanzi_container_site_uv">
+		本站访客数:<span id="busuanzi_value_site_uv"></span>
+	</span>
+	<span class="post-meta-divider">|</span>
+	<span id="busuanzi_container_site_pv">
+		本站访问量<span id="busuanzi_value_site_pv"></span>
+	</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

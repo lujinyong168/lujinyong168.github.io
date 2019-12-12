@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="spark,工具,scala," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="上海IT技术圈" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="继承Scala中的继承与Java有着明显的不同，体现在下面几点：  重写一个非抽象方法必须使用override修饰符 只有主构造器可以调用超类的主构造器 在子类中重写超类的抽象方法时，不需要使用override关键字 可以重写超类中的字段Scala和Java一样，不允许类从多个超类继承。下面是一个抽象类和继承的例子，解释见注释。1234567891011121314151617181920212">
+<meta property="og:type" content="article">
+<meta property="og:title" content="scala 快速入门3">
+<meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;scala&#x2F;scala-note3&#x2F;index.html">
+<meta property="og:site_name" content="上海IT技术圈">
+<meta property="og:description" content="继承Scala中的继承与Java有着明显的不同，体现在下面几点：  重写一个非抽象方法必须使用override修饰符 只有主构造器可以调用超类的主构造器 在子类中重写超类的抽象方法时，不需要使用override关键字 可以重写超类中的字段Scala和Java一样，不允许类从多个超类继承。下面是一个抽象类和继承的例子，解释见注释。1234567891011121314151617181920212">
+<meta property="og:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;scala.png">
+<meta property="article:published_time" content="2019-12-01T08:17:47.000Z">
+<meta property="article:modified_time" content="2019-12-09T13:48:28.706Z">
+<meta property="article:author" content="KN">
+<meta property="article:tag" content="spark">
+<meta property="article:tag" content="工具">
+<meta property="article:tag" content="scala">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;scala.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":2,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sparkx.com.cn/scala/scala-note3/"/>
+
+
+
+
+
+  <title>scala 快速入门3 | 上海IT技术圈</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">上海IT技术圈</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">上海IT技术</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/categories/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-spark">
+          <a href="/categories/spark/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Spark
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-flink">
+          <a href="/categories/flink/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Flink
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/tools/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sparkx.com.cn/scala/scala-note3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="KN">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/author.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="上海IT技术圈">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">scala 快速入门3</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-01T16:17:47+08:00">
+                2019-12-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/images/scala.png" alt=""></p>
+<h1 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h1><p>Scala中的继承与Java有着明显的不同，体现在下面几点：</p>
+<ul>
+<li>重写一个非抽象方法必须使用override修饰符</li>
+<li>只有主构造器可以调用超类的主构造器</li>
+<li>在子类中重写超类的抽象方法时，不需要使用override关键字</li>
+<li>可以重写超类中的字段<br>Scala和Java一样，不允许类从多个超类继承。下面是一个抽象类和继承的例子，解释见注释。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;<span class="comment">//抽象类，不能直接被实例化,必须使用abstract关键字</span></span><br><span class="line">  <span class="keyword">val</span> carBrand:<span class="type">String</span> <span class="comment">//字段没有初始化值，就是一个抽象字段，但是必须声明类型，否则编译报错</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">info</span></span>() <span class="comment">//抽象方法，不需要使用abstract关键字</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">greeting</span></span>()&#123;println(<span class="string">"welecome to my car"</span>)&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BMWCar</span> <span class="keyword">extends</span> <span class="title">Car</span></span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> carBrand =<span class="string">"BMW"</span> <span class="comment">//重写超类字段，使用override关键字否则编译报错</span></span><br><span class="line">  <span class="comment">//重写超类抽象方法时，不需要使用override关键字，不过如果加上override编译也不会报错</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">info</span></span>()&#123;printf(<span class="string">"This is a %s car\n"</span>,carBrand)&#125;</span><br><span class="line">  <span class="comment">//重写超类的非抽象方法，必须使用关键字override</span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">greeting</span></span>()&#123;println(<span class="string">"welcome to my BMW car"</span>)&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BYDCar</span> <span class="keyword">extends</span>  <span class="title">Car</span></span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> carBrand =<span class="string">"BYD"</span> <span class="comment">//重写超类字段，使用override关键字否则编译报错</span></span><br><span class="line">  <span class="comment">//重写超类抽象方法时，不需要使用override关键字，不过如果加上override编译也不会报错</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">info</span></span>()&#123;printf(<span class="string">"This is a %s car\n"</span>,carBrand)&#125;</span><br><span class="line">  <span class="comment">//重写超类的非抽象方法，必须使用关键字override</span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">greeting</span></span>()&#123;println(<span class="string">"welcome to my BYD car"</span>)&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">MyCar</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> myCar1 = <span class="keyword">new</span> <span class="type">BMWCar</span>()</span><br><span class="line">    <span class="keyword">val</span> myCar2 = <span class="keyword">new</span> <span class="type">BYDCar</span>()</span><br><span class="line">    myCar1.greeting()</span><br><span class="line">    myCar1.info()</span><br><span class="line">    myCar2.greeting()</span><br><span class="line">    myCar2.info()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="特质-trait"><a href="#特质-trait" class="headerlink" title="特质(trait)"></a>特质(trait)</h1></li>
+<li>特质概念<br>Scala中没有接口的概念，而是提供了<code>特质</code>，它不仅实现了接口的功能，还具备了很多其他的特性，<code>特质</code>是代码重用的基本元素，可以同时拥有<code>抽象方法</code>和<code>具体方法</code>；<br>一个类只能继承自一个超类，却可以实现多个<code>特质</code>，从而重用<code>特质</code>中的方法和字段，实现多重继承； </li>
+<li>特质定义，把多个特征混入类<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">CarId</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> id :<span class="type">Int</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">currentId</span></span>():<span class="type">Int</span><span class="comment">//定义一个抽象方法</span></span><br><span class="line">&#125;</span><br><span class="line">注意：抽象方法不需要使用<span class="keyword">abstract</span>关键字，特质中没有方法体的方法默认就是抽象方法。</span><br><span class="line">特质定义好后，就可以使用<span class="keyword">extends</span>或<span class="keyword">with</span>关键字把特质混入类中。</span><br><span class="line">```scala</span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">CarId</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> id :<span class="type">Int</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">currentId</span></span>():<span class="type">Int</span> <span class="comment">//定义抽象方法</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">CarGreeting</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">greeting</span></span>(msg:<span class="type">String</span>)(println(msg))<span class="comment">//非抽象方法</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BYDCarId</span> <span class="keyword">extends</span> <span class="title">CarId</span> <span class="keyword">with</span> <span class="title">CarGreeting</span></span>&#123;<span class="comment">//使用extends关键字混入第一个特质，后面可以反复使用with关键字混入更多特质</span></span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">var</span> id: <span class="type">Int</span> = <span class="number">10000</span><span class="comment">//BYD汽车编号从10000开始</span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">currentId</span></span>(): <span class="type">Int</span> = &#123;id += <span class="number">1</span>;id&#125;<span class="comment">//返回汽车编号</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BMWCarId</span> <span class="keyword">extends</span> <span class="title">CarId</span></span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">var</span> id: <span class="type">Int</span> = <span class="number">20000</span><span class="comment">//BMW汽车编号从10000开始</span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">currentId</span></span>(): <span class="type">Int</span> = &#123;id += <span class="number">1</span>;id&#125;<span class="comment">//返回汽车编号</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">MyCar2</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> myCarId1 = <span class="keyword">new</span> <span class="type">BYDCarId</span>()</span><br><span class="line">    <span class="keyword">var</span> myCarId2 = <span class="keyword">new</span> <span class="type">BMWCarId</span>()</span><br><span class="line">    printf(<span class="string">"My first CarId is %d.\n"</span>,myCarId1.currentId())</span><br><span class="line">    printf(<span class="string">"My second CarId is %d.\n"</span>,myCarId2.currentId())</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">运行结果:</span><br><span class="line"><span class="type">My</span> first <span class="type">CarId</span> is <span class="number">10001.</span></span><br><span class="line"><span class="type">My</span> second <span class="type">CarId</span> is <span class="number">20001.</span></span><br></pre></td></tr></table></figure>
+上面例子<code>特质</code>只包含了抽象字段和方法，相当于Java的接口功能，实际上，<code>特质</code>也可以包含具体实现，也就是说，<code>特质</code>中的字段和方法不一定要是抽象的。</li>
+</ul>
+<h1 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h1><ul>
+<li>简单匹配<br>最常用语match语句中，下面是一个简单的整型值的匹配实例：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">PatternMatch</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> colorNum = <span class="number">1</span></span><br><span class="line">    <span class="keyword">val</span> colorStr = colorNum <span class="keyword">match</span>&#123;</span><br><span class="line">      <span class="keyword">case</span>  <span class="number">1</span> =&gt;<span class="string">"red"</span></span><br><span class="line">      <span class="keyword">case</span> <span class="number">2</span> =&gt; <span class="string">"green"</span></span><br><span class="line">      <span class="keyword">case</span> <span class="number">3</span> =&gt; <span class="string">"yellow"</span></span><br><span class="line">      <span class="keyword">case</span> _ =&gt; <span class="string">"Not allowed"</span></span><br><span class="line">    &#125;</span><br><span class="line">    print(colorStr)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">运行结果:</span><br><span class="line">red</span><br><span class="line">将 <span class="keyword">case</span> _ =&gt; <span class="string">"Not allowed"</span>改为<span class="keyword">case</span> unexpected =&gt; unexpected + <span class="string">" is not allowed"</span>，即模式匹配<span class="keyword">case</span>语句中可以使用变量，再另<span class="keyword">case</span>=<span class="number">4</span>运行结果:</span><br><span class="line"><span class="number">4</span> is not allowed</span><br></pre></td></tr></table></figure></li>
+<li>类型模式<br>Scala可以对表达式的类型进行匹配<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(elem &lt;- <span class="type">List</span>(<span class="number">9</span>,<span class="number">12.3</span>,<span class="string">"Scala"</span>,<span class="symbol">'Spark</span>))&#123;</span><br><span class="line"><span class="keyword">val</span> str = elem <span class="keyword">match</span>&#123;</span><br><span class="line">  <span class="keyword">case</span> i: <span class="type">Int</span> =&gt; i+<span class="string">" is an int value"</span></span><br><span class="line">  <span class="keyword">case</span> d: <span class="type">Double</span> =&gt; d+<span class="string">" is a double value"</span></span><br><span class="line">  <span class="keyword">case</span> <span class="string">"Scala"</span> =&gt; <span class="string">"Scala is found"</span></span><br><span class="line">  <span class="keyword">case</span> s: <span class="type">String</span> =&gt; s + <span class="string">" is a string value"</span></span><br><span class="line">  <span class="keyword">case</span> _ =&gt; <span class="string">"This is an unexpected value"</span></span><br><span class="line">&#125;</span><br><span class="line">println(str)</span><br><span class="line">运行结果：</span><br><span class="line"><span class="number">9</span> is an int value</span><br><span class="line"><span class="number">12.3</span> is a double value</span><br><span class="line"><span class="type">Scala</span> is found</span><br><span class="line"><span class="type">This</span> is an unexpected value</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>“守卫(guard)”语句<br>可以在模式匹配中添加一些必要的处理逻辑<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">for</span>(elem &lt;- <span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))&#123;</span><br><span class="line">    elem <span class="keyword">match</span>&#123;</span><br><span class="line">      <span class="keyword">case</span> _ <span class="keyword">if</span>(elem %<span class="number">2</span> == <span class="number">0</span>) =&gt; println(elem + <span class="string">" is even"</span>)</span><br><span class="line">      <span class="keyword">case</span> _ =&gt; println(elem + <span class="string">" is odd"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="number">1</span> is odd</span><br><span class="line"><span class="number">2</span> is even</span><br><span class="line"><span class="number">3</span> is odd</span><br><span class="line"><span class="number">4</span> is even</span><br></pre></td></tr></table></figure></li>
+<li>case类的匹配<br>case类是一种特殊的类，它们经过优化以后被用于模式匹配<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span>(<span class="params">brand:<span class="type">String</span>,price:<span class="type">Int</span></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">val</span> myBYDCar = <span class="keyword">new</span> <span class="type">Car</span>(<span class="string">"BYD"</span>,<span class="number">100000</span>)</span><br><span class="line">  <span class="keyword">val</span> myBMWCar = <span class="keyword">new</span> <span class="type">Car</span>(<span class="string">"BMW"</span>,<span class="number">200000</span>)</span><br><span class="line">  <span class="keyword">val</span> myBenzCar = <span class="keyword">new</span> <span class="type">Car</span>(<span class="string">"Benz"</span>,<span class="number">300000</span>)</span><br><span class="line">  <span class="keyword">for</span>(car &lt;- <span class="type">List</span>(myBYDCar,myBMWCar,myBenzCar))&#123;</span><br><span class="line">    car <span class="keyword">match</span> &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="type">Car</span>(<span class="string">"BYD"</span>, <span class="number">100000</span>) =&gt; print(<span class="string">"hello BYD"</span>)</span><br><span class="line">      <span class="keyword">case</span> <span class="type">Car</span>(<span class="string">"BMW"</span>, <span class="number">200000</span>) =&gt; print(<span class="string">"hello BMW"</span>)</span><br><span class="line">      <span class="keyword">case</span> <span class="type">Car</span>(<span class="string">"Benz"</span>, <span class="number">300000</span>) =&gt; print(<span class="string">"hello Benz"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>Option类型<br>标准类库中的Option类型用case类来表示那种可能存在，也可能不存在的值。<br>一般而言，对于每种语言来说，都会有一个关键字来表示一个对象引用的”无”，在Java中使用null。Scala融合了函数式编程风格，因此，当预计到变量或者函数返回值可能不会引用任何值的时候，建议使用Option类型。<br>Option类包含一个子类Some，当存在可以被引用的值时候，就可以使用Some来包含这个值，例如Some(“Scala”)。而None则被声明为一个对象，而不是一个类，表示没有值。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建Map</span></span><br><span class="line">scala&gt; <span class="keyword">val</span> books = <span class="type">Map</span>(<span class="string">"Scala"</span> -&gt;<span class="number">3</span>,<span class="string">"Spark"</span>-&gt;<span class="number">5</span>)</span><br><span class="line">books: scala.collection.immutable.<span class="type">Map</span>[<span class="type">String</span>,<span class="type">Int</span>] = <span class="type">Map</span>(<span class="type">Scala</span> -&gt; <span class="number">3</span>, <span class="type">Spark</span> -&gt; <span class="number">5</span>)</span><br><span class="line"><span class="comment">//键存在，可以取到值，并且取到的值会包含在Some中返回</span></span><br><span class="line">scala&gt; books.get(<span class="string">"Scala"</span>)</span><br><span class="line">res0: <span class="type">Option</span>[<span class="type">Int</span>] = <span class="type">Some</span>(<span class="number">3</span>)</span><br><span class="line"><span class="comment">//键值不存在，所以取到的值是None对象</span></span><br><span class="line">scala&gt; books.get(<span class="string">"hadoop"</span>)</span><br><span class="line">res1: <span class="type">Option</span>[<span class="type">Int</span>] = <span class="type">None</span></span><br><span class="line"></span><br><span class="line">scala&gt; <span class="keyword">val</span> sales = books.get(<span class="string">"hadoop"</span>)</span><br><span class="line">sales: <span class="type">Option</span>[<span class="type">Int</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//Option类还提供了getOrElse方法，当这个方法在这个Option是Some的实例时返回对应的值，而在是None的实例时返回传入的参数</span></span><br><span class="line">scala&gt; sales.getOrElse(<span class="string">"No such book"</span>)</span><br><span class="line">res3: <span class="type">Any</span> = <span class="type">No</span> such book</span><br><span class="line"></span><br><span class="line">scala&gt; println(sales.getOrElse(<span class="string">"No such book"</span>))</span><br><span class="line"><span class="type">No</span> such book</span><br></pre></td></tr></table></figure>
+Option的情形在Scala使用非常频繁，经常会用到Option[T]类型，其中的T可以是String,Int或者其他各种数据类型。<br>Option[T]实际上就是一个容器，可以把它看做是一个集合，只不过这个集合要么只包含一个元素（被包装在Some中返回），要么不存在元素（返回None)。<br>既然是一个集合，我们当然可以对它使用map、foreach或者filter等方法。如：books.get(“Scala”).foreach(println)。<h1 id="函数式编程基础"><a href="#函数式编程基础" class="headerlink" title="函数式编程基础"></a>函数式编程基础</h1></li>
+<li>语法定义：def 方法名(参数列表):结果类型={方法体}，如上面我们已经用到了，可以回顾之前的代码理解一下。</li>
+<li>函数字面量<br>val i = 123 //123就是整数字面量<br>val i = 3.14 //3.14就是浮点数字面量<br>val i = true //true就是布尔型字面量<br>val i = ‘A’ //‘A’就是字符字面量<br>val i = “scala” //“scala”就是字符串字面量</li>
+<li>函数字面量<br>函数字面量可以提现函数式编程的核心理念。<br>在函数式编程中，函数是”头等公民”，可以像任何其数据类型一样被传递和操作，也就是说，函数的使用方式和其他数据类型完全一致。<br>这时，我们就可以像定义变量那样取定义一个函数，由此导致的结果是函数也会想和其他变量一样，开始有“值”。<br>就像变量的“类型”和“值”是分开的两个概念一样，函数式编程中，函数的“类型”和“值”也成为两个分开的概念，函数的“值”就是“函数字面量”。</li>
+<li>函数的类型和值<br>定义一个传统类型的函数，定义语法和之前介绍定义“类中的方法”类似。<br>def counter(value:Int):Int = { value += 1}<br>上面定义这个函数的“类型”是：(Int) =&gt; Int<br>实际上，只有一个参数时圆括号可以省略Int =&gt; Int(等价于上面)，上面就得到了函数的“类型”。</li>
+</ul>
+<p><strong>如何得到函数的“值”呢？</strong><br>实际上，只要把函数定义中的类型什么部分去除，剩下的就是函数的“值”，如下：<br>(value) =&gt; {value += 1} //只有一条语句时，大括号可以省略<br>注意：上面就是函数的“值”，需要注意的是，采用“=&gt;”而不是“=”，这是Scala的语法要求。<br>我们依葫芦（val num:Int = 5）画瓢形式定义Scala的函数：val counter:Int =&gt; Int{(value) =&gt; value += 1}<br>从上面可以看出，在Scala中函数已经是“头等公民”，单独剥离出来了“值”的概念，一个函数“值”就是函数字面量。这样，只要在某个需要声明函数的地方声明一个函数类型，在调用的时候传入一个对应的函数字面量即可，和使用普通变量一模一样。</p>
+<ul>
+<li>匿名函数、Lamda表达式与闭包<br>不需要给函数命名是，可以使用匿名函数，(num:Int) =&gt; num*2,这种经常称为“Lamda表达式”。Lamda表达式形式：(参数) =&gt;表达式//如果参数只有一个，参数的圆括号可以省略<br>可以直接把匿名函数放到变量中，如下：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> myFunc: <span class="type">Int</span> =&gt; <span class="type">Int</span> = (num: <span class="type">Int</span>) =&gt; num * <span class="number">2</span> <span class="comment">//把匿名函数定义为一个值，赋值给变量</span></span><br><span class="line">myFunc: <span class="type">Int</span> =&gt; <span class="type">Int</span> = $$<span class="type">Lambda</span>$<span class="number">1039</span>/<span class="number">1942631655</span>@<span class="number">5696</span>c927 <span class="comment">//执行返回结果</span></span><br><span class="line"></span><br><span class="line">scala&gt; print(myFunc(<span class="number">3</span>)) <span class="comment">//函数调用</span></span><br></pre></td></tr></table></figure>
+Scala具有推断机制，可以自动推断变量类型,val num: Int = 2 等价于 val num = 2，所以上面的函数定义可以去掉“Int=&gt;Int”，即：val myFunc = (num: Int) =&gt; num * 2。<br>val myFunc = (num) =&gt; num * 2 //解释器无法推断出类型报错，val myFunc: Int =&gt;Int = (num) =&gt; num *2 可推断num类型是Int类型。</li>
+</ul>
+<p><strong>闭包</strong><br>闭包是一种比较特殊的函数，和普通函数有很多区别：<br>var more = 1<br>val addMore = (x: Int) =&gt; x&gt;0 //普通函数<br>val addMore = (x: Int) =&gt; x + more //闭包<br>闭包反应了一个从开发到封闭的过程，每次addMore函数被调用时都会创建一个新的闭包，每个闭包都会访问闭包创建时活跃的more变量。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">var</span> more = <span class="number">1</span></span><br><span class="line">more: <span class="type">Int</span> = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">scala&gt; <span class="keyword">val</span> addMore = (x:<span class="type">Int</span>) =&gt; x + more</span><br><span class="line">addMore: <span class="type">Int</span> =&gt; <span class="type">Int</span> = $$<span class="type">Lambda</span>$<span class="number">1061</span>/<span class="number">1841213176</span>@<span class="number">7744195</span></span><br><span class="line"></span><br><span class="line">scala&gt; addMore(<span class="number">10</span>)</span><br><span class="line">res2: <span class="type">Int</span> = <span class="number">11</span></span><br><span class="line"></span><br><span class="line">scala&gt; more = <span class="number">9</span></span><br><span class="line">more: <span class="type">Int</span> = <span class="number">9</span></span><br><span class="line"></span><br><span class="line">scala&gt; addMore(<span class="number">10</span>)</span><br><span class="line">res3: <span class="type">Int</span> = <span class="number">19</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>占位符语法<br>为了让函数字面量更加简洁，可以使用下划线作为一个或者多个参数的占位符，只要每个参数在函数字面量内仅出现一次。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> numList = <span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">-3</span>,<span class="number">4</span>,<span class="number">-5</span>)</span><br><span class="line">numList: <span class="type">List</span>[<span class="type">Int</span>] = <span class="type">List</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">-3</span>, <span class="number">4</span>, <span class="number">-5</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; numList.filter(x =&gt; x&gt;<span class="number">0</span>)</span><br><span class="line">res4: <span class="type">List</span>[<span class="type">Int</span>] = <span class="type">List</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; numList.filter(_&gt;<span class="number">0</span>)</span><br><span class="line">res5: <span class="type">List</span>[<span class="type">Int</span>] = <span class="type">List</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+从上面运行结果可以看出，下面两个函数字面量是等价的，即x =&gt; x&gt;0 等价于<em>&gt;0 。<br>有时候把下划线作为参数的占位符时，编译器有可能没有足够的信息推断缺失参数的类型，如，</em>+_会报错，可以用冒号指定类型：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> f = _ + _</span><br><span class="line">&lt;console&gt;:<span class="number">11</span>: error: missing parameter <span class="class"><span class="keyword">type</span> <span class="title">for</span> <span class="title">expanded</span> <span class="title">function</span> (<span class="params">(x$1: &lt;error&gt;, x$2</span>) <span class="title">=&gt;</span> <span class="title">x$1</span>.<span class="title">$plus</span>(<span class="params">x$2</span>))</span></span><br><span class="line"><span class="class">       <span class="title">val</span> <span class="title">f</span> </span>= _ + _</span><br><span class="line">               ^</span><br><span class="line">&lt;console&gt;:<span class="number">11</span>: error: missing parameter <span class="class"><span class="keyword">type</span> <span class="title">for</span> <span class="title">expanded</span> <span class="title">function</span> (<span class="params">(x$1: &lt;error&gt;, x$2: &lt;error&gt;</span>) <span class="title">=&gt;</span> <span class="title">x$1</span>.<span class="title">$plus</span>(<span class="params">x$2</span>))</span></span><br><span class="line"><span class="class">       <span class="title">val</span> <span class="title">f</span> </span>= _ + _</span><br><span class="line">                   ^</span><br><span class="line">scala&gt; <span class="keyword">val</span> f = (_:<span class="type">Int</span>) + (_:<span class="type">Int</span>)</span><br><span class="line">f: (<span class="type">Int</span>, <span class="type">Int</span>) =&gt; <span class="type">Int</span> = $$<span class="type">Lambda</span>$<span class="number">1099</span>/<span class="number">1579858776</span>@<span class="number">943</span>d0c2</span><br><span class="line"></span><br><span class="line">scala&gt; print(f(<span class="number">5</span>,<span class="number">10</span>))</span><br><span class="line"><span class="number">15</span></span><br></pre></td></tr></table></figure>
+注意：留心“<em>+</em>”将扩展成带两个参数的函数的字面量，这也是仅当每个参数的函数字面量中最多出现一次的情况先你才能运用这种短格式的原由。多个下划线指定多个参数，而不是单个参数的重复运用。第一个下划线代表第一个参数，第二个下划线代表第二个参数，第三个……，如此类推。</li>
+</ul>
+<h2 id="至此，Scala入门知识讲解完毕，但是Scala的其他知识还需进一步学习，点击Scala-Getting-Started去学习"><a href="#至此，Scala入门知识讲解完毕，但是Scala的其他知识还需进一步学习，点击Scala-Getting-Started去学习" class="headerlink" title="至此，Scala入门知识讲解完毕，但是Scala的其他知识还需进一步学习，点击Scala Getting Started去学习!"></a>至此，Scala入门知识讲解完毕，但是Scala的其他知识还需进一步学习，点击<a href="https://docs.scala-lang.org/getting-started/index.html" target="_blank" rel="noopener">Scala Getting Started</a>去学习!</h2><p><strong>声明:</strong><br>作者:上海IT技术圈<br>本文版权归作者和上海IT技术圈共有，任何人或团体、机构全部转载或者部分转载、摘录，请在文章明显位置注明作者和原文链接。</p>
+
+      
+    </div>
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="KN 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/spark/" rel="tag"><i class="fa fa-tag"></i> spark</a>
+          
+            <a href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag"><i class="fa fa-tag"></i> 工具</a>
+          
+            <a href="/tags/scala/" rel="tag"><i class="fa fa-tag"></i> scala</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/scala/scala-note2/" rel="next" title="scala 快速入门2">
+                <i class="fa fa-chevron-left"></i> scala 快速入门2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/spark/spark-setup/" rel="prev" title="spark集群环境搭建">
+                spark集群环境搭建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/author.png"
+                alt="KN" />
+            
+              <p class="site-author-name" itemprop="name">KN</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lujinyong168@gmail.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/lujinyong168" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5JjTeVD" target="_blank" title="进入QQ群1">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群1</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5KllGoe" target="_blank" title="进入QQ群2">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群2</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#继承"><span class="nav-number">1.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#特质-trait"><span class="nav-number">2.</span> <span class="nav-text">特质(trait)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模式匹配"><span class="nav-number">3.</span> <span class="nav-text">模式匹配</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数式编程基础"><span class="nav-number">4.</span> <span class="nav-text">函数式编程基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#至此，Scala入门知识讲解完毕，但是Scala的其他知识还需进一步学习，点击Scala-Getting-Started去学习"><span class="nav-number">4.1.</span> <span class="nav-text">至此，Scala入门知识讲解完毕，但是Scala的其他知识还需进一步学习，点击Scala Getting Started去学习!</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">上海IT技术圈</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">41.1k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<div class="powered-by">
+	<i class="fa fa-user-md"></i>
+	<span id="busuanzi_container_site_uv">
+		本站访客数:<span id="busuanzi_value_site_uv"></span>
+	</span>
+	<span class="post-meta-divider">|</span>
+	<span id="busuanzi_container_site_pv">
+		本站访问量<span id="busuanzi_value_site_pv"></span>
+	</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
