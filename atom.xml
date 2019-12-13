@@ -44,16 +44,13 @@
     <link href="http://sparkx.com.cn/flink/flink-note/"/>
     <id>http://sparkx.com.cn/flink/flink-note/</id>
     <published>2019-12-11T01:27:00.000Z</published>
-    <updated>2019-12-12T14:24:44.438Z</updated>
+    <updated>2019-12-13T12:01:05.486Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="Flink是什么"><a href="#Flink是什么" class="headerlink" title="Flink是什么"></a>Flink是什么</h1>]]></content>
+    <content type="html"><![CDATA[<h1 id="Flink是什么"><a href="#Flink是什么" class="headerlink" title="Flink是什么"></a>Flink是什么</h1><p>Flink 是一个分布式大数据处理引擎，可对有限数据流和无限数据流进行有状态计算。可部署在各种集群环境，对各种大小的数据规模进行快速计算。Flink提供了诸多更高抽象层的API以便用户编写分布式任务：</p><table><thead><tr><th>API</th><th align="left">描述</th></tr></thead><tbody><tr><td>DataSet API</td><td align="left">对静态数据进行批处理操作，将静态数据抽象成分布式的数据集，用户可以方便地使用Flink提供的各种操作符对分布是数据集进行处理。</td></tr><tr><td>DataStream API</td><td align="left">对数据流进行流式处理操作，将流式的数据抽象成分布式的数据流，用户可以方便地对分布式数据流进行各种操作。</td></tr><tr><td>Table API</td><td align="left">对结构化数据进行查询操作，将结构化数据抽象成关系表，并通过类SQL的DSL对关系表进行各种查询操作。</td></tr></tbody></table><h1 id="Flink里的基础概念"><a href="#Flink里的基础概念" class="headerlink" title="Flink里的基础概念"></a>Flink里的基础概念</h1><table><thead><tr><th>名称</th><th align="left">描述</th></tr></thead><tbody><tr><td>Client</td><td align="left">提交任务给JobManager</td></tr><tr><td>JobManager</td><td align="left">分发任务给TaskManager</td></tr><tr><td>TaskManager</td><td align="left">会心跳会报任务状态</td></tr></tbody></table><h1 id="Flink流式处理特性"><a href="#Flink流式处理特性" class="headerlink" title="Flink流式处理特性"></a>Flink流式处理特性</h1><ul><li>支持高吞吐量、低延时、高性能的流式处理。</li><li>支持带有事件的时间窗口（Window）操作。</li><li>支持高度灵活的窗口（Window）操作，支持基于time、count、session以及data-driven的窗口操作。</li><li>支持具有Backpressure功能的持续流模型。</li><li>支持基于轻量级分布式快照（Snapshot）实现的容错和有状态计算的Exactly-once语义。</li><li>支持Batch on Streaming处理和realtime Streaming处理。</li></ul><h1 id="理解流式处理和批处理系统的差别"><a href="#理解流式处理和批处理系统的差别" class="headerlink" title="理解流式处理和批处理系统的差别"></a>理解流式处理和批处理系统的差别</h1><ul><li>流式处理：当一条数据被处理完成后，序列化到缓存中，然后立刻通过网络传输到下一个节点，由下一个节点继续处理。代表：Apache Storm、Apache Smaza。</li><li>批处理：当一条数据被处理完成后，序列化到缓存中，并不会立刻通过网络传输到下一个节点，当缓存写满，就持久化到本地硬盘上，当所有数据都被处理完成后，才开始将处理后的数据通过网络传输到下一个节点。代表：Apache Storm、Apache Smaza。Spark Streaming看似流式处理，其实是一种micro-batch架构。</li></ul><p>对于上述两种数据传输模式，Flink的执行引擎采用了一种十分灵活的方式支持这两种传输模型，Flink以固定的缓存块为单位进行网络数据传输，用户可以通过缓存块超时值指定缓存块的传输时机，如果缓存块超时值为0，则Flink的数据传输方式类似流式处理模型，此时可以获得最低处理延时。如果缓存块超时值为大于零的一个值(理论上无限大)，则Flink的数据传输方式类似批处理模型，此时系统可以获得最高的吞吐量。</p>]]></content>
     
     <summary type="html">
     
-      
-      
-        &lt;h1 id=&quot;Flink是什么&quot;&gt;&lt;a href=&quot;#Flink是什么&quot; class=&quot;headerlink&quot; title=&quot;Flink是什么&quot;&gt;&lt;/a&gt;Flink是什么&lt;/h1&gt;
-      
+      对Flink最权威的解释是官方[点击进入官网](https://flink.apache.org/)文档，下面在个人理解基础上对Flink进行简单的介绍。
     
     </summary>
     
