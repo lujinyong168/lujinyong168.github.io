@@ -21,7 +21,7 @@
 <p>在dataDir指定的目录下创建myid文件,文件内容为server后面的ID,即1。<br>然后通过scp命令<code>scp -r apache-zookeeper-3.5.6 uat14476:/home/qateadmin/</code>将第一台服务器配置好的zookeeper拷贝到其他两台服务器上，并且将uat14476中dataDir指定目录下的myid改为2,将uat14477中dataDir指定目录下的myid改为3。<br><strong>启动服务</strong></p>
 <figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">zkServer.<span class="keyword">sh</span> start  <span class="comment">//启动服务</span></span><br><span class="line">zkServer.<span class="keyword">sh</span> status <span class="comment">//查看服务状态</span></span><br><span class="line">zkServer.<span class="keyword">sh</span> stop <span class="comment">//停止服务</span></span><br></pre></td></tr></table></figure>
 <h3 id="伪分布模式"><a href="#伪分布模式" class="headerlink" title="伪分布模式"></a>伪分布模式</h3><p>是一种特殊的集群模式，即集群的所有服务器都部署在一台机器上。当你有一台较好的服务器，zookeeper允许在一台服务器上通过启动不同的端口来启动多个zookeeper实例，以此来以集群对外提供服务。<br>这种模式，只需把zoo.cfg的server.x 对应的端口改成不同的。</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">server<span class="number">.1</span>=uat14475:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.2</span>=uat14476:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.3</span>=uat14477:<span class="number">2888</span>:<span class="number">3888</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">server<span class="number">.1</span>=uat14475:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.2</span>=uat14476:<span class="number">2889</span>:<span class="number">3889</span></span><br><span class="line">server<span class="number">.3</span>=uat14477:<span class="number">2890</span>:<span class="number">3890</span></span><br></pre></td></tr></table></figure>
 
 <h1 id="关于zookeeper高可用的思考"><a href="#关于zookeeper高可用的思考" class="headerlink" title="关于zookeeper高可用的思考"></a>关于zookeeper高可用的思考</h1><h3 id="为什么要设计奇数台服务器"><a href="#为什么要设计奇数台服务器" class="headerlink" title="为什么要设计奇数台服务器"></a>为什么要设计奇数台服务器</h3><p>很多人对zookeeper选举leader认识有偏差，认为“为了使得 ZooKeeper 集群能够顺利地选举出 Leader，必须将 ZooKeeper 集群的服务器数部署成奇数”。这么说虽然没错，但是实际的原因是:<strong>存活过半即可用</strong>的特性。<br>即：如果想搭建运行N台服务器挂掉，那么就要部署2*N+1台服务器构成zookeeper集群，也就是说：由6台服务器构成的zookeeper集群和5台服务器构成的zookeeper集群在容灾能力上并没有优势，反而浪费一台服务器，所以基于这个原因，zookeeper集群通常设计成奇数台服务器。</p>
 <h3 id="容灾"><a href="#容灾" class="headerlink" title="容灾"></a>容灾</h3><p>所谓容灾，在 IT 行业通常是指我们的计算机信息系统具有的一种在遭受诸如火灾、地震、断电和其他基础网络设备故障等毁灭性灾难的时候，依然能够对外提供可用服务的能力。<br>ZooKeeper 既然已经解决了单点问题，那为什么还要进行容灾呢？</p>
@@ -37,7 +37,8 @@
 <h1 id="水平扩容"><a href="#水平扩容" class="headerlink" title="水平扩容"></a>水平扩容</h1><p>简单地讲，水平扩容就是向集群中添加更多的机器，以提高系统的服务质量。<br>ZooKeeper在水平扩容扩容方面做得并不十分完美，需要进行整个集群的重启。通常有两种重启方式，一种是集群整体重启，另外一种是逐台进行服务器的重启。</p>
 <ul>
 <li>整体重启：就是先将整个集群停止，然后更新zookeeper配置，然后重启。重启过程中，所有该集群客户端都无法连接上集群，等到集群再次启动，这些客户端就能够自动连接上——注意，整体启动前建立起的客户端会话，并不会因为此次整体重启而失效。也就是说，在整体重启期间花费的时间将不计入会话超时时间的计算中。</li>
-<li>逐台重启：在这种方式中，每次仅仅重启集群中的一台机器，然后逐台对整个集群中的机器进行重启操作。这种方式可以在重启期间依然保证集群对外的正常服务。<strong>（推荐）</strong><br>参考文章：《从Paxos到Zookeeper  分布式一致性原理与实践》</li>
+<li>逐台重启：在这种方式中，每次仅仅重启集群中的一台机器，然后逐台对整个集群中的机器进行重启操作。这种方式可以在重启期间依然保证集群对外的正常服务。<strong>（推荐）</strong></li>
+<li>参考文章：《从Paxos到Zookeeper  分布式一致性原理与实践》</li>
 </ul>
 ]]></content>
       <categories>
@@ -229,8 +230,8 @@ Scala具有推断机制，可以自动推断变量类型,val num: Int = 2 等价
         <category>tools</category>
       </categories>
       <tags>
-        <tag>工具</tag>
         <tag>spark</tag>
+        <tag>工具</tag>
         <tag>scala</tag>
       </tags>
   </entry>
@@ -257,8 +258,8 @@ Scala源码编译后都变成JVM字节码，实际上在编译上面的源码文
         <category>tools</category>
       </categories>
       <tags>
-        <tag>工具</tag>
         <tag>spark</tag>
+        <tag>工具</tag>
         <tag>scala</tag>
       </tags>
   </entry>
@@ -388,8 +389,8 @@ Scala源码编译后都变成JVM字节码，实际上在编译上面的源码文
         <category>tools</category>
       </categories>
       <tags>
-        <tag>工具</tag>
         <tag>spark</tag>
+        <tag>工具</tag>
         <tag>scala</tag>
       </tags>
   </entry>
