@@ -90,12 +90,12 @@
 
 <meta name="description" content="ZooKeeper是Apache的一个顶级项目，为分布式应用提供高效、高可用的分布式协调服务，提供了诸如数据发布&#x2F;订阅、负载均衡、命名服务、分布式协调&#x2F;通知和分布式锁等分布式基础服务。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="zookeeper介绍">
+<meta property="og:title" content="zookeeper介绍和集群高可用的思考">
 <meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;zookeeper&#x2F;zookeeper-ha&#x2F;index.html">
 <meta property="og:site_name" content="上海IT技术圈">
 <meta property="og:description" content="ZooKeeper是Apache的一个顶级项目，为分布式应用提供高效、高可用的分布式协调服务，提供了诸如数据发布&#x2F;订阅、负载均衡、命名服务、分布式协调&#x2F;通知和分布式锁等分布式基础服务。">
 <meta property="article:published_time" content="2019-12-16T11:33:39.000Z">
-<meta property="article:modified_time" content="2019-12-17T23:36:15.759Z">
+<meta property="article:modified_time" content="2019-12-17T23:41:34.672Z">
 <meta property="article:author" content="KN">
 <meta property="article:tag" content="zookeeper">
 <meta name="twitter:card" content="summary">
@@ -134,7 +134,7 @@
 
 
 
-  <title>zookeeper介绍 | 上海IT技术圈</title>
+  <title>zookeeper介绍和集群高可用的思考 | 上海IT技术圈</title>
   
 
 
@@ -352,7 +352,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">zookeeper介绍</h2>
+          <h2 class="post-title" itemprop="name headline">zookeeper介绍和集群高可用的思考</h2>
         
 
         <div class="post-meta">
@@ -475,16 +475,16 @@
       
 
       
-        <p><code>Zookeeper</code><a href="http://zookeeper.apache.org/" target="_blank" rel="noopener">点击进入官网</a></p>
+        <p><a href="http://zookeeper.apache.org/" target="_blank" rel="noopener">点击进入官网</a></p>
 <h1 id="三种运行模式"><a href="#三种运行模式" class="headerlink" title="三种运行模式"></a>三种运行模式</h1><p>单机模式、伪集群模式和集群模式。</p>
 <h3 id="单机模式"><a href="#单机模式" class="headerlink" title="单机模式"></a>单机模式</h3><p>单机模式一般适合开发测试环境，节约机器资源并且不需要考虑稳定性。</p>
 <ul>
 <li>安装Java环境(自行搜索jdk安装方法)</li>
 <li>安装zookeeper<br><a href="http://zookeeper.apache.org/releases.html" target="_blank" rel="noopener">点击下载安装包</a></li>
 <li>配置zoo.cfg<br>将下载的tar包解压后配置<code>$ZK_HOME</code>,然后将<code>$ZK_HOME</code>下的<code>zoo_sample.cfg</code>文件重命名为<code>zoo.cfg</code>，并进行以下配置<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tickTime</span>=<span class="number">2000</span>    <span class="comment">##Zookeeper最小时间单元，单位毫秒(ms)，默认值为3000</span></span><br><span class="line"><span class="attr">dataDir</span>=/var/lib/zookeeper    <span class="comment">##Zookeeper服务器存储快照文件的目录，必须配置</span></span><br><span class="line"><span class="attr">dataLogDir</span>=/var/lib/log     <span class="comment">##Zookeeper服务器存储事务日志的目录，默认为dataDir</span></span><br><span class="line"><span class="attr">clientPort</span>=<span class="number">2181</span>    <span class="comment">##服务器对外服务端口，一般设置为2181</span></span><br><span class="line"><span class="attr">initLimit</span>=<span class="number">5</span>    <span class="comment">##Leader服务器等待Follower启动并完成数据同步的时间，默认值10，表示tickTime的10倍</span></span><br><span class="line"><span class="attr">syncLimit</span>=<span class="number">2</span>    <span class="comment">##Leader服务器和Follower之间进行心跳检测的最大延时时间，默认值5，表示tickTime的5倍</span></span><br></pre></td></tr></table></figure></li>
-<li>启动服务<br>使用<code>$ZK_HOME/bin</code>目录下的zkServer.sh脚本启动，如:<code>zkServer.sh start</code>。<h3 id="集群模式"><a href="#集群模式" class="headerlink" title="集群模式"></a>集群模式</h3></li>
+<li>启动服务<br>使用<code>$ZK_HOME/bin</code>目录下的zkServer.sh脚本启动，如:<code>zkServer.sh start</code>。</li>
 </ul>
-<p><strong>ip绑定到主机名称</strong><br>执行命令<code>sudo /etc/hosts</code>修改每台服务器的hosts文件,内容如下：</p>
+<h3 id="集群模式"><a href="#集群模式" class="headerlink" title="集群模式"></a>集群模式</h3><p><strong>ip绑定到主机名称</strong><br>执行命令<code>sudo /etc/hosts</code>修改每台服务器的hosts文件,内容如下：</p>
 <figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10.5.119.0</span> uat14475</span><br><span class="line"><span class="number">10.5.119.100</span> uat14476</span><br><span class="line"><span class="number">10.5.119.15</span> uat14477</span><br></pre></td></tr></table></figure>
 <p>同样要安装好Java运行环境。<br>将下载好的zookeeper包<code>apache-zookeeper-3.5.6.tar.gz</code>上传到服务器/home/qateadmin目录，并执行命令<code>tar -zxvf apache-zookeeper-3.5.6.tar.gz</code>解压到当前目录。<br><strong>配置环境变量</strong></p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">ZK_HOME</span>=/home/qateadmin/apache-zookeeper-3.5.6</span><br><span class="line"><span class="attribute">PAT</span>=H$PATH:$HOME/.local/bin:$HOME/bin:$ZK_HOME/bin</span><br><span class="line"><span class="builtin-name">export</span> PATH</span><br></pre></td></tr></table></figure>
@@ -504,7 +504,10 @@
 <ul>
 <li>计算N1：<code>N1=(N-1)/2</code></li>
 <li>计算N2：<code>N2取值范围1~(N-N1)/2</code> 整数相除向下取整</li>
-<li>计算N3：<code>N3=N-N1-N2</code> 同时确定N2，即必须满足N3&lt;N1+N2。<br>如果部署7台服务器，可以有两种部署方案：(3,1,3)和(3,2,2)。<h1 id="水平扩容"><a href="#水平扩容" class="headerlink" title="水平扩容"></a>水平扩容</h1>简单地讲，水平扩容就是向集群中添加更多的机器，以提高系统的服务质量。<br>ZooKeeper在水平扩容扩容方面做得并不十分完美，需要进行整个集群的重启。通常有两种重启方式，一种是集群整体重启，另外一种是逐台进行服务器的重启。</li>
+<li>计算N3：<code>N3=N-N1-N2</code> 同时确定N2，即必须满足N3&lt;N1+N2。<br>如果部署7台服务器，可以有两种部署方案：(3,1,3)和(3,2,2)。</li>
+</ul>
+<h1 id="水平扩容"><a href="#水平扩容" class="headerlink" title="水平扩容"></a>水平扩容</h1><p>简单地讲，水平扩容就是向集群中添加更多的机器，以提高系统的服务质量。<br>ZooKeeper在水平扩容扩容方面做得并不十分完美，需要进行整个集群的重启。通常有两种重启方式，一种是集群整体重启，另外一种是逐台进行服务器的重启。</p>
+<ul>
 <li>整体重启：就是先将整个集群停止，然后更新zookeeper配置，然后重启。重启过程中，所有该集群客户端都无法连接上集群，等到集群再次启动，这些客户端就能够自动连接上——注意，整体启动前建立起的客户端会话，并不会因为此次整体重启而失效。也就是说，在整体重启期间花费的时间将不计入会话超时时间的计算中。</li>
 <li>逐台重启：在这种方式中，每次仅仅重启集群中的一台机器，然后逐台对整个集群中的机器进行重启操作。这种方式可以在重启期间依然保证集群对外的正常服务。<strong>（推荐）</strong><br>参考文章：《从Paxos到Zookeeper  分布式一致性原理与实践》</li>
 </ul>
