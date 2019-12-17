@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="spark," />
+  <meta name="keywords" content="zookeeper," />
 
 
 
@@ -88,19 +88,17 @@
 
 
 
-<meta name="description" content="Stage是什么Stage是Job的基本调度单位，一个Job会分为多组Task，每组Task称为Stage，或者也被称为TaskSet，代表了一组关联的、相互之间没有Shuffle的依赖关系的任务组成的任务集。 Stage划分方法 在DAG中进行反方向解析，遇到宽依赖就断开，划分为一个stage； 遇到窄依赖就把当前的RDD加入到Stage中，将窄依赖尽量划分到同一个Stage中，可以实现流水线计">
+<meta name="description" content="ZooKeeper是Apache的一个顶级项目，为分布式应用提供高效、高可用的分布式协调服务，提供了诸如数据发布&#x2F;订阅、负载均衡、命名服务、分布式协调&#x2F;通知和分布式锁等分布式基础服务。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="spark stage划分">
-<meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;spark&#x2F;spark-stage&#x2F;index.html">
+<meta property="og:title" content="zookeeper介绍">
+<meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;zookeeper&#x2F;zookeeper-ha&#x2F;index.html">
 <meta property="og:site_name" content="上海IT技术圈">
-<meta property="og:description" content="Stage是什么Stage是Job的基本调度单位，一个Job会分为多组Task，每组Task称为Stage，或者也被称为TaskSet，代表了一组关联的、相互之间没有Shuffle的依赖关系的任务组成的任务集。 Stage划分方法 在DAG中进行反方向解析，遇到宽依赖就断开，划分为一个stage； 遇到窄依赖就把当前的RDD加入到Stage中，将窄依赖尽量划分到同一个Stage中，可以实现流水线计">
-<meta property="og:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;spark&#x2F;spark_stage_split.png">
-<meta property="article:published_time" content="2019-11-28T11:23:02.000Z">
-<meta property="article:modified_time" content="2019-12-09T13:48:28.812Z">
+<meta property="og:description" content="ZooKeeper是Apache的一个顶级项目，为分布式应用提供高效、高可用的分布式协调服务，提供了诸如数据发布&#x2F;订阅、负载均衡、命名服务、分布式协调&#x2F;通知和分布式锁等分布式基础服务。">
+<meta property="article:published_time" content="2019-12-16T11:33:39.000Z">
+<meta property="article:modified_time" content="2019-12-17T23:36:15.759Z">
 <meta property="article:author" content="KN">
-<meta property="article:tag" content="spark">
+<meta property="article:tag" content="zookeeper">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;spark&#x2F;spark_stage_split.png">
 
 
 
@@ -130,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://sparkx.com.cn/spark/spark-stage/"/>
+  <link rel="canonical" href="http://sparkx.com.cn/zookeeper/zookeeper-ha/"/>
 
 
 
 
 
-  <title>spark stage划分 | 上海IT技术圈</title>
+  <title>zookeeper介绍 | 上海IT技术圈</title>
   
 
 
@@ -337,7 +335,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sparkx.com.cn/spark/spark-stage/">
+    <link itemprop="mainEntityOfPage" href="http://sparkx.com.cn/zookeeper/zookeeper-ha/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="KN">
@@ -354,7 +352,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">spark stage划分</h2>
+          <h2 class="post-title" itemprop="name headline">zookeeper介绍</h2>
         
 
         <div class="post-meta">
@@ -366,8 +364,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-28T19:23:02+08:00">
-                2019-11-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-16T19:33:39+08:00">
+                2019-12-16
               </time>
             
 
@@ -389,8 +387,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spark/" itemprop="url" rel="index">
-                    <span itemprop="name">spark</span>
+                  <a href="/categories/zookeeper/" itemprop="url" rel="index">
+                    <span itemprop="name">zookeeper</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/zookeeper/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
                   </a>
                 </span>
 
@@ -425,7 +434,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.5k
+                  1.8k
                 </span>
               
 
@@ -441,12 +450,16 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7
+                  6
                 </span>
               
             </div>
           
 
+          
+              <div class="post-description">
+                  ZooKeeper是Apache的一个顶级项目，为分布式应用提供高效、高可用的分布式协调服务，提供了诸如数据发布/订阅、负载均衡、命名服务、分布式协调/通知和分布式锁等分布式基础服务。
+              </div>
           
 
         </div>
@@ -462,50 +475,39 @@
       
 
       
-        <h2 id="Stage是什么"><a href="#Stage是什么" class="headerlink" title="Stage是什么"></a>Stage是什么</h2><p><code>Stage</code>是<code>Job</code>的基本调度单位，一个<code>Job</code>会分为多组<code>Task</code>，每组<code>Task</code>称为<code>Stage</code>，或者也被称为<code>TaskSet</code>，代表了一组关联的、相互之间没有<code>Shuffle</code>的依赖关系的任务组成的任务集。</p>
-<h2 id="Stage划分方法"><a href="#Stage划分方法" class="headerlink" title="Stage划分方法"></a>Stage划分方法</h2><ul>
-<li>在<code>DAG</code>中进行反方向解析，遇到宽依赖就断开，划分为一个stage；</li>
-<li>遇到窄依赖就把当前的<code>RDD</code>加入到<code>Stage</code>中，将窄依赖尽量划分到同一个<code>Stage</code>中，可以实现流水线计算；</li>
-</ul>
-<p><img src="/images/spark/spark_stage_split.png" alt="根据RDD分区的依赖关系划分Stage"></p>
-<p>上图是经典的<code>Stage</code>划分图,被分成三个<code>Stage</code>,在<code>Stage2</code>中，从<code>map</code>到<code>union</code>都是窄依赖，这两步操作可以形成一个流水操作。<br>流水操作实例分区7通过<code>map</code>操作生成的分区9，可以不用等待分区8到分区10这个<code>map</code>操作的计算结束，而是继续进行<code>union</code>操作，得到分区13，这样的流水执行大大提高了计算效率。</p>
-<h2 id="源码分析Stage划分"><a href="#源码分析Stage划分" class="headerlink" title="源码分析Stage划分"></a>源码分析Stage划分</h2><p>Stage 位置: <code>org.apache.spark.scheduler.Stage</code></p>
+        <p><code>Zookeeper</code><a href="http://zookeeper.apache.org/" target="_blank" rel="noopener">点击进入官网</a></p>
+<h1 id="三种运行模式"><a href="#三种运行模式" class="headerlink" title="三种运行模式"></a>三种运行模式</h1><p>单机模式、伪集群模式和集群模式。</p>
+<h3 id="单机模式"><a href="#单机模式" class="headerlink" title="单机模式"></a>单机模式</h3><p>单机模式一般适合开发测试环境，节约机器资源并且不需要考虑稳定性。</p>
 <ul>
-<li>Stage定义<br>其中rdd和parents分别记录的是切分处的RDD列表和父stage信息。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>[scheduler] <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Stage</span>(<span class="params"></span></span></span><br><span class="line"><span class="class"><span class="params">    val id: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    val rdd: <span class="type">RDD</span>[_],</span></span></span><br><span class="line"><span class="class"><span class="params">    val numTasks: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    val parents: <span class="type">List</span>[<span class="type">Stage</span>],</span></span></span><br><span class="line"><span class="class"><span class="params">    val firstJobId: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    val callSite: <span class="type">CallSite</span></span>)</span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Logging</span> </span>&#123;......&#125;</span><br></pre></td></tr></table></figure></li>
-<li>Stage两个子类<br>子类分别增加了一个重要的属性。<table>
-<thead>
-<tr>
-<th>stage</th>
-<th align="left">差异属性</th>
-<th align="left">作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>ShuffleMapStage</code></td>
-<td align="left"><code>shuffleDep: ShuffleDependency[_, _, _]</code></td>
-<td align="left">保存依赖信息</td>
-</tr>
-<tr>
-<td><code>ResultStage</code></td>
-<td align="left"><code>func: (TaskContext, Iterator[_]) =&gt; _</code></td>
-<td align="left">保存action对应的处理函数</td>
-</tr>
-</tbody></table>
-</li>
-<li>处理事件<br><code>DAGScheduler</code>的<code>handleJobSubmitted</code>方法处理<code>JobSubmitted</code>事件，源码及解释如下：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>[scheduler] <span class="keyword">val</span> activeJobs = <span class="keyword">new</span> <span class="type">HashSet</span>[<span class="type">ActiveJob</span>]</span><br><span class="line"><span class="keyword">private</span>[scheduler] <span class="function"><span class="keyword">def</span> <span class="title">handleJobSubmitted</span></span>(jobId: <span class="type">Int</span>,</span><br><span class="line">     finalRDD: <span class="type">RDD</span>[_],</span><br><span class="line">     func: (<span class="type">TaskContext</span>, <span class="type">Iterator</span>[_]) =&gt; _,</span><br><span class="line">     partitions: <span class="type">Array</span>[<span class="type">Int</span>],</span><br><span class="line">     callSite: <span class="type">CallSite</span>,</span><br><span class="line">     listener: <span class="type">JobListener</span>,</span><br><span class="line">     properties: <span class="type">Properties</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">   <span class="keyword">var</span> finalStage: <span class="type">ResultStage</span> = <span class="literal">null</span></span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">     <span class="comment">// New stage creation may throw an exception if, for example, jobs are run on a HadoopRDD whose underlying HDFS files have been deleted.</span></span><br><span class="line">  <span class="comment">//划分Stage,返回ResultStage，Stage使用parents属性保存父Stage</span></span><br><span class="line">     finalStage = createResultStage(finalRDD, func, partitions, jobId, callSite)</span><br><span class="line">   &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">    ......</span><br><span class="line">   &#125;</span><br><span class="line"><span class="comment">//创建ActiveJob，并添加到对应集合管理</span></span><br><span class="line">   <span class="keyword">val</span> job = <span class="keyword">new</span> <span class="type">ActiveJob</span>(jobId, finalStage, callSite, listener, properties)</span><br><span class="line">   clearCacheLocs()</span><br><span class="line">   <span class="keyword">val</span> jobSubmissionTime = clock.getTimeMillis()</span><br><span class="line">   jobIdToActiveJob(jobId) = job</span><br><span class="line">   activeJobs += job</span><br><span class="line">   finalStage.setActiveJob(job)</span><br><span class="line"></span><br><span class="line">   <span class="keyword">val</span> stageIds = jobIdToStageIds(jobId).toArray</span><br><span class="line">   <span class="keyword">val</span> stageInfos = stageIds.flatMap(id =&gt; stageIdToStage.get(id).map(_.latestInfo))</span><br><span class="line">   listenerBus.post(</span><br><span class="line">     <span class="type">SparkListenerJobStart</span>(job.jobId, jobSubmissionTime, stageInfos, properties))</span><br><span class="line"> <span class="comment">//提交Stage</span></span><br><span class="line">   submitStage(finalStage)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
-<li>划分Stage<br><code>DAGScheduler</code>的 <code>createResultStage</code>方法负责划分<code>DAG</code>生成<code>Stage</code>，<code>createResultStage</code>方法：<ul>
-<li>1 调用 <code>getOrCreateParentStages</code>方法创建父<code>Stage</code>;</li>
-<li>2 创建 <code>ResultStage</code>;<br>createResultStage：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Create a ResultStage associated with the provided jobId.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">createResultStage</span></span>(</span><br><span class="line">    rdd: <span class="type">RDD</span>[_],</span><br><span class="line">    func: (<span class="type">TaskContext</span>, <span class="type">Iterator</span>[_]) =&gt; _,</span><br><span class="line">    partitions: <span class="type">Array</span>[<span class="type">Int</span>],</span><br><span class="line">    jobId: <span class="type">Int</span>,</span><br><span class="line">    callSite: <span class="type">CallSite</span>): <span class="type">ResultStage</span> = &#123;</span><br><span class="line">  checkBarrierStageWithDynamicAllocation(rdd)</span><br><span class="line">  checkBarrierStageWithNumSlots(rdd)</span><br><span class="line">  checkBarrierStageWithRDDChainPattern(rdd, partitions.toSet.size)</span><br><span class="line">  <span class="comment">//创建父Stage</span></span><br><span class="line">  <span class="keyword">val</span> parents = getOrCreateParentStages(rdd, jobId)</span><br><span class="line">  <span class="keyword">val</span> id = nextStageId.getAndIncrement()</span><br><span class="line">  <span class="comment">//创建ResulteStage</span></span><br><span class="line">  <span class="keyword">val</span> stage = <span class="keyword">new</span> <span class="type">ResultStage</span>(id, rdd, func, partitions, parents, jobId, callSite)</span><br><span class="line">  stageIdToStage(id) = stage</span><br><span class="line">  updateJobIdStageIdMaps(jobId, stage)</span><br><span class="line">  stage</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<code>getOrCreateParentStages</code>方法很简单：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Get or create the list of parent stages for a given RDD.  The new Stages will be created with</span></span><br><span class="line"><span class="comment"> * the provided firstJobId.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">getOrCreateParentStages</span></span>(rdd: <span class="type">RDD</span>[_], firstJobId: <span class="type">Int</span>): <span class="type">List</span>[<span class="type">Stage</span>] = &#123;</span><br><span class="line">  getShuffleDependencies(rdd).map &#123; shuffleDep =&gt;</span><br><span class="line">    getOrCreateShuffleMapStage(shuffleDep, firstJobId)</span><br><span class="line">  &#125;.toList</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-首先根据方法<code>getShuffleDependencies</code>获取所有的<code>ShuffleDependency</code>:<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns shuffle dependencies that are immediate parents of the given RDD.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * This function will not return more distant ancestors.  For example, if C has a shuffle</span></span><br><span class="line"><span class="comment"> * dependency on B which has a shuffle dependency on A:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * A &lt;-- B &lt;-- C</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * calling this function with rdd C will only return the B &lt;-- C dependency.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * This function is scheduler-visible for the purpose of unit testing.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span>[scheduler] <span class="function"><span class="keyword">def</span> <span class="title">getShuffleDependencies</span></span>(</span><br><span class="line">    rdd: <span class="type">RDD</span>[_]): <span class="type">HashSet</span>[<span class="type">ShuffleDependency</span>[_, _, _]] = &#123;</span><br><span class="line">  <span class="comment">//记录所有ShuffleDependency</span></span><br><span class="line">  <span class="keyword">val</span> parents = <span class="keyword">new</span> <span class="type">HashSet</span>[<span class="type">ShuffleDependency</span>[_, _, _]]</span><br><span class="line">  <span class="comment">//记录所有已经处理的RDD</span></span><br><span class="line">  <span class="keyword">val</span> visited = <span class="keyword">new</span> <span class="type">HashSet</span>[<span class="type">RDD</span>[_]]</span><br><span class="line">  <span class="comment">//记录所有待处理的RDD</span></span><br><span class="line">  <span class="keyword">val</span> waitingForVisit = <span class="keyword">new</span> <span class="type">ListBuffer</span>[<span class="type">RDD</span>[_]]</span><br><span class="line">  <span class="comment">//把当前的ResultRdd,也就是最后一个RDD，放到watingForVistit中</span></span><br><span class="line">  waitingForVisit += rdd</span><br><span class="line">  <span class="keyword">while</span> (waitingForVisit.nonEmpty) &#123;</span><br><span class="line">    <span class="comment">//从waitingForVisit取出一个RDD去处理</span></span><br><span class="line">    <span class="keyword">val</span> toVisit = waitingForVisit.remove(<span class="number">0</span>)</span><br><span class="line">    <span class="comment">//已经处理的RDD列表中，包含要处理的这个RDD，保证下面的流程都是针对要处理的RDD</span></span><br><span class="line">    <span class="keyword">if</span> (!visited(toVisit)) &#123;</span><br><span class="line">      visited += toVisit</span><br><span class="line">      <span class="comment">//RDD的dependencies方法保存了所有RDD的依赖</span></span><br><span class="line">      toVisit.dependencies.foreach &#123;</span><br><span class="line">      <span class="comment">//如果是宽依赖，则添加到parents中</span></span><br><span class="line">      <span class="keyword">case</span> shuffleDep: <span class="type">ShuffleDependency</span>[_, _, _] =&gt;</span><br><span class="line">          parents += shuffleDep</span><br><span class="line">  <span class="comment">//如果是窄依赖，则把这个依赖的RDD添加到waitingForVisit，一直往上找，直到找到下一个宽依赖</span></span><br><span class="line">        <span class="keyword">case</span> dependency =&gt;</span><br><span class="line">          waitingForVisit.prepend(dependency.rdd)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  parents</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<code>getShuffleDependencies</code>里主要逻辑为：通过<code>action</code>操作后的<code>RDD</code>，往上遍历所有<code>RDD</code>，寻找所有的<code>ShuffleDependency</code>列表，并返回然后根据每个<code>Shuffle</code>划分<code>Stage</code>，看下<code>getOrCreateShuffleMapStage</code>代码：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Mapping from shuffle dependency ID to the ShuffleMapStage that will generate the data for</span></span><br><span class="line"><span class="comment"> * that dependency. Only includes stages that are part of currently running job (when the job(s)</span></span><br><span class="line"><span class="comment"> * that require the shuffle stage complete, the mapping will be removed, and the only record of</span></span><br><span class="line"><span class="comment"> * the shuffle data will be in the MapOutputTracker).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span>[scheduler] <span class="keyword">val</span> shuffleIdToMapStage = <span class="keyword">new</span> <span class="type">HashMap</span>[<span class="type">Int</span>, <span class="type">ShuffleMapStage</span>]</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Gets a shuffle map stage if one exists in shuffleIdToMapStage. Otherwise, if the</span></span><br><span class="line"><span class="comment"> * shuffle map stage doesn't already exist, this method will create the shuffle map stage in</span></span><br><span class="line"><span class="comment"> * addition to any missing ancestor shuffle map stages.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">getOrCreateShuffleMapStage</span></span>(</span><br><span class="line">    shuffleDep: <span class="type">ShuffleDependency</span>[_, _, _],</span><br><span class="line">    firstJobId: <span class="type">Int</span>): <span class="type">ShuffleMapStage</span> = &#123;</span><br><span class="line">  shuffleIdToMapStage.get(shuffleDep.shuffleId) <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="comment">//如果配配直接返回</span></span><br><span class="line">    <span class="keyword">case</span> <span class="type">Some</span>(stage) =&gt;</span><br><span class="line">      stage</span><br><span class="line">    <span class="comment">//否则重新调用createShuffleMapStage方法创建stage</span></span><br><span class="line">    <span class="keyword">case</span> <span class="type">None</span> =&gt;</span><br><span class="line">      <span class="comment">// Create stages for all missing ancestor shuffle dependencies.</span></span><br><span class="line">      getMissingAncestorShuffleDependencies(shuffleDep.rdd).foreach &#123; dep =&gt;</span><br><span class="line">        <span class="comment">// Even though getMissingAncestorShuffleDependencies only returns shuffle dependencies</span></span><br><span class="line">        <span class="comment">// that were not already in shuffleIdToMapStage, it's possible that by the time we</span></span><br><span class="line">        <span class="comment">// get to a particular dependency in the foreach loop, it's been added to</span></span><br><span class="line">        <span class="comment">// shuffleIdToMapStage by the stage creation process for an earlier dependency. See</span></span><br><span class="line">        <span class="comment">// SPARK-13902 for more information.</span></span><br><span class="line">        <span class="keyword">if</span> (!shuffleIdToMapStage.contains(dep.shuffleId)) &#123;</span><br><span class="line">          createShuffleMapStage(dep, firstJobId)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// Finally, create a stage for the given shuffle dependency.</span></span><br><span class="line">      createShuffleMapStage(shuffleDep, firstJobId)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-而<code>getMissingAncestorShuffleDependencies</code> 方法查找在<code>shuffleToMapStage</code>中未注的shuffle dependencies,并返回父shuffleDep用来创建stage<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Find ancestor shuffle dependencies that are not registered in shuffleToMapStage yet */</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">getMissingAncestorShuffleDependencies</span></span>(</span><br><span class="line">    rdd: <span class="type">RDD</span>[_]): <span class="type">ListBuffer</span>[<span class="type">ShuffleDependency</span>[_, _, _]] = &#123;</span><br><span class="line">  <span class="keyword">val</span> ancestors = <span class="keyword">new</span> <span class="type">ListBuffer</span>[<span class="type">ShuffleDependency</span>[_, _, _]]</span><br><span class="line">  <span class="keyword">val</span> visited = <span class="keyword">new</span> <span class="type">HashSet</span>[<span class="type">RDD</span>[_]]</span><br><span class="line">  <span class="comment">// We are manually maintaining a stack here to prevent StackOverflowError</span></span><br><span class="line">  <span class="comment">// caused by recursively visiting</span></span><br><span class="line">  <span class="keyword">val</span> waitingForVisit = <span class="keyword">new</span> <span class="type">ListBuffer</span>[<span class="type">RDD</span>[_]]</span><br><span class="line">  waitingForVisit += rdd</span><br><span class="line">  <span class="keyword">while</span> (waitingForVisit.nonEmpty) &#123;</span><br><span class="line">    <span class="keyword">val</span> toVisit = waitingForVisit.remove(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">if</span> (!visited(toVisit)) &#123;</span><br><span class="line">      visited += toVisit</span><br><span class="line">      getShuffleDependencies(toVisit).foreach &#123; shuffleDep =&gt;</span><br><span class="line">        <span class="keyword">if</span> (!shuffleIdToMapStage.contains(shuffleDep.shuffleId)) &#123;</span><br><span class="line">          ancestors.prepend(shuffleDep)</span><br><span class="line">          waitingForVisit.prepend(shuffleDep.rdd)</span><br><span class="line">        &#125; <span class="comment">// Otherwise, the dependency and its ancestors have already been registered.</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ancestors</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-至此，<code>Stage</code>划分基本完毕。</li>
+<li>安装Java环境(自行搜索jdk安装方法)</li>
+<li>安装zookeeper<br><a href="http://zookeeper.apache.org/releases.html" target="_blank" rel="noopener">点击下载安装包</a></li>
+<li>配置zoo.cfg<br>将下载的tar包解压后配置<code>$ZK_HOME</code>,然后将<code>$ZK_HOME</code>下的<code>zoo_sample.cfg</code>文件重命名为<code>zoo.cfg</code>，并进行以下配置<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tickTime</span>=<span class="number">2000</span>    <span class="comment">##Zookeeper最小时间单元，单位毫秒(ms)，默认值为3000</span></span><br><span class="line"><span class="attr">dataDir</span>=/var/lib/zookeeper    <span class="comment">##Zookeeper服务器存储快照文件的目录，必须配置</span></span><br><span class="line"><span class="attr">dataLogDir</span>=/var/lib/log     <span class="comment">##Zookeeper服务器存储事务日志的目录，默认为dataDir</span></span><br><span class="line"><span class="attr">clientPort</span>=<span class="number">2181</span>    <span class="comment">##服务器对外服务端口，一般设置为2181</span></span><br><span class="line"><span class="attr">initLimit</span>=<span class="number">5</span>    <span class="comment">##Leader服务器等待Follower启动并完成数据同步的时间，默认值10，表示tickTime的10倍</span></span><br><span class="line"><span class="attr">syncLimit</span>=<span class="number">2</span>    <span class="comment">##Leader服务器和Follower之间进行心跳检测的最大延时时间，默认值5，表示tickTime的5倍</span></span><br></pre></td></tr></table></figure></li>
+<li>启动服务<br>使用<code>$ZK_HOME/bin</code>目录下的zkServer.sh脚本启动，如:<code>zkServer.sh start</code>。<h3 id="集群模式"><a href="#集群模式" class="headerlink" title="集群模式"></a>集群模式</h3></li>
 </ul>
-</li>
+<p><strong>ip绑定到主机名称</strong><br>执行命令<code>sudo /etc/hosts</code>修改每台服务器的hosts文件,内容如下：</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10.5.119.0</span> uat14475</span><br><span class="line"><span class="number">10.5.119.100</span> uat14476</span><br><span class="line"><span class="number">10.5.119.15</span> uat14477</span><br></pre></td></tr></table></figure>
+<p>同样要安装好Java运行环境。<br>将下载好的zookeeper包<code>apache-zookeeper-3.5.6.tar.gz</code>上传到服务器/home/qateadmin目录，并执行命令<code>tar -zxvf apache-zookeeper-3.5.6.tar.gz</code>解压到当前目录。<br><strong>配置环境变量</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">ZK_HOME</span>=/home/qateadmin/apache-zookeeper-3.5.6</span><br><span class="line"><span class="attribute">PAT</span>=H$PATH:$HOME/.local/bin:$HOME/bin:$ZK_HOME/bin</span><br><span class="line"><span class="builtin-name">export</span> PATH</span><br></pre></td></tr></table></figure>
+<p><strong>配置zookeeper集群</strong><br>进入$ZK_HOME/conf，执行命令<code>mv zoo.sample.cfg zoo.cfg</code>重命名配置，并编辑<code>zoo.cfg</code>文件修改配置参数如下，并保存。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tickTime</span>=<span class="number">2000</span></span><br><span class="line"><span class="attr">initLimit</span>=<span class="number">10</span></span><br><span class="line"><span class="attr">syncLimit</span>=<span class="number">5</span></span><br><span class="line"><span class="attr">dataDir</span>=/home/qateadmin/apache-zookeeper-<span class="number">3.5</span>.<span class="number">6</span>/zookeeper-data/data</span><br><span class="line"><span class="attr">dataLogDir</span>=/home/qateadmin/apache-zookeeper-<span class="number">3.5</span>.<span class="number">6</span>/zookeeper-data/log</span><br><span class="line"><span class="attr">clientPort</span>=<span class="number">2181</span></span><br><span class="line"><span class="attr">server.1</span>=uat14475:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line"><span class="attr">server.2</span>=uat14476:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line"><span class="attr">server.3</span>=uat14477:<span class="number">2888</span>:<span class="number">3888</span></span><br></pre></td></tr></table></figure>
+<p>在dataDir指定的目录下创建myid文件,文件内容为server后面的ID,即1。<br>然后通过scp命令<code>scp -r apache-zookeeper-3.5.6 uat14476:/home/qateadmin/</code>将第一台服务器配置好的zookeeper拷贝到其他两台服务器上，并且将uat14476中dataDir指定目录下的myid改为2,将uat14477中dataDir指定目录下的myid改为3。<br><strong>启动服务</strong></p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zkServer.<span class="keyword">sh</span> start  <span class="comment">//启动服务</span></span><br><span class="line">zkServer.<span class="keyword">sh</span> status <span class="comment">//查看服务状态</span></span><br><span class="line">zkServer.<span class="keyword">sh</span> stop <span class="comment">//停止服务</span></span><br></pre></td></tr></table></figure>
+<h3 id="伪分布模式"><a href="#伪分布模式" class="headerlink" title="伪分布模式"></a>伪分布模式</h3><p>是一种特殊的集群模式，即集群的所有服务器都部署在一台机器上。当你有一台较好的服务器，zookeeper允许在一台服务器上通过启动不同的端口来启动多个zookeeper实例，以此来以集群对外提供服务。<br>这种模式，只需把zoo.cfg的server.x 对应的端口改成不同的。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server<span class="number">.1</span>=uat14475:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.2</span>=uat14476:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.3</span>=uat14477:<span class="number">2888</span>:<span class="number">3888</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="关于zookeeper高可用的思考"><a href="#关于zookeeper高可用的思考" class="headerlink" title="关于zookeeper高可用的思考"></a>关于zookeeper高可用的思考</h1><h3 id="为什么要设计奇数台服务器"><a href="#为什么要设计奇数台服务器" class="headerlink" title="为什么要设计奇数台服务器"></a>为什么要设计奇数台服务器</h3><p>很多人对zookeeper选举leader认识有偏差，认为“为了使得 ZooKeeper 集群能够顺利地选举出 Leader，必须将 ZooKeeper 集群的服务器数部署成奇数”。这么说虽然没错，但是实际的原因是:<strong>存活过半即可用</strong>的特性。<br>即：如果想搭建运行N台服务器挂掉，那么就要部署2*N+1台服务器构成zookeeper集群，也就是说：由6台服务器构成的zookeeper集群和5台服务器构成的zookeeper集群在容灾能力上并没有优势，反而浪费一台服务器，所以基于这个原因，zookeeper集群通常设计成奇数台服务器。</p>
+<h3 id="容灾"><a href="#容灾" class="headerlink" title="容灾"></a>容灾</h3><p>所谓容灾，在 IT 行业通常是指我们的计算机信息系统具有的一种在遭受诸如火灾、地震、断电和其他基础网络设备故障等毁灭性灾难的时候，依然能够对外提供可用服务的能力。<br>ZooKeeper 既然已经解决了单点问题，那为什么还要进行容灾呢？</p>
+<h3 id="单点问题"><a href="#单点问题" class="headerlink" title="单点问题"></a>单点问题</h3><p>单点问题是分布式环境中最常见也是最经典的问题之一，具体地说，在一个分布式系统中，如果某一个组件出现故障就会引起整个系统的可用性大大下降甚至是处于瘫痪状态，那么我们就认为该组件存在单点问题。<br>ZooKeeper基于“过半”设计原则确实已经解决了单点问题，在运行期间，集群中至少有过半的机器保存了最新的数据。因此，只要集群中超过半数的机器还能够正常工作，整个集群就能够对外提供服务。</p>
+<h3 id="单机房问题"><a href="#单机房问题" class="headerlink" title="单机房问题"></a>单机房问题</h3><p>如果你的zookeeper集群都在一个机房中，如果一个机房整个出问题，你依赖zookeeper运行的服务器还是会因此故障。</p>
+<h3 id="双机房问题"><a href="#双机房问题" class="headerlink" title="双机房问题"></a>双机房问题</h3><p>因资源问题，很多公司在做容灾是都是双机房，但是zookeeper在双机房条件下并没有实现好的容灾效果，原因是：无论哪个机房发生异常，都有可能使zookeeper集群中可以使用的机器无法超过半数。比如：7=4+3的部署方式，如果多于半数的那个机房挂了，zookeeper就无法选举leader。<br>实际很多公司的做法是：租用一个可靠机房和一个廉价机房，在可靠的机房尽量部署更多的zookeeper。</p>
+<h3 id="三机房部署"><a href="#三机房部署" class="headerlink" title="三机房部署"></a>三机房部署</h3><p>三机房部署要遵循<strong>存活过半即可用</strong>的原则。假设服务器总数是N，那么三个机房部署zookeeper的服务器N1、N2和N3使集群具有容灾能力，三者的取值算法如下：</p>
+<ul>
+<li>计算N1：<code>N1=(N-1)/2</code></li>
+<li>计算N2：<code>N2取值范围1~(N-N1)/2</code> 整数相除向下取整</li>
+<li>计算N3：<code>N3=N-N1-N2</code> 同时确定N2，即必须满足N3&lt;N1+N2。<br>如果部署7台服务器，可以有两种部署方案：(3,1,3)和(3,2,2)。<h1 id="水平扩容"><a href="#水平扩容" class="headerlink" title="水平扩容"></a>水平扩容</h1>简单地讲，水平扩容就是向集群中添加更多的机器，以提高系统的服务质量。<br>ZooKeeper在水平扩容扩容方面做得并不十分完美，需要进行整个集群的重启。通常有两种重启方式，一种是集群整体重启，另外一种是逐台进行服务器的重启。</li>
+<li>整体重启：就是先将整个集群停止，然后更新zookeeper配置，然后重启。重启过程中，所有该集群客户端都无法连接上集群，等到集群再次启动，这些客户端就能够自动连接上——注意，整体启动前建立起的客户端会话，并不会因为此次整体重启而失效。也就是说，在整体重启期间花费的时间将不计入会话超时时间的计算中。</li>
+<li>逐台重启：在这种方式中，每次仅仅重启集群中的一台机器，然后逐台对整个集群中的机器进行重启操作。这种方式可以在重启期间依然保证集群对外的正常服务。<strong>（推荐）</strong><br>参考文章：《从Paxos到Zookeeper  分布式一致性原理与实践》</li>
 </ul>
-<hr>
-<p><strong>声明:</strong><br>作者:上海IT技术圈<br>本文版权归作者和上海IT技术圈共有，任何人或团体、机构全部转载或者部分转载、摘录，请在文章明显位置注明作者和原文链接。</p>
 
       
     </div>
@@ -556,7 +558,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/spark/" rel="tag"><i class="fa fa-tag"></i> spark</a>
+            <a href="/tags/zookeeper/" rel="tag"><i class="fa fa-tag"></i> zookeeper</a>
           
         </div>
       
@@ -569,8 +571,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/spark/spark-rdd/" rel="next" title="spark rdd介绍">
-                <i class="fa fa-chevron-left"></i> spark rdd介绍
+              <a href="/spark/spark-rdd-programming/" rel="next" title="spark rdd编程实战">
+                <i class="fa fa-chevron-left"></i> spark rdd编程实战
               </a>
             
           </div>
@@ -578,10 +580,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/scala/scala-note/" rel="prev" title="scala 快速入门1">
-                scala 快速入门1 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -758,7 +756,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Stage是什么"><span class="nav-number">1.</span> <span class="nav-text">Stage是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stage划分方法"><span class="nav-number">2.</span> <span class="nav-text">Stage划分方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码分析Stage划分"><span class="nav-number">3.</span> <span class="nav-text">源码分析Stage划分</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#三种运行模式"><span class="nav-number">1.</span> <span class="nav-text">三种运行模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单机模式"><span class="nav-number">1.0.1.</span> <span class="nav-text">单机模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群模式"><span class="nav-number">1.0.2.</span> <span class="nav-text">集群模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#伪分布模式"><span class="nav-number">1.0.3.</span> <span class="nav-text">伪分布模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于zookeeper高可用的思考"><span class="nav-number">2.</span> <span class="nav-text">关于zookeeper高可用的思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要设计奇数台服务器"><span class="nav-number">2.0.1.</span> <span class="nav-text">为什么要设计奇数台服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容灾"><span class="nav-number">2.0.2.</span> <span class="nav-text">容灾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单点问题"><span class="nav-number">2.0.3.</span> <span class="nav-text">单点问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单机房问题"><span class="nav-number">2.0.4.</span> <span class="nav-text">单机房问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双机房问题"><span class="nav-number">2.0.5.</span> <span class="nav-text">双机房问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三机房部署"><span class="nav-number">2.0.6.</span> <span class="nav-text">三机房部署</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#水平扩容"><span class="nav-number">3.</span> <span class="nav-text">水平扩容</span></a></li></ol></div>
             
 
           </div>
