@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="上海IT技术圈">
 <meta property="og:description" content="ZooKeeper是Apache的一个顶级项目，为分布式应用提供高效、高可用的分布式协调服务，提供了诸如数据发布&#x2F;订阅、负载均衡、命名服务、分布式协调&#x2F;通知和分布式锁等分布式基础服务。">
 <meta property="article:published_time" content="2019-12-16T11:33:39.000Z">
-<meta property="article:modified_time" content="2019-12-17T23:44:25.613Z">
+<meta property="article:modified_time" content="2019-12-18T14:42:03.332Z">
 <meta property="article:author" content="KN">
 <meta property="article:tag" content="zookeeper">
 <meta name="twitter:card" content="summary">
@@ -434,7 +434,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.8k
+                  2.1k
                 </span>
               
 
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6
+                  7
                 </span>
               
             </div>
@@ -476,42 +476,44 @@
 
       
         <p><a href="http://zookeeper.apache.org/" target="_blank" rel="noopener">点击进入官网</a></p>
-<h1 id="三种运行模式"><a href="#三种运行模式" class="headerlink" title="三种运行模式"></a>三种运行模式</h1><p>单机模式、伪集群模式和集群模式。</p>
-<h3 id="单机模式"><a href="#单机模式" class="headerlink" title="单机模式"></a>单机模式</h3><p>单机模式一般适合开发测试环境，节约机器资源并且不需要考虑稳定性。</p>
-<ul>
-<li>安装Java环境(自行搜索jdk安装方法)</li>
-<li>安装zookeeper<br><a href="http://zookeeper.apache.org/releases.html" target="_blank" rel="noopener">点击下载安装包</a></li>
-<li>配置zoo.cfg<br>将下载的tar包解压后配置<code>$ZK_HOME</code>,然后将<code>$ZK_HOME</code>下的<code>zoo_sample.cfg</code>文件重命名为<code>zoo.cfg</code>，并进行以下配置<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tickTime</span>=<span class="number">2000</span>    <span class="comment">##Zookeeper最小时间单元，单位毫秒(ms)，默认值为3000</span></span><br><span class="line"><span class="attr">dataDir</span>=/var/lib/zookeeper    <span class="comment">##Zookeeper服务器存储快照文件的目录，必须配置</span></span><br><span class="line"><span class="attr">dataLogDir</span>=/var/lib/log     <span class="comment">##Zookeeper服务器存储事务日志的目录，默认为dataDir</span></span><br><span class="line"><span class="attr">clientPort</span>=<span class="number">2181</span>    <span class="comment">##服务器对外服务端口，一般设置为2181</span></span><br><span class="line"><span class="attr">initLimit</span>=<span class="number">5</span>    <span class="comment">##Leader服务器等待Follower启动并完成数据同步的时间，默认值10，表示tickTime的10倍</span></span><br><span class="line"><span class="attr">syncLimit</span>=<span class="number">2</span>    <span class="comment">##Leader服务器和Follower之间进行心跳检测的最大延时时间，默认值5，表示tickTime的5倍</span></span><br></pre></td></tr></table></figure></li>
-<li>启动服务<br>使用<code>$ZK_HOME/bin</code>目录下的zkServer.sh脚本启动，如:<code>zkServer.sh start</code>。</li>
-</ul>
-<h3 id="集群模式"><a href="#集群模式" class="headerlink" title="集群模式"></a>集群模式</h3><p><strong>ip绑定到主机名称</strong><br>执行命令<code>sudo /etc/hosts</code>修改每台服务器的hosts文件,内容如下：</p>
+<h2 id="三种运行模式"><a href="#三种运行模式" class="headerlink" title="三种运行模式"></a>三种运行模式</h2><p>单机模式、伪集群模式和集群模式。</p>
+<h3 id="1-单机模式"><a href="#1-单机模式" class="headerlink" title="1.单机模式"></a>1.单机模式</h3><p>单机模式一般适合开发测试环境，节约机器资源并且不需要考虑稳定性。<br>安装Java环境(自行搜索jdk安装方法)。<br>安装zookeeper：<a href="http://zookeeper.apache.org/releases.html" target="_blank" rel="noopener">点击下载安装包</a> 下载<code>apache-zookeeper-3.5.6-bin.tar.gz</code>文件。<br>配置zoo.cfg：将下载的tar包解压后配置<code>$ZK_HOME</code>,然后将<code>$ZK_HOME</code>下的<code>zoo_sample.cfg</code>文件重命名为<code>zoo.cfg</code>，并进行以下配置:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tickTime</span>=<span class="number">2000</span>    <span class="comment">##Zookeeper最小时间单元，单位毫秒(ms)，默认值为3000</span></span><br><span class="line"><span class="attr">dataDir</span>=/home/qateadmin/zookeeper/data    <span class="comment">##Zookeeper服务器存储快照文件的目录，必须配置</span></span><br><span class="line"><span class="attr">dataLogDir</span>=/var/lib/log     <span class="comment">##Zookeeper服务器存储事务日志的目录，默认为dataDir</span></span><br><span class="line"><span class="attr">clientPort</span>=<span class="number">2181</span>    <span class="comment">##服务器对外服务端口，一般设置为2181</span></span><br><span class="line"><span class="attr">initLimit</span>=<span class="number">5</span>    <span class="comment">##Leader服务器等待Follower启动并完成数据同步的时间，默认值10，表示tickTime的10倍</span></span><br><span class="line"><span class="attr">syncLimit</span>=<span class="number">2</span>    <span class="comment">##Leader服务器和Follower之间进行心跳检测的最大延时时间，默认值5，表示tickTime的5倍</span></span><br></pre></td></tr></table></figure>
+<p>启动服务：使用<code>$ZK_HOME/bin</code>目录下的zkServer.sh脚本启动，如:<code>zkServer.sh start</code>。</p>
+<h3 id="2-集群模式"><a href="#2-集群模式" class="headerlink" title="2.集群模式"></a>2.集群模式</h3><p>服务器ip和主机名绑定如下：</p>
 <figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10.5.119.0</span> uat14475</span><br><span class="line"><span class="number">10.5.119.100</span> uat14476</span><br><span class="line"><span class="number">10.5.119.15</span> uat14477</span><br></pre></td></tr></table></figure>
-<p>同样要安装好Java运行环境。<br>将下载好的zookeeper包<code>apache-zookeeper-3.5.6.tar.gz</code>上传到服务器/home/qateadmin目录，并执行命令<code>tar -zxvf apache-zookeeper-3.5.6.tar.gz</code>解压到当前目录。<br><strong>配置环境变量</strong></p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">ZK_HOME</span>=/home/qateadmin/apache-zookeeper-3.5.6</span><br><span class="line"><span class="attribute">PAT</span>=H$PATH:$HOME/.local/bin:$HOME/bin:$ZK_HOME/bin</span><br><span class="line"><span class="builtin-name">export</span> PATH</span><br></pre></td></tr></table></figure>
-<p><strong>配置zookeeper集群</strong><br>进入$ZK_HOME/conf，执行命令<code>mv zoo.sample.cfg zoo.cfg</code>重命名配置，并编辑<code>zoo.cfg</code>文件修改配置参数如下，并保存。</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tickTime</span>=<span class="number">2000</span></span><br><span class="line"><span class="attr">initLimit</span>=<span class="number">10</span></span><br><span class="line"><span class="attr">syncLimit</span>=<span class="number">5</span></span><br><span class="line"><span class="attr">dataDir</span>=/home/qateadmin/apache-zookeeper-<span class="number">3.5</span>.<span class="number">6</span>/zookeeper-data/data</span><br><span class="line"><span class="attr">dataLogDir</span>=/home/qateadmin/apache-zookeeper-<span class="number">3.5</span>.<span class="number">6</span>/zookeeper-data/log</span><br><span class="line"><span class="attr">clientPort</span>=<span class="number">2181</span></span><br><span class="line"><span class="attr">server.1</span>=uat14475:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line"><span class="attr">server.2</span>=uat14476:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line"><span class="attr">server.3</span>=uat14477:<span class="number">2888</span>:<span class="number">3888</span></span><br></pre></td></tr></table></figure>
-<p>在dataDir指定的目录下创建myid文件,文件内容为server后面的ID,即1。<br>然后通过scp命令<code>scp -r apache-zookeeper-3.5.6 uat14476:/home/qateadmin/</code>将第一台服务器配置好的zookeeper拷贝到其他两台服务器上，并且将uat14476中dataDir指定目录下的myid改为2,将uat14477中dataDir指定目录下的myid改为3。<br><strong>启动服务</strong></p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zkServer.<span class="keyword">sh</span> start  <span class="comment">//启动服务</span></span><br><span class="line">zkServer.<span class="keyword">sh</span> status <span class="comment">//查看服务状态</span></span><br><span class="line">zkServer.<span class="keyword">sh</span> stop <span class="comment">//停止服务</span></span><br></pre></td></tr></table></figure>
-<h3 id="伪分布模式"><a href="#伪分布模式" class="headerlink" title="伪分布模式"></a>伪分布模式</h3><p>是一种特殊的集群模式，即集群的所有服务器都部署在一台机器上。当你有一台较好的服务器，zookeeper允许在一台服务器上通过启动不同的端口来启动多个zookeeper实例，以此来以集群对外提供服务。<br>这种模式，只需把zoo.cfg的server.x 对应的端口改成不同的。</p>
-<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server<span class="number">.1</span>=uat14475:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.2</span>=uat14476:<span class="number">2889</span>:<span class="number">3889</span></span><br><span class="line">server<span class="number">.3</span>=uat14477:<span class="number">2890</span>:<span class="number">3890</span></span><br></pre></td></tr></table></figure>
+<p>同样要安装好Java运行环境。<br>将下载好的zookeeper包<code>apache-zookeeper-3.5.6-bin.tar.gz</code>上传到服务器/home/qateadmin目录，并执行命令<code>tar -zxvf apache-zookeeper-3.5.6-bin.tar.gz</code>解压到当前目录,然后重命名为zookeeper。<br>配置环境变量：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">ZK_HOME</span>=/home/qateadmin/zookeeper</span><br><span class="line"><span class="attribute">PAT</span>=H$PATH:$HOME/.local/bin:$HOME/bin:$ZK_HOME/bin</span><br><span class="line"><span class="builtin-name">export</span> PATH</span><br></pre></td></tr></table></figure>
+<p>配置zookeeper集群：进入$ZK_HOME/conf，执行命令<code>mv zoo.sample.cfg zoo.cfg</code>重命名配置，并编辑<code>zoo.cfg</code>文件修改配置参数如下，并保存。</p>
+<blockquote>
+<blockquote>
+<p>注意：zookeeper server.x后面尽量不要配置服务器名称，否则HA查看master的webui时还需要在本地电脑上配置zookeeper集群ip绑定列表。</p>
+</blockquote>
+</blockquote>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tickTime=<span class="number">2000</span></span><br><span class="line">initLimit=<span class="number">10</span></span><br><span class="line">syncLimit=<span class="number">5</span></span><br><span class="line">dataDir=/home/qateadmin/zookeeper/data</span><br><span class="line">clientPort=<span class="number">2181</span></span><br><span class="line">server<span class="number">.1</span>=<span class="number">10.5</span><span class="number">.119</span><span class="number">.0</span>:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.2</span>=<span class="number">10.5</span><span class="number">.119</span><span class="number">.100</span>:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.3</span>=<span class="number">10.5</span><span class="number">.119</span><span class="number">.15</span>:<span class="number">2888</span>:<span class="number">3888</span></span><br></pre></td></tr></table></figure>
+<p>在dataDir指定的目录下创建myid文件,文件内容为server后面的ID,即1。<br>然后通过scp命令<code>scp -r zookeeper uat14476:/home/qateadmin/</code>将第一台服务器配置好的zookeeper拷贝到其他两台服务器上，并且将uat14476中dataDir指定目录下的myid改为2,将uat14477中dataDir指定目录下的myid改为3。<br>启动服务：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">zkServer.sh <span class="keyword">start</span>  //启动服务</span><br><span class="line">zkServer.sh <span class="keyword">status</span> //查看服务状态</span><br><span class="line">zkServer.sh <span class="keyword">stop</span> //停止服务</span><br><span class="line">//下面是启动的时的信息</span><br><span class="line">[qateadmin@UAT14475 <span class="keyword">bin</span>]$ ./zkServer.sh <span class="keyword">start</span></span><br><span class="line">/usr/<span class="keyword">bin</span>/<span class="keyword">java</span></span><br><span class="line">ZooKeeper JMX enabled <span class="keyword">by</span> <span class="keyword">default</span></span><br><span class="line"><span class="keyword">Using</span> config: /home/qateadmin/zookeeper/<span class="keyword">bin</span>/../conf/zoo.cfg</span><br><span class="line"><span class="keyword">Starting</span> zookeeper ... STARTED</span><br><span class="line">[qateadmin@UAT14475 <span class="keyword">bin</span>]$ ./zkServer.sh <span class="keyword">status</span></span><br><span class="line">/usr/<span class="keyword">bin</span>/<span class="keyword">java</span></span><br><span class="line">ZooKeeper JMX enabled <span class="keyword">by</span> <span class="keyword">default</span></span><br><span class="line"><span class="keyword">Using</span> config: /home/qateadmin/zookeeper/<span class="keyword">bin</span>/../conf/zoo.cfg</span><br><span class="line"><span class="keyword">Client</span> port <span class="keyword">found</span>: <span class="number">2181.</span> <span class="keyword">Client</span> address: localhost.</span><br><span class="line"><span class="keyword">Error</span> contacting service. It <span class="keyword">is</span> probably <span class="keyword">not</span> running.</span><br><span class="line">//启动集群中的第一台后查看状态好像没起来，其实通过下面的jps命令可以看到进程<span class="number">17707</span> QuorumPeerMain已经启动了.</span><br><span class="line">//只所以提示<span class="keyword">not</span> running是因为集群需要选举，所以再启动另外两台后查看就正常了。</span><br><span class="line">[qateadmin@UAT14475 <span class="keyword">bin</span>]$ jps</span><br><span class="line"><span class="number">17989</span> Jps</span><br><span class="line"><span class="number">17707</span> QuorumPeerMain</span><br><span class="line"><span class="number">22398</span> ServerBootstrap</span><br><span class="line">[qateadmin@UAT14475 <span class="keyword">bin</span>]$ ./zkServer.sh <span class="keyword">status</span>  //将另外两台zookeeper启动查看状态</span><br><span class="line">/usr/<span class="keyword">bin</span>/<span class="keyword">java</span></span><br><span class="line">ZooKeeper JMX enabled <span class="keyword">by</span> <span class="keyword">default</span></span><br><span class="line"><span class="keyword">Using</span> config: /home/qateadmin/zookeeper/<span class="keyword">bin</span>/../conf/zoo.cfg</span><br><span class="line"><span class="keyword">Client</span> port <span class="keyword">found</span>: <span class="number">2181.</span> <span class="keyword">Client</span> address: localhost.</span><br><span class="line"><span class="keyword">Mode</span>: follower</span><br></pre></td></tr></table></figure>
+<h3 id="3-伪分布模式"><a href="#3-伪分布模式" class="headerlink" title="3.伪分布模式"></a>3.伪分布模式</h3><p>是一种特殊的集群模式，即集群的所有服务器都部署在一台机器上。当你有一台较好的服务器，zookeeper允许在一台服务器上通过启动不同的端口来启动多个zookeeper实例，以此来以集群对外提供服务。<br>这种模式，只需把zoo.cfg的server.x 对应的端口改成不同的，生产环境不建议伪分布部署。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server<span class="number">.1</span>=<span class="number">10.5</span><span class="number">.119</span><span class="number">.0</span>:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.2</span>=<span class="number">10.5</span><span class="number">.119</span><span class="number">.100</span>:<span class="number">2889</span>:<span class="number">3889</span></span><br><span class="line">server<span class="number">.3</span>=<span class="number">10.5</span><span class="number">.119</span><span class="number">.15</span>:<span class="number">2890</span>:<span class="number">3890</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="关于zookeeper高可用的思考"><a href="#关于zookeeper高可用的思考" class="headerlink" title="关于zookeeper高可用的思考"></a>关于zookeeper高可用的思考</h1><h3 id="为什么要设计奇数台服务器"><a href="#为什么要设计奇数台服务器" class="headerlink" title="为什么要设计奇数台服务器"></a>为什么要设计奇数台服务器</h3><p>很多人对zookeeper选举leader认识有偏差，认为“为了使得 ZooKeeper 集群能够顺利地选举出 Leader，必须将 ZooKeeper 集群的服务器数部署成奇数”。这么说虽然没错，但是实际的原因是:<strong>存活过半即可用</strong>的特性。<br>即：如果想搭建运行N台服务器挂掉，那么就要部署2*N+1台服务器构成zookeeper集群，也就是说：由6台服务器构成的zookeeper集群和5台服务器构成的zookeeper集群在容灾能力上并没有优势，反而浪费一台服务器，所以基于这个原因，zookeeper集群通常设计成奇数台服务器。</p>
-<h3 id="容灾"><a href="#容灾" class="headerlink" title="容灾"></a>容灾</h3><p>所谓容灾，在 IT 行业通常是指我们的计算机信息系统具有的一种在遭受诸如火灾、地震、断电和其他基础网络设备故障等毁灭性灾难的时候，依然能够对外提供可用服务的能力。<br>ZooKeeper 既然已经解决了单点问题，那为什么还要进行容灾呢？</p>
-<h3 id="单点问题"><a href="#单点问题" class="headerlink" title="单点问题"></a>单点问题</h3><p>单点问题是分布式环境中最常见也是最经典的问题之一，具体地说，在一个分布式系统中，如果某一个组件出现故障就会引起整个系统的可用性大大下降甚至是处于瘫痪状态，那么我们就认为该组件存在单点问题。<br>ZooKeeper基于“过半”设计原则确实已经解决了单点问题，在运行期间，集群中至少有过半的机器保存了最新的数据。因此，只要集群中超过半数的机器还能够正常工作，整个集群就能够对外提供服务。</p>
-<h3 id="单机房问题"><a href="#单机房问题" class="headerlink" title="单机房问题"></a>单机房问题</h3><p>如果你的zookeeper集群都在一个机房中，如果一个机房整个出问题，你依赖zookeeper运行的服务器还是会因此故障。</p>
-<h3 id="双机房问题"><a href="#双机房问题" class="headerlink" title="双机房问题"></a>双机房问题</h3><p>因资源问题，很多公司在做容灾是都是双机房，但是zookeeper在双机房条件下并没有实现好的容灾效果，原因是：无论哪个机房发生异常，都有可能使zookeeper集群中可以使用的机器无法超过半数。比如：7=4+3的部署方式，如果多于半数的那个机房挂了，zookeeper就无法选举leader。<br>实际很多公司的做法是：租用一个可靠机房和一个廉价机房，在可靠的机房尽量部署更多的zookeeper。</p>
-<h3 id="三机房部署"><a href="#三机房部署" class="headerlink" title="三机房部署"></a>三机房部署</h3><p>三机房部署要遵循<strong>存活过半即可用</strong>的原则。假设服务器总数是N，那么三个机房部署zookeeper的服务器N1、N2和N3使集群具有容灾能力，三者的取值算法如下：</p>
+<h2 id="集群高可用"><a href="#集群高可用" class="headerlink" title="集群高可用"></a>集群高可用</h2><h3 id="1-为什么要设计奇数台服务器"><a href="#1-为什么要设计奇数台服务器" class="headerlink" title="1.为什么要设计奇数台服务器"></a>1.为什么要设计奇数台服务器</h3><p>很多人对zookeeper选举leader认识有偏差，认为“为了使得 ZooKeeper 集群能够顺利地选举出 Leader，必须将 ZooKeeper 集群的服务器数部署成奇数”。这么说虽然没错，但是实际的原因是:<strong>存活过半即可用</strong>的特性。<br>即：如果想搭建运行N台服务器挂掉，那么就要部署2*N+1台服务器构成zookeeper集群，也就是说：由6台服务器构成的zookeeper集群和5台服务器构成的zookeeper集群在容灾能力上并没有优势，反而浪费一台服务器，所以基于这个原因，zookeeper集群通常设计成奇数台服务器。</p>
+<h3 id="2-什么是容灾"><a href="#2-什么是容灾" class="headerlink" title="2.什么是容灾"></a>2.什么是容灾</h3><p>所谓容灾，在 IT 行业通常是指我们的计算机信息系统具有的一种在遭受诸如火灾、地震、断电和其他基础网络设备故障等毁灭性灾难的时候，依然能够对外提供可用服务的能力。<br>ZooKeeper 既然已经解决了单点问题，那为什么还要进行容灾呢？</p>
+<h3 id="3-单点问题"><a href="#3-单点问题" class="headerlink" title="3.单点问题"></a>3.单点问题</h3><p>单点问题是分布式环境中最常见也是最经典的问题之一，具体地说，在一个分布式系统中，如果某一个组件出现故障就会引起整个系统的可用性大大下降甚至是处于瘫痪状态，那么我们就认为该组件存在单点问题。<br>ZooKeeper基于“过半”设计原则确实已经解决了单点问题，在运行期间，集群中至少有过半的机器保存了最新的数据。因此，只要集群中超过半数的机器还能够正常工作，整个集群就能够对外提供服务。</p>
+<h3 id="4-单机房问题"><a href="#4-单机房问题" class="headerlink" title="4.单机房问题"></a>4.单机房问题</h3><p>如果你的zookeeper集群都在一个机房中，如果一个机房整个出问题，你依赖zookeeper运行的服务器还是会因此故障。</p>
+<h3 id="5-双机房问题"><a href="#5-双机房问题" class="headerlink" title="5.双机房问题"></a>5.双机房问题</h3><p>因资源问题，很多公司在做容灾是都是双机房，但是zookeeper在双机房条件下并没有实现好的容灾效果，原因是：无论哪个机房发生异常，都有可能使zookeeper集群中可以使用的机器无法超过半数。比如：7=4+3的部署方式，如果多于半数的那个机房挂了，zookeeper就无法选举leader。<br>实际很多公司的做法是：租用一个可靠机房和一个廉价机房，在可靠的机房尽量部署更多的zookeeper。</p>
+<h3 id="6-三机房部署"><a href="#6-三机房部署" class="headerlink" title="6.三机房部署"></a>6.三机房部署</h3><p>三机房部署要遵循<strong>存活过半即可用</strong>的原则。假设服务器总数是N，那么三个机房部署zookeeper的服务器N1、N2和N3使集群具有容灾能力，三者的取值算法如下：</p>
 <ul>
 <li>计算N1：<code>N1=(N-1)/2</code></li>
 <li>计算N2：<code>N2取值范围1~(N-N1)/2</code> 整数相除向下取整</li>
-<li>计算N3：<code>N3=N-N1-N2</code> 同时确定N2，即必须满足N3&lt;N1+N2。<br>如果部署7台服务器，可以有两种部署方案：(3,1,3)和(3,2,2)。</li>
+<li>计算N3：<code>N3=N-N1-N2</code> 同时确定N2，即必须满足N3&lt;N1+N2。</li>
 </ul>
-<h1 id="水平扩容"><a href="#水平扩容" class="headerlink" title="水平扩容"></a>水平扩容</h1><p>简单地讲，水平扩容就是向集群中添加更多的机器，以提高系统的服务质量。<br>ZooKeeper在水平扩容扩容方面做得并不十分完美，需要进行整个集群的重启。通常有两种重启方式，一种是集群整体重启，另外一种是逐台进行服务器的重启。</p>
-<ul>
-<li>整体重启：就是先将整个集群停止，然后更新zookeeper配置，然后重启。重启过程中，所有该集群客户端都无法连接上集群，等到集群再次启动，这些客户端就能够自动连接上——注意，整体启动前建立起的客户端会话，并不会因为此次整体重启而失效。也就是说，在整体重启期间花费的时间将不计入会话超时时间的计算中。</li>
-<li>逐台重启：在这种方式中，每次仅仅重启集群中的一台机器，然后逐台对整个集群中的机器进行重启操作。这种方式可以在重启期间依然保证集群对外的正常服务。<strong>（推荐）</strong></li>
-<li>参考文章：《从Paxos到Zookeeper  分布式一致性原理与实践》</li>
+<p>例如：部署7台服务器，可以有两种部署方案：(3,1,3)和(3,2,2)。</p>
+<h2 id="水平扩容"><a href="#水平扩容" class="headerlink" title="水平扩容"></a>水平扩容</h2><p>简单地讲，水平扩容就是向集群中添加更多的机器，以提高系统的服务质量。<br>ZooKeeper在水平扩容扩容方面做得并不十分完美，需要进行整个集群的重启。通常有两种重启方式，一种是集群整体重启，另外一种是逐台进行服务器的重启。</p>
+<h3 id="1-整体重启"><a href="#1-整体重启" class="headerlink" title="1.整体重启"></a>1.整体重启</h3><p>就是先将整个集群停止，然后更新zookeeper配置，然后重启。重启过程中，所有该集群客户端都无法连接上集群，等到集群再次启动，这些客户端就能够自动连接上——注意，整体启动前建立起的客户端会话，并不会因为此次整体重启而失效。也就是说，在整体重启期间花费的时间将不计入会话超时时间的计算中。</p>
+<h3 id="2-逐台重启"><a href="#2-逐台重启" class="headerlink" title="2.逐台重启"></a>2.逐台重启</h3><ul>
+<li>在这种方式中，每次仅仅重启集群中的一台机器，然后逐台对整个集群中的机器进行重启操作。这种方式可以在重启期间依然保证集群对外的正常服务。<strong>（推荐）</strong></li>
 </ul>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p>《从Paxos到Zookeeper  分布式一致性原理与实践》<br><a href="https://www.cnblogs.com/cyfonly/p/5626532.html" target="_blank" rel="noopener">构建高可用ZooKeeper集群</a></p>
 
       
     </div>
@@ -584,6 +586,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/mysql/dblist/" rel="prev" title="常用数据库列表">
+                常用数据库列表 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -664,7 +670,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -675,7 +681,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -686,7 +692,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -760,7 +766,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#三种运行模式"><span class="nav-number">1.</span> <span class="nav-text">三种运行模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单机模式"><span class="nav-number">1.0.1.</span> <span class="nav-text">单机模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群模式"><span class="nav-number">1.0.2.</span> <span class="nav-text">集群模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#伪分布模式"><span class="nav-number">1.0.3.</span> <span class="nav-text">伪分布模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于zookeeper高可用的思考"><span class="nav-number">2.</span> <span class="nav-text">关于zookeeper高可用的思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要设计奇数台服务器"><span class="nav-number">2.0.1.</span> <span class="nav-text">为什么要设计奇数台服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容灾"><span class="nav-number">2.0.2.</span> <span class="nav-text">容灾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单点问题"><span class="nav-number">2.0.3.</span> <span class="nav-text">单点问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单机房问题"><span class="nav-number">2.0.4.</span> <span class="nav-text">单机房问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双机房问题"><span class="nav-number">2.0.5.</span> <span class="nav-text">双机房问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三机房部署"><span class="nav-number">2.0.6.</span> <span class="nav-text">三机房部署</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#水平扩容"><span class="nav-number">3.</span> <span class="nav-text">水平扩容</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#三种运行模式"><span class="nav-text">三种运行模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-单机模式"><span class="nav-text">1.单机模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-集群模式"><span class="nav-text">2.集群模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-伪分布模式"><span class="nav-text">3.伪分布模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群高可用"><span class="nav-text">集群高可用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-为什么要设计奇数台服务器"><span class="nav-text">1.为什么要设计奇数台服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-什么是容灾"><span class="nav-text">2.什么是容灾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-单点问题"><span class="nav-text">3.单点问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-单机房问题"><span class="nav-text">4.单机房问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-双机房问题"><span class="nav-text">5.双机房问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-三机房部署"><span class="nav-text">6.三机房部署</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#水平扩容"><span class="nav-text">水平扩容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-整体重启"><span class="nav-text">1.整体重启</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-逐台重启"><span class="nav-text">2.逐台重启</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-text">参考文章</span></a></li></ol></div>
             
 
           </div>
@@ -795,7 +801,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">43.6k</span>
+    <span title="Site words total count">44.3k</span>
   
 </div>
 
