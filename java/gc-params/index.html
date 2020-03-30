@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="chinaz-site-verification" content="13110D1FAE1F5D8D"> 
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java,tools," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="上海IT技术圈" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Java GC相关参数介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java gc参数">
+<meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;java&#x2F;gc-params&#x2F;index.html">
+<meta property="og:site_name" content="上海IT技术圈">
+<meta property="og:description" content="Java GC相关参数介绍">
+<meta property="article:published_time" content="2020-02-04T12:23:04.000Z">
+<meta property="article:modified_time" content="2020-03-30T15:01:35.017Z">
+<meta property="article:author" content="加我微信，邀你入群">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="tools">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":2,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sparkx.com.cn/java/gc-params/"/>
+
+
+
+
+
+  <title>java gc参数 | 上海IT技术圈</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fe2f5ba83c65630d7643754faa0867c1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">上海IT技术圈</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">IT技术</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/categories/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-java">
+          <a href="/categories/java/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Java
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-spark">
+          <a href="/categories/spark/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Spark
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-flink">
+          <a href="/categories/flink/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Flink
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/tools/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sparkx.com.cn/java/gc-params/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="加我微信，邀你入群">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sh_it_wx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="上海IT技术圈">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">java gc参数</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-04T20:23:04+08:00">
+                2020-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  Java GC相关参数介绍
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Java GC相关参数介绍</p>
+<h1 id="PrintGCDetails"><a href="#PrintGCDetails" class="headerlink" title="PrintGCDetails"></a>PrintGCDetails</h1><p>-XX:+PrintGCDetails   //打印gc日志</p>
+<h1 id="Xloggc"><a href="#Xloggc" class="headerlink" title="Xloggc"></a>Xloggc</h1><p>-XX:+PrintGCDetails -verbose:gc -Xloggc:gc.log </p>
+<ul>
+<li>在VM选项加入-Xloggc 运行后在项目文件夹下会生成一个gc.log文件</li>
+</ul>
+<h1 id="UseSerialGC"><a href="#UseSerialGC" class="headerlink" title="UseSerialGC"></a>UseSerialGC</h1><p>-XX:+UseSerialGC</p>
+<ul>
+<li>Serial GC是HotSpot客户端模式VM的默认GC，它是独占式GC，运行过程中会导致应用暂停，并且由于它是单线程执行的，所以暂停时间会比较长；</li>
+<li>Serail GC 在老年代使用了一种叫作“Mark-Sweep-Compact”的算法，它是用于CPU核数比较少且使用内存空间较小的应用程序场景；</li>
+</ul>
+<h1 id="UseParNewGC"><a href="#UseParNewGC" class="headerlink" title="UseParNewGC"></a>UseParNewGC</h1><p>-XX:+UseParNewGC</p>
+<ul>
+<li>ParNew GC是一种独占式的GC，和Serial GC的区别是多线程GC执行；</li>
+</ul>
+<h1 id="UseParallelGC"><a href="#UseParallelGC" class="headerlink" title="UseParallelGC"></a>UseParallelGC</h1><p>-XX:+UseParallelGC</p>
+<ul>
+<li>Parallell GC是JDK7之后默认GC，它通过多线程方式减缓了独占式GC的副作用（停顿时间长）。年轻代和老年代在Parallel GC里都是并行执行且独占的，老年代也执行了压缩操作，这个压缩操作是移动存活对象到相邻位置，这样可以较少内存浪费，更好实现内存布局。</li>
+<li>Serial GC使用单一线程执行GC，而Parallel GC则使用多线程并发执行，因此Parallel GC较Serial GC具有更快的回收速度。Parallel GC适用于多核CPU且使用了较大内存空间的场景；</li>
+<li>Parallel GC被称为“高吞吐GC（Throughput GC）”；</li>
+</ul>
+<h1 id="UseParallelOldGC"><a href="#UseParallelOldGC" class="headerlink" title="UseParallelOldGC"></a>UseParallelOldGC</h1><p>-XX:+UseParallelOldGC</p>
+<ul>
+<li>Parallel Old GC在JDK5中被引入，于Parallel GC相比唯一的区别在于Parallel 0ld GC算法是为老年代设计的，它的执行过程分为三个步骤：标记（Mark）、总结（Summary）、压缩（Compaction）。其中Summary步骤为存活的对象在已执行过GC的空间上标出位置，因此与Mark-Sweep-Compact算法中的Sweep步骤有所区别，并需要一些复杂的步骤才能完成；</li>
+</ul>
+<h1 id="UseConcMarkSweepGC"><a href="#UseConcMarkSweepGC" class="headerlink" title="UseConcMarkSweepGC"></a>UseConcMarkSweepGC</h1><p>-XX:+UseConcMarkSweepGC </p>
+<ul>
+<li>并发标记-清理比其他GC复杂。初始标记（Inital Mark）比较简单，只有靠近类加载器的存活对象会标记，因此停顿时间比较短暂。</li>
+<li>在并发标记(Conncurrent Mark)阶段，刚被确认和标记过的存活对象所关联的对象将会被跟踪和检查存活状态。此步骤的不同之处在于有多个线程并行处理此过程；</li>
+<li>在重标记（ReMark）阶段，有并发标记所关联的新增或者中止的对象会被检测；</li>
+<li>在最后的并发清理（Concurrent Sweep）阶段，垃圾回收过程被真正的执行；</li>
+<li>在垃圾回收执行过程中，其他线程依然保持并行执行，受益于CMS GC的执行方式，在GC期间系统中断的时间非常短暂（G1 GC也采纳了这种设计方案）；</li>
+<li>CMS GC被称为低延迟GC，适用于所有应用对响应时间要求比较严格的场景；<blockquote>
+<p>使用CMS GC之前需要对系统做全面的分析，为了避免过多的内存碎片而需要执行压缩任务是，CMS GC会比其他任何GC带来更多的Stop-the-Wold时间，所以需要分析和判断压缩任务执行的频率以及耗时情况；</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="UseG1GC"><a href="#UseG1GC" class="headerlink" title="UseG1GC"></a>UseG1GC</h1><p>-XX:+UseG1GC</p>
+<ul>
+<li>就是Garbage-first</li>
+</ul>
+<h1 id="PrintGCApplicationStoppedTime"><a href="#PrintGCApplicationStoppedTime" class="headerlink" title="PrintGCApplicationStoppedTime"></a>PrintGCApplicationStoppedTime</h1><p>+XX:+PrintGCApplicationStoppedTime选项会输出GC造成应用程序暂停的时间，一般和-XX:+PrintGCApplicationConcurrentTime组合起来一起使用，这样比较有利于查看输出;</p>
+<h1 id="ConcGCThreads"><a href="#ConcGCThreads" class="headerlink" title="ConcGCThreads"></a>ConcGCThreads</h1><p>-XX:+ConcGCThreads </p>
+<ul>
+<li>选项用来设置与java应用程序并行执行的GC线程数量，默认GC独占时运行线程的1/4。设置过大导致应用程序可使用的CPU资源减少，如果小一点则会对应用程序有利，过小就会回增加GC并行循环的执行时间，反过来减少java应用程序运行时间（因为独占时间拉长）；</li>
+<li>如果不设置并行标记线程数量，默认情况下采用公式：ConcGCThreads=Max((ParallelGCThreads#+2)/4,1),如果设置的值不在有效范围内，就会抛出错误：Invalid number of concurrent marking threads:-XX:ConcGCThreads=[specified_value];</li>
+</ul>
+<h1 id="G1HeapRegionSize"><a href="#G1HeapRegionSize" class="headerlink" title="G1HeapRegionSize"></a>G1HeapRegionSize</h1><p>-XX:+G1HeapRegionSize</p>
+<ul>
+<li>该选项是G1 GC独有选项，专门针对Region这个概念的对应设置选项，Region的大小默认为堆大小的1/2000，也可以设置1MB,2MB,4MB,8MB,16MB,32MB六个划分档次；</li>
+</ul>
+<h1 id="G1HeapWastePercent"><a href="#G1HeapWastePercent" class="headerlink" title="G1HeapWastePercent"></a>G1HeapWastePercent</h1><p>-XX:G1HeapWastePercent</p>
+<ul>
+<li>该选项控制G1 GC不会回收的空闲内存比例，默认是堆内存的5%。G1 GC在回收过程中会回收所有Region的内存，并持续地做这个工作直到空闲内存比例达到设置的这个值为止，所以对于设置了较大值的堆内存来说，需要采用比较低的比例，这样可以确保较小部分的内存不被回收。该值为1或99都是比较极端的值，会导致因GC线程造成应用程序暂停时间增加;</li>
+</ul>
+<h1 id="G1MixedGCCountTarget"><a href="#G1MixedGCCountTarget" class="headerlink" title="G1MixedGCCountTarget"></a>G1MixedGCCountTarget</h1><p>-XX:+G1MixedGCCountTarget</p>
+<ul>
+<li>老年代Region的回收时间通常比年轻代Region稍长一些，这个选项可以设置一个并行循环之后启动多少个混合GC，默认值是8个。设置一个比较大的值可以让G1 GC在老年代Region回收时多花一些时间，如果一个混合GC的停顿时间很长，说明它要做的事情很多，所以可以增大这个值的设置，但是如果这个值设置过大，也会造成并行循环等待混合GC完成的时间;</li>
+<li>这个选项和G1MixedGCLIveThresholdPercent选项（默认值65%，指的是混合回收阶段回收老年代区间的上限阈值）有直接关联，G1MixedGCLIveThresholdPercent设置完毕后，对存活数据回收的上限为G1MixedGCLIveThresholdPercent的旧区域执行混合垃圾回收的目标次数，这个选项会自动调整为满足配置的阈值，以便能够快速回收对象;</li>
+</ul>
+<h1 id="G1PrintRegionLivenessInfo"><a href="#G1PrintRegionLivenessInfo" class="headerlink" title="G1PrintRegionLivenessInfo"></a>G1PrintRegionLivenessInfo</h1><p>-XX:+G1PrintRegionLivenessInfo </p>
+<ul>
+<li>由于开启这个选项会在标记循环阶段完成之后输出详细信息，专业一点叫法是诊断选项，所以在使用前需要开启选项UnlockDiagnosticVMOptions。这个选项启用后会打印堆内部每个Region里面的存活对象信息，这些信息包括使用率、RSet大小、回收一个Region的价值（Region内部回收价值评估，即性价比）;</li>
+<li>这个选项输出的信息对于堆内Region是很有效的，不过对于一个很大的堆内存来说，由于每个Region信息都输出了，所以信息量也是挺大的;</li>
+<li>-XX:+UnlockDiagnosticVMOptions必须放在-XX:+G1PrintRegionLivenessInfo的前面，证明VM的选项执行顺序也是串行的;</li>
+</ul>
+<h1 id="G1ResevePercent"><a href="#G1ResevePercent" class="headerlink" title="G1ResevePercent"></a>G1ResevePercent</h1><p>-XX:+G1ResevePercent</p>
+<ul>
+<li>每个年龄代都会有一些对象可以进入下一个阶段，为了确保这个提升过程正常完成，我们允许G1 GC保留一些内存，这样就可以避免出现“to space exhausted”错误，这个选项就是为了这个用途;</li>
+<li>默认保留堆内存10% ,但也不能超过对内存的50%，并且这个预留空间不能用于年轻代。</li>
+<li>对于一个拥有大内存的堆内存来说，这个值不能过大，因为它不能用于年轻代，这就意味着年轻代可用内存降低了。减小这个值有助于给年轻代留出更大的空间、更长的GC时间，这对提升性能吞吐量有好处;</li>
+</ul>
+<h1 id="G1SummarizeRSetStats"><a href="#G1SummarizeRSetStats" class="headerlink" title="G1SummarizeRSetStats"></a>G1SummarizeRSetStats</h1><p>-XX:+G1SUmmarizeRSetStats</p>
+<ul>
+<li>该选项和G1PrintRegionLivenessInfo选项一样，这个选项也是诊断选项，需开启UnlockDiagnosticVMOptions选项后才能使用，这说明-XX:+UnlockDiagnosticVMOptions必须放在-XX:+G1SUmmarizeRSetStats前面;</li>
+<li>该选项和-XX:+G1SummarizeRSetStatsPeriod一起使用的时候会阶段性地大于RSet的详细信息，这有助于找到RSet里面存在的问题;</li>
+</ul>
+<h1 id="G1TraceConcRefinement"><a href="#G1TraceConcRefinement" class="headerlink" title="G1TraceConcRefinement"></a>G1TraceConcRefinement</h1><p>+XX:+G1TraceConcRefinement</p>
+<ul>
+<li>诊断选项，启动该选项，并行Refinement线程相关的信息会被打印，并且线程启动和结束的信息都会被打印；</li>
+<li>垃圾收集器对应的GC线程</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Garbeg Collector</th>
+<th>Worker Thread Used</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Parallel GC</td>
+<td>ParallelGCThreads</td>
+</tr>
+<tr>
+<td>CMS GC</td>
+<td>ParallelGCThreads,ConcGCThreads</td>
+</tr>
+<tr>
+<td>G1 GC</td>
+<td>ParallelGCThreads,ConcGCThreads,G1GonCRefinementThreads</td>
+</tr>
+</tbody></table>
+<ul>
+<li>GC线程定义</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>选项控制</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ParallelGC Thread</td>
+<td>-XX:+ParallelGCThreads</td>
+<td>GC的并行工作线程，专门用于独占阶段的工作，比如拷贝存活对象</td>
+</tr>
+<tr>
+<td>ParallelMarkingThreads</td>
+<td>-XX:+ConcGCThreads</td>
+<td>并行标记阶段并行线程，它由一个主控（Master）线程和一些工作（Worker)线程组成，可以和应用程序并行执行</td>
+</tr>
+<tr>
+<td>G1ConcurrentRefinementThreads</td>
+<td>-XX:+G1ConcRefinementThreads</td>
+<td>和应用程序一起运行，用于更新RSet。如果ConcurrentRefinementThreads没有设置，那么默认ParallelGCThreads +1</td>
+</tr>
+</tbody></table>
+<h1 id="G1UseAdaptiveConcRefinement"><a href="#G1UseAdaptiveConcRefinement" class="headerlink" title="G1UseAdaptiveConcRefinement"></a>G1UseAdaptiveConcRefinement</h1><p>-XX:+G1UseAdaptiveConcRefinement</p>
+<ul>
+<li>该选项默认开启，它会动态对每一次GC中-XX:+G1ConcRefinementGreenZone、-XX:+G1ConcRefinementYellowZone、-XX:+G1ConcRefinementRedZone的值进行重新计算；</li>
+<li>并行Refinement线程是持续运行的，并且会随着update log buffer积累的数量而动态调节。前面说的三个选项-XX:+G1ConcRefinementGreenZone、-XX:+G1ConcRefinementYellowZone、-XX:+G1ConcRefinementRedZone是被用来根据不同buffer使用不同的Refinement线程，目的就是为了保证Refinement线程一定要尽可能地跟上update log buffer产生的速度，update log buffer开始出现积压的情况，Mutator线程就会协助Refinement线程执行RSet的更新工作。这个Mutator线程实际上就是应用业务线程，当业务线程参与RSet修改时，系统性能一定会受到影响，所以需要尽力去避免这种状况;</li>
+</ul>
+<h1 id="GCTimeRatio"><a href="#GCTimeRatio" class="headerlink" title="GCTimeRatio"></a>GCTimeRatio</h1><p>-XX:+GCTimeRatio</p>
+<ul>
+<li>这个选项代表java应用线程话费时间与GC线程话费时间的比率，通过这个比率值可以调节java应用程序或者GC线程工作时间，保障两者执行时间。</li>
+<li>HotSpot VM转换这个值为一个百分比，公式是100/(1+GCTimeRatio)，默认值是9，表示话费在GC工作量上的时间占总时间的10%。Parallel GC里这个值为99，即代表GC只有1%的时间;</li>
+</ul>
+<h1 id="HeapDumpBeforeFullGC-HeapDumpAfterFullGC"><a href="#HeapDumpBeforeFullGC-HeapDumpAfterFullGC" class="headerlink" title="HeapDumpBeforeFullGC/HeapDumpAfterFullGC"></a>HeapDumpBeforeFullGC/HeapDumpAfterFullGC</h1><p>-XX:+HeapDumpBeforeFullGC/-XX:+HeapDumpAfterFullGC</p>
+<ul>
+<li>开启这个选项后，在Full GC开始之前有一个hprof文件会被创建。建议这个选项和-XX:+HeapDumpAfterFullGC一起使用，可以通过对Full GC发生前后的Java堆内存进行对比，找出内存泄漏和其他问题;</li>
+</ul>
+<h1 id="InitiatingHeapOccypancyPercent"><a href="#InitiatingHeapOccypancyPercent" class="headerlink" title="InitiatingHeapOccypancyPercent"></a>InitiatingHeapOccypancyPercent</h1><p>-XX:+InitiatingHeapOccypancyPercent</p>
+<ul>
+<li>该选项的默认值是45，表示G1 GC并行循环初始的堆大小值，这个值决定了一个并行循环是不是要开始执行;</li>
+<li>它的逻辑是在一次GC完成后，比较老年代占用空间和整个Java堆之间的比例。如果大于这个值，则预约下一次GC开始一个并行循环回收垃圾，从初始标记阶段开始。这个值越小，GC越频繁，反之，值越大，可以让应用程序执行时间更长。不过在内存消耗很快的情况下，早运行并行循环比晚运行要好，即看病要趁早;</li>
+</ul>
+<h1 id="UseStringDeduplication"><a href="#UseStringDeduplication" class="headerlink" title="UseStringDeduplication"></a>UseStringDeduplication</h1><p>-XX:+UseStringDeduplication</p>
+<ul>
+<li>该选项启动Java String对象的去重工作。JDK8u20开始引入该选项，默认为不启用;</li>
+<li>我们知道一个判断Java String对象值是否一样的语句String1.equals(String2)=true,如果开启了该选线，并且如果两个对象包含相同的内容，即返回true,则两个String对象只会共享一个字符数组;</li>
+<li>这个选项是G1 GC独有的，也可以和其他GC一起使用;</li>
+<li>一个去重对象必备条件<ul>
+<li>Java.lang.String对象的一个实例</li>
+<li>这个对象在年轻代堆区间</li>
+<li>这个对象的年龄达到去重年龄代，或者这个对象已经在老年代堆区间并且对象年龄比去重年龄小。选项-XX:_StringDeduplicationAgeThreshold设置了这个年龄界限。</li>
+</ul>
+</li>
+<li>可修改和不可修改字符串的处理方式不同，不可修改字符串默认就是去重的，在插入到HotSpot VM的StringTable时已经注明了时去重的，这样就避免了HotSpot服务器JIT编译优化措施;</li>
+</ul>
+<h1 id="StringDeduplicationAgeThreshold"><a href="#StringDeduplicationAgeThreshold" class="headerlink" title="StringDeduplicationAgeThreshold"></a>StringDeduplicationAgeThreshold</h1><p>-XX:+StringDeduplictionAgeThreshold</p>
+<ul>
+<li>该选项是针对-XX:+UseStringDedupliction选项的，默认值是3，即一个字符串对象的年龄超过设定的阈值，或者提升到G1 GC老年代Region之后，就会成为字符串去重的候选对象，去重操作只会有一次;</li>
+</ul>
+<h1 id="PrintStringDeduplicationStatistics"><a href="#PrintStringDeduplicationStatistics" class="headerlink" title="PrintStringDeduplicationStatistics"></a>PrintStringDeduplicationStatistics</h1><p>-XX:+PrintStringDeduplicationStaticstics</p>
+<ul>
+<li>该选项很有用，能够帮助我们通过读取输出的统计资料来了解是否字符串去重后节约了大量的堆空间，默认是关闭的，就是说不会输出字符串去重统计资料;</li>
+</ul>
+<h1 id="G1UseAdaptiveIHOP"><a href="#G1UseAdaptiveIHOP" class="headerlink" title="G1UseAdaptiveIHOP"></a>G1UseAdaptiveIHOP</h1><p>-XX:+G1UseAdaptiveIHOP</p>
+<ul>
+<li>JDK9提供的新的选项，这个选项作用是通过动态调节标记阶段开始的时间，以达到提升应用程序吞吐量的目标，主要通过尽可能迟地触发标记循环方式来避免消耗老年代空间。</li>
+<li>该选项的值在VM刚开始启动时和-XX:InitiatingHeapOccupancyPercent的值一样，如果出现标记循环阶段内存不够用，则它会自动调节大小，确保标记循环启用更多的堆内存。</li>
+<li>该选项在JDK9默认启用，即-XX:+InitiatingHeapOccupancyPercent和-XX:+G1UseAdaptiveIHOP在JDK9之后只需要启动一个即可;</li>
+</ul>
+<h1 id="MaxGCPauseMills"><a href="#MaxGCPauseMills" class="headerlink" title="MaxGCPauseMills"></a>MaxGCPauseMills</h1><p>-XX:MaxGCPauseMills</p>
+<ul>
+<li>该选项比较重要，它设置了G1的目标停顿时间，单位是毫秒，默认200ms。</li>
+<li>这个值是一个目标时间，而不是最大停顿时间，G1 GC尽最大努力确保年轻代的回收时间可以控制在这个目标停顿时间范围里面，在G1 GC使用过程中，这个选项和-Xms、-Xmx两个选项一起使用，他们三个也是最好在JVM启动时就配置好;</li>
+</ul>
+<h1 id="MinHeapFreeRatio"><a href="#MinHeapFreeRatio" class="headerlink" title="MinHeapFreeRatio"></a>MinHeapFreeRatio</h1><p>-XX:MinHeapFreeRatio</p>
+<ul>
+<li>该选项设置堆内存里可以空闲的最小的内存空间大小，默认值为堆内存的40%。</li>
+<li>当空闲堆内存小于这个值时，我们需要判断-Xms,-Xmx这两个值的初始化设置值，如果-Xms和-Xmx不一样，那么就有机会扩展堆内存，否则无法扩展;</li>
+<li>最小空闲内存必须小于堆内存;</li>
+</ul>
+<h1 id="MaxHeapFreeRatio"><a href="#MaxHeapFreeRatio" class="headerlink" title="MaxHeapFreeRatio"></a>MaxHeapFreeRatio</h1><p>-XX:MaxHeapFreeRatio</p>
+<ul>
+<li>该选项最大空闲空间大小，默认值为堆内存的70%；</li>
+<li>这个选项和MinHeapFreeRatio相反，当大于这个空闲比率是，G1 GC会自动减少堆内存大小；</li>
+<li>需要判断-Xms,-Xmx这两个值的初始化设置值，如果-Xms和-Xmx不一样，那么就有机会扩展堆内存，否则无法扩展；</li>
+</ul>
+<h1 id="PrintAdaptiveSizePolicy"><a href="#PrintAdaptiveSizePolicy" class="headerlink" title="PrintAdaptiveSizePolicy"></a>PrintAdaptiveSizePolicy</h1><p>-XX:+PrintAdaptiveSizePolicy</p>
+<ul>
+<li>该选项决定是否开启堆内存大小变化的相应记录信息打印，即是否打印这些信息到GC日子里面；</li>
+<li>这个信息对于Parallel GC和G1 GC都很有用；</li>
+</ul>
+<h1 id="ResizePLAB"><a href="#ResizePLAB" class="headerlink" title="ResizePLAB"></a>ResizePLAB</h1><p>-XX:+ResizePLAB</p>
+<ul>
+<li>GC使用的本地线程分配缓存块采用动态值还是静态值进行设置是由这个选项决定的，它默认是开启的，这个设置对应的GC在提升对象时是否会调整PLAB的大小。</li>
+<li>使用该选项需谨慎，据说会出现性能问题，启用后可能会增加GC的停顿时间。当应用开启的多线程较多时，最好使用-XX:+ResizePLAB来关闭PLAB()的大小调整，以避免大量线程通信导致的性能下降;</li>
+</ul>
+<h1 id="ResizeTLAB"><a href="#ResizeTLAB" class="headerlink" title="ResizeTLAB"></a>ResizeTLAB</h1><p>-XX:+ResizeTLAB</p>
+<ul>
+<li>Java应用线程使用的本地线程分配缓存块采用动态值还是静态值进行设置是由这个选项决定的，默认是开启的，即TLAB值会被动态调整；</li>
+<li>TLAB是否启用对于对象分配的影响是很大的。由于TLAB空间一般不会太大，因此大对象无法在TLAB上进行分配，总是直接分配在堆上。因此TLAB空间比较小，因此很容易被装满。如果开启ResizeTLAB,TLAB会在运行时不断调整，使系统的运行状态达到最优；</li>
+<li>和PLAB值动态调整不同的是，这个选项开启后会较大地提升应用程序性能，因为TLAB的竞争、切换减少了，所以默认还是开启它;</li>
+</ul>
+<h1 id="ClassUnloadingWithConcurrentMark"><a href="#ClassUnloadingWithConcurrentMark" class="headerlink" title="ClassUnloadingWithConcurrentMark"></a>ClassUnloadingWithConcurrentMark</h1><p>-XX:+ClassUnloadingWithConcurrentMark</p>
+<ul>
+<li>该选项开启在G1 GC并行循环阶段卸载类，尤其是在老年代的并行回收阶段，默认是开启的；</li>
+<li>该选项开启后会在并行循环的重标记阶段卸载JVM没有用到的类，这些工作也可以放在Full GC里面去做，但是提前做有很大的好处。但因为开启它意味着重标记阶段的GC停顿时间会拉长，这时我们就要判断性价比了，如果GC停顿时间比设置的最大GC停顿目标时间还长，并且需要卸载的类不多，就可以关闭该选项；</li>
+</ul>
+<h1 id="ClassUnloading"><a href="#ClassUnloading" class="headerlink" title="ClassUnloading"></a>ClassUnloading</h1><p>-XX:+ClassUnloading</p>
+<ul>
+<li>默认值是true,决定了JVM是否会卸载所有无用的类，如果关闭了这个选项，无论是否并行回收循环，还是Full GC,都不会再卸载这些类了，所以谨慎关闭；<br>UnlockDiagnosticVMOptions</li>
+</ul>
+<p>-XX:+UnlockDiagnosticVMOptions</p>
+<ul>
+<li>该选项决定是否开启诊断选项，默认值是False，不开启；</li>
+<li>GC里有一些选项称为诊断选项（Diagnostic Options），通过-XX:+PrintFlagsFinal和-XX:+UnlockDiagnosticVMOptions这两个选项组合起来运行，就可以输出并查看这些选项；</li>
+</ul>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p>《深入理解JVM &amp; G1 GC》</p>
+
+      
+    </div>
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
+          
+            <a href="/tags/tools/" rel="tag"><i class="fa fa-tag"></i> tools</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/flink/flink-on-yarn/" rel="next" title="flink on yarn集群搭建">
+                <i class="fa fa-chevron-left"></i> flink on yarn集群搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sh_it_wx.png"
+                alt="加我微信，邀你入群" />
+            
+              <p class="site-author-name" itemprop="name">加我微信，邀你入群</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lujinyong168@gmail.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/lujinyong168" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5JjTeVD" target="_blank" title="进入QQ群1">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群1</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5KllGoe" target="_blank" title="进入QQ群2">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群2</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PrintGCDetails"><span class="nav-text">PrintGCDetails</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Xloggc"><span class="nav-text">Xloggc</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseSerialGC"><span class="nav-text">UseSerialGC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseParNewGC"><span class="nav-text">UseParNewGC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseParallelGC"><span class="nav-text">UseParallelGC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseParallelOldGC"><span class="nav-text">UseParallelOldGC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseConcMarkSweepGC"><span class="nav-text">UseConcMarkSweepGC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseG1GC"><span class="nav-text">UseG1GC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PrintGCApplicationStoppedTime"><span class="nav-text">PrintGCApplicationStoppedTime</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ConcGCThreads"><span class="nav-text">ConcGCThreads</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1HeapRegionSize"><span class="nav-text">G1HeapRegionSize</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1HeapWastePercent"><span class="nav-text">G1HeapWastePercent</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1MixedGCCountTarget"><span class="nav-text">G1MixedGCCountTarget</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1PrintRegionLivenessInfo"><span class="nav-text">G1PrintRegionLivenessInfo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1ResevePercent"><span class="nav-text">G1ResevePercent</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1SummarizeRSetStats"><span class="nav-text">G1SummarizeRSetStats</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1TraceConcRefinement"><span class="nav-text">G1TraceConcRefinement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1UseAdaptiveConcRefinement"><span class="nav-text">G1UseAdaptiveConcRefinement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GCTimeRatio"><span class="nav-text">GCTimeRatio</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HeapDumpBeforeFullGC-HeapDumpAfterFullGC"><span class="nav-text">HeapDumpBeforeFullGC&#x2F;HeapDumpAfterFullGC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InitiatingHeapOccypancyPercent"><span class="nav-text">InitiatingHeapOccypancyPercent</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseStringDeduplication"><span class="nav-text">UseStringDeduplication</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#StringDeduplicationAgeThreshold"><span class="nav-text">StringDeduplicationAgeThreshold</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PrintStringDeduplicationStatistics"><span class="nav-text">PrintStringDeduplicationStatistics</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#G1UseAdaptiveIHOP"><span class="nav-text">G1UseAdaptiveIHOP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MaxGCPauseMills"><span class="nav-text">MaxGCPauseMills</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MinHeapFreeRatio"><span class="nav-text">MinHeapFreeRatio</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MaxHeapFreeRatio"><span class="nav-text">MaxHeapFreeRatio</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PrintAdaptiveSizePolicy"><span class="nav-text">PrintAdaptiveSizePolicy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ResizePLAB"><span class="nav-text">ResizePLAB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ResizeTLAB"><span class="nav-text">ResizeTLAB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassUnloadingWithConcurrentMark"><span class="nav-text">ClassUnloadingWithConcurrentMark</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassUnloading"><span class="nav-text">ClassUnloading</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考："><span class="nav-text">参考：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">上海IT技术圈</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">57.8k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<div class="powered-by">
+	<i class="fa fa-user-md"></i>
+	<span id="busuanzi_container_site_uv">
+		本站访客数:<span id="busuanzi_value_site_uv"></span>
+	</span>
+	<span class="post-meta-divider">|</span>
+	<span id="busuanzi_container_site_pv">
+		本站访问量<span id="busuanzi_value_site_pv"></span>
+	</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

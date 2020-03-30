@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="chinaz-site-verification" content="13110D1FAE1F5D8D"> 
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="flink," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="上海IT技术圈" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本博客记录flink-1.9.1 on yarn的集群搭建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="flink on yarn集群搭建">
+<meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;flink&#x2F;flink-on-yarn&#x2F;index.html">
+<meta property="og:site_name" content="上海IT技术圈">
+<meta property="og:description" content="本博客记录flink-1.9.1 on yarn的集群搭建">
+<meta property="og:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;flink&#x2F;flink-on-yarn-arch.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;flink&#x2F;flink-on-yarn-two-run.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;flink&#x2F;flink-on-yarn.png">
+<meta property="article:published_time" content="2020-01-22T11:06:35.000Z">
+<meta property="article:modified_time" content="2020-03-30T15:01:35.008Z">
+<meta property="article:author" content="加我微信，邀你入群">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;images&#x2F;flink&#x2F;flink-on-yarn-arch.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":2,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sparkx.com.cn/flink/flink-on-yarn/"/>
+
+
+
+
+
+  <title>flink on yarn集群搭建 | 上海IT技术圈</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fe2f5ba83c65630d7643754faa0867c1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">上海IT技术圈</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">IT技术</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/categories/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-java">
+          <a href="/categories/java/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Java
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-spark">
+          <a href="/categories/spark/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Spark
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-flink">
+          <a href="/categories/flink/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Flink
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/tools/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sparkx.com.cn/flink/flink-on-yarn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="加我微信，邀你入群">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sh_it_wx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="上海IT技术圈">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">flink on yarn集群搭建</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-22T19:06:35+08:00">
+                2020-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/flink/" itemprop="url" rel="index">
+                    <span itemprop="name">flink</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  本博客记录flink-1.9.1 on yarn的集群搭建
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>zookeeper集群搭建：<a href="http://sparkx.com.cn/zookeeper/zookeeper-ha/">点击查看</a><br>hadoop集群搭建：<a href="http://sparkx.com.cn/hadoop/hadoop2-ha-deployment/#more">点击查看</a></p>
+<h2 id="Flink-on-yarn的整个交互"><a href="#Flink-on-yarn的整个交互" class="headerlink" title="Flink on yarn的整个交互"></a>Flink on yarn的整个交互</h2><p><img src="/images/flink/flink-on-yarn-arch.png" alt=""><br>要使得flink运行于yarn上，flink要能找到hadoop配置，因为要连接到yarn的resourcemanager和hdfs。可以使用下面的策略来指定hadoop配置：<br>1.会查看YARN_CONF_DIR，HADOOP_CONF_DIR或者HADOOP_CONF_PATH是否设置，按照顺序检查的。然后，假如配置了就会从该文件夹下读取配置。<br>2.如果上面环境变量都没有配置的话，会使用HADOOP_HOME环境变量。对于hadoop2的话会查找的配置路径是 $HADOOP_HOME/etc/hadoop;</p>
+<h2 id="Flink两种作业提交"><a href="#Flink两种作业提交" class="headerlink" title="Flink两种作业提交"></a>Flink两种作业提交</h2><p><strong>yarn seesion</strong><br><strong>Flink run</strong><br>这2者对于现有大数据平台资源使用率有着很大的区别：<br>1.第一种yarn seesion(Start a long-running Flink cluster on YARN)这种方式需要先启动集群，然后在提交作业，接着会向yarn申请一块空间后，资源永远保持不变。如果资源满了，下一个作业就无法提交，只能等到yarn中的其中一个作业执行完成后，释放了资源，那下一个作业才会正常提交.<br>2.第二种Flink run直接在YARN上提交运行Flink作业(Run a Flink job on YARN)，这种方式的好处是一个任务会对应一个job,即没提交一个作业会根据自身的情况，向yarn申请资源，直到作业执行完成，并不会影响下一个作业的正常运行，除非是yarn上面没有任何资源的情况下。<br>两种运行方式示意图:<br><img src="/images/flink/flink-on-yarn-two-run.png" alt=""><br>如果开发和测试推荐第一种方案，生产环境推荐使用第二种方案；<br>Flink on yarn模式部署时，不需要对Flink做任何修改配置，只需要将其解压传输到各个节点之上。但如果要实现高可用的方案，这个时候就需要到Flink相应的配置修改参数，具体的配置文件是FLINK_HOME/conf/flink-conf.yaml。<br>对于Flink on yarn模式，不需要在conf配置下配置 masters和slaves。因为在指定TM的时候可以通过参数“-n”来标识需要启动几个TM;Flink on yarn启动后，如果是在分离式模式你会发现，在所有的节点只会出现一个 YarnSessionClusterEntrypoint进程；如果是客户端模式会出现2个进程一个YarnSessionClusterEntrypoint和一个FlinkYarnSessionCli进程，并且两个进程可能不在一台服务器上。</p>
+<h2 id="安装Flink"><a href="#安装Flink" class="headerlink" title="安装Flink"></a>安装Flink</h2><p>官网下载页面：<a href="https://flink.apache.org/downloads.html" target="_blank" rel="noopener">点击进入</a>，下载Apache Flink 1.9.1 for Scala 2.11二进制包。<br>因为要使用HDFS和YARN所以需要下载相关的jar，在flink二进制包下面的Optional components选项里下载对应hadoop版本的依赖Jar，因为我使用的是hadoop-2.6.5，要下载<a href="https://repo.maven.apache.org/maven2/org/apache/flink/flink-shaded-hadoop-2-uber/2.6.5-7.0/flink-shaded-hadoop-2-uber-2.6.5-7.0.jar" target="_blank" rel="noopener">Pre-bundled Hadoop 2.6.5</a><br>1.上传flink-1.9.1-bin-scala_2.11.tgz到服务器，并执行命令<code>tar -zxvf flink-1.9.1-bin-scala_2.11.tgz</code>解压到/usr/local/flink目录。<br>2.配置环境变量<code>export FLINK_HOME=/usr/local/flink/flink-1.9.1</code>，并将FLINK_HOME添加到<code>PATH</code>中。<br>3.修改配置<code>FLINK_HOME/conf/flink-conf.yaml</code>如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#==============================================================================</span></span><br><span class="line"><span class="comment"># Common</span></span><br><span class="line"><span class="comment">#==============================================================================</span></span><br><span class="line"><span class="attr">env.java.home:</span> <span class="string">/usr/local/jdk/jdk1.8.0_151</span></span><br><span class="line"><span class="attr">jobmanager.rpc.address:</span> <span class="string">localhost</span></span><br><span class="line"><span class="comment"># The RPC port where the JobManager is reachable.</span></span><br><span class="line"><span class="attr">jobmanager.rpc.port:</span> <span class="number">6123</span></span><br><span class="line"><span class="comment"># The heap size for the JobManager JVM</span></span><br><span class="line"><span class="attr">jobmanager.heap.size:</span> <span class="string">1024m</span></span><br><span class="line"><span class="comment"># The heap size for the TaskManager JVM</span></span><br><span class="line"><span class="attr">taskmanager.heap.size:</span> <span class="string">1024m</span></span><br><span class="line"><span class="comment"># The number of task slots that each TaskManager offers. Each slot runs one parallel pipeline.</span></span><br><span class="line"><span class="attr">taskmanager.numberOfTaskSlots:</span> <span class="number">1</span></span><br><span class="line"><span class="comment"># The parallelism used for programs that did not specify and other parallelism.</span></span><br><span class="line"><span class="attr">parallelism.default:</span> <span class="number">1</span></span><br><span class="line"><span class="comment">#==============================================================================</span></span><br><span class="line"><span class="comment"># High Availability</span></span><br><span class="line"><span class="comment">#==============================================================================</span></span><br><span class="line"><span class="comment"># 配置high-availability mode</span></span><br><span class="line"><span class="attr">high-availability:</span> <span class="string">zookeeper</span></span><br><span class="line"><span class="comment"># 配置zookeeper quorum（hostname和端口需要依据对应zk的实际配置）</span></span><br><span class="line"><span class="attr">high-availability.zookeeper.quorum:</span> <span class="number">192.168</span><span class="number">.112</span><span class="number">.120</span><span class="string">:2181,192.168.112.121:2181,192.168.112.122:2181</span></span><br><span class="line"><span class="comment"># （可选）设置zookeeper的root目录</span></span><br><span class="line"><span class="attr">high-availability.zookeeper.path.root:</span> <span class="string">/flink</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># （可选）相当于是这个standalone集群中创建的zk node的namespace</span></span><br><span class="line"><span class="attr">high-availability.cluster-id:</span> <span class="string">/cluster_flink_uat</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># JobManager的meta信息放在dfs，在zk上主要会保存一个指向dfs路径的指针</span></span><br><span class="line"><span class="attr">high-availability.storageDir:</span> <span class="string">hdfs:///flink/ha</span></span><br><span class="line"><span class="comment">#==============================================================================</span></span><br><span class="line"><span class="comment"># Fault tolerance and checkpointing</span></span><br><span class="line"><span class="comment">#==============================================================================</span></span><br><span class="line"><span class="attr">jobmanager.execution.failover-strategy:</span> <span class="string">region</span></span><br><span class="line"><span class="comment">#添加hadoop配置目录：</span></span><br><span class="line"><span class="attr">fs.hdfs.hadoopconf:</span> <span class="string">/usr/local/hadoop/hadoop-2.6.5/etc/hadoop</span></span><br></pre></td></tr></table></figure>
+<p>4.拷贝到其他服务器上</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp -r flink<span class="number">-1.9</span><span class="number">.1</span> <span class="string">worker1:</span><span class="regexp">/usr/</span>local<span class="regexp">/flink/</span></span><br><span class="line">scp -r flink<span class="number">-1.9</span><span class="number">.1</span> <span class="string">worker2:</span><span class="regexp">/usr/</span>local<span class="regexp">/flink/</span></span><br></pre></td></tr></table></figure>
+
+<p>5.运行<br>运行./yarn-session.sh使用默认配置：{masterMemoryMB=1024, taskManagerMemoryMB=1024, numberTaskManagers=1, slotsPerTaskManager=1}</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">root@master1:/usr/local/flink/flink-1.9.1/bin#</span> <span class="string">./yarn-session.sh</span> </span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,922</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">env.java.home,</span> <span class="string">/usr/local/jdk/jdk1.8.0_151</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,926</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">jobmanager.rpc.address,</span> <span class="string">localhost</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,927</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">jobmanager.rpc.port,</span> <span class="number">6123</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,927</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">jobmanager.heap.size,</span> <span class="string">1024m</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,928</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">taskmanager.heap.size,</span> <span class="string">1024m</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,928</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">taskmanager.numberOfTaskSlots,</span> <span class="number">1</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,929</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">parallelism.default,</span> <span class="number">1</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,930</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">high-availability,</span> <span class="string">zookeeper</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,930</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">high-availability.zookeeper.quorum,</span> <span class="number">192.168</span><span class="number">.112</span><span class="number">.120</span><span class="string">:2181,192.168.112.121:2181,192.168.112.122:2181</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,931</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">high-availability.zookeeper.path.root,</span> <span class="string">/flink</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,932</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">high-availability.cluster-id,</span> <span class="string">/cluster_flink_uat</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,933</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">high-availability.storageDir,</span> <span class="string">hdfs:///flink/ha</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:43,934</span> <span class="attr">INFO  org.apache.flink.configuration.GlobalConfiguration            - Loading configuration property:</span> <span class="string">jobmanager.execution.failover-strategy,</span> <span class="string">region</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:44,982</span> <span class="string">WARN</span>  <span class="string">org.apache.hadoop.util.NativeCodeLoader</span>                       <span class="bullet">-</span> <span class="string">Unable</span> <span class="string">to</span> <span class="string">load</span> <span class="string">native-hadoop</span> <span class="string">library</span> <span class="string">for</span> <span class="string">your</span> <span class="string">platform...</span> <span class="string">using</span> <span class="string">builtin-java</span> <span class="string">classes</span> <span class="string">where</span> <span class="string">applicable</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:45,178</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.runtime.security.modules.HadoopModule</span>        <span class="bullet">-</span> <span class="string">Hadoop</span> <span class="string">user</span> <span class="string">set</span> <span class="string">to</span> <span class="string">root</span> <span class="string">(auth:SIMPLE)</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:45,963</span> <span class="string">INFO</span>  <span class="string">org.apache.hadoop.yarn.client.ConfiguredRMFailoverProxyProvider</span>  <span class="bullet">-</span> <span class="string">Failing</span> <span class="string">over</span> <span class="string">to</span> <span class="string">rm2</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:46,135</span> <span class="attr">INFO  org.apache.flink.yarn.AbstractYarnClusterDescriptor           - Cluster specification:</span> <span class="string">ClusterSpecification&#123;masterMemoryMB=1024,</span> <span class="string">taskManagerMemoryMB=1024,</span> <span class="string">numberTaskManagers=1,</span> <span class="string">slotsPerTaskManager=1&#125;</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:47,028</span> <span class="string">WARN</span>  <span class="string">org.apache.flink.yarn.AbstractYarnClusterDescriptor</span>           <span class="bullet">-</span> <span class="string">The</span> <span class="string">configuration</span> <span class="string">directory</span> <span class="string">('/usr/local/flink/flink-1.9.1/conf')</span> <span class="string">contains</span> <span class="string">both</span> <span class="string">LOG4J</span> <span class="string">and</span> <span class="string">Logback</span> <span class="string">configuration</span> <span class="string">files.</span> <span class="string">Please</span> <span class="string">delete</span> <span class="string">or</span> <span class="string">rename</span> <span class="string">one</span> <span class="string">of</span> <span class="string">them.</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:54,829</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.yarn.AbstractYarnClusterDescriptor</span>           <span class="bullet">-</span> <span class="string">Submitting</span> <span class="string">application</span> <span class="string">master</span> <span class="string">application_1579682649257_0001</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:55,033</span> <span class="string">INFO</span>  <span class="string">org.apache.hadoop.yarn.client.api.impl.YarnClientImpl</span>         <span class="bullet">-</span> <span class="string">Submitted</span> <span class="string">application</span> <span class="string">application_1579682649257_0001</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:55,033</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.yarn.AbstractYarnClusterDescriptor</span>           <span class="bullet">-</span> <span class="string">Waiting</span> <span class="string">for</span> <span class="string">the</span> <span class="string">cluster</span> <span class="string">to</span> <span class="string">be</span> <span class="string">allocated</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:26:55,046</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.yarn.AbstractYarnClusterDescriptor</span>           <span class="bullet">-</span> <span class="string">Deploying</span> <span class="string">cluster,</span> <span class="string">current</span> <span class="string">state</span> <span class="string">ACCEPTED</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,510</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.yarn.AbstractYarnClusterDescriptor</span>           <span class="bullet">-</span> <span class="string">YARN</span> <span class="string">application</span> <span class="string">has</span> <span class="string">been</span> <span class="string">deployed</span> <span class="string">successfully.</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,696</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.runtime.blob.FileSystemBlobStore</span>             <span class="bullet">-</span> <span class="string">Creating</span> <span class="string">highly</span> <span class="string">available</span> <span class="string">BLOB</span> <span class="string">storage</span> <span class="string">directory</span> <span class="string">at</span> <span class="string">hdfs:///flink/ha//cluster_flink_uat/blob</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,792</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.curator.org.apache.curator.framework.imps.CuratorFrameworkImpl</span>  <span class="bullet">-</span> <span class="string">Starting</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,802</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:zookeeper.version=3.4.10-39d3a4f269333c922ed3db283be479f9deacaa0f,</span> <span class="string">built</span> <span class="string">on</span> <span class="number">03</span><span class="string">/23/2017</span> <span class="number">10</span><span class="string">:13</span> <span class="string">GMT</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,803</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:host.name=master1</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,803</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:java.version=1.8.0_151</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,803</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:java.vendor=Oracle</span> <span class="string">Corporation</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,804</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:java.home=/usr/local/jdk/jdk1.8.0_151/jre</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,804</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:java.class.path=/usr/local/flink/flink-1.9.1/lib/flink-shaded-hadoop-2-uber-2.6.5-7.0.jar:/usr/local/flink/flink-1.9.1/lib/flink-table_2.11-1.9.1.jar:/usr/local/flink/flink-1.9.1/lib/flink-table-blink_2.11-1.9.1.jar:/usr/local/flink/flink-1.9.1/lib/log4j-1.2.17.jar:/usr/local/flink/flink-1.9.1/lib/slf4j-log4j12-1.7.15.jar:/usr/local/flink/flink-1.9.1/lib/flink-dist_2.11-1.9.1.jar::/usr/local/hadoop/hadoop-2.6.5/etc/hadoop:</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,805</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,806</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:java.io.tmpdir=/tmp</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,808</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:java.compiler=&lt;NA&gt;</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,808</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:os.name=Linux</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,809</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:os.arch=amd64</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,810</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:os.version=4.2.0-16-generic</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,817</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:user.name=root</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,818</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:user.home=/root</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,818</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Client</span> <span class="string">environment:user.dir=/usr/local/flink/flink-1.9.1/bin</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,819</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ZooKeeper</span>  <span class="bullet">-</span> <span class="string">Initiating</span> <span class="string">client</span> <span class="string">connection,</span> <span class="string">connectString=192.168.112.120:2181,192.168.112.121:2181,192.168.112.122:2181</span> <span class="string">sessionTimeout=60000</span> <span class="string">watcher=org.apache.flink.shaded.curator.org.apache.curator.ConnectionState@4879f0f2</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,854</span> <span class="attr">WARN  org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ClientCnxn  - SASL configuration failed: javax.security.auth.login.LoginException:</span> <span class="literal">No</span> <span class="string">JAAS</span> <span class="string">configuration</span> <span class="string">section</span> <span class="string">named</span> <span class="string">'Client'</span> <span class="attr">was found in specified JAAS configuration file:</span> <span class="string">'/tmp/jaas-7446269064531744688.conf'</span><span class="string">.</span> <span class="string">Will</span> <span class="string">continue</span> <span class="string">connection</span> <span class="string">to</span> <span class="string">Zookeeper</span> <span class="string">server</span> <span class="string">without</span> <span class="string">SASL</span> <span class="string">authentication,</span> <span class="string">if</span> <span class="string">Zookeeper</span> <span class="string">server</span> <span class="string">allows</span> <span class="string">it.</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,857</span> <span class="string">ERROR</span> <span class="string">org.apache.flink.shaded.curator.org.apache.curator.ConnectionState</span>  <span class="bullet">-</span> <span class="string">Authentication</span> <span class="string">failed</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,861</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ClientCnxn</span>  <span class="bullet">-</span> <span class="string">Opening</span> <span class="string">socket</span> <span class="string">connection</span> <span class="string">to</span> <span class="string">server</span> <span class="number">192.168</span><span class="number">.112</span><span class="number">.121</span><span class="string">/192.168.112.121:2181</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,867</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ClientCnxn</span>  <span class="bullet">-</span> <span class="string">Socket</span> <span class="string">connection</span> <span class="string">established</span> <span class="string">to</span> <span class="number">192.168</span><span class="number">.112</span><span class="number">.121</span><span class="string">/192.168.112.121:2181,</span> <span class="string">initiating</span> <span class="string">session</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,917</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.shaded.zookeeper.org.apache.zookeeper.ClientCnxn</span>  <span class="bullet">-</span> <span class="string">Session</span> <span class="string">establishment</span> <span class="string">complete</span> <span class="string">on</span> <span class="string">server</span> <span class="number">192.168</span><span class="number">.112</span><span class="number">.121</span><span class="string">/192.168.112.121:2181,</span> <span class="string">sessionid</span> <span class="string">=</span> <span class="number">0x200056d07380002</span><span class="string">,</span> <span class="string">negotiated</span> <span class="string">timeout</span> <span class="string">=</span> <span class="number">40000</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:12,926</span> <span class="attr">INFO  org.apache.flink.shaded.curator.org.apache.curator.framework.state.ConnectionStateManager  - State change:</span> <span class="string">CONNECTED</span></span><br><span class="line"><span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span><span class="string">:27:13,918</span> <span class="string">INFO</span>  <span class="string">org.apache.flink.runtime.rest.RestClient</span>                      <span class="bullet">-</span> <span class="string">Rest</span> <span class="string">client</span> <span class="string">endpoint</span> <span class="string">started.</span></span><br><span class="line"><span class="string">Flink</span> <span class="string">JobManager</span> <span class="string">is</span> <span class="string">now</span> <span class="string">running</span> <span class="string">on</span> <span class="string">worker2:43204</span> <span class="string">with</span> <span class="string">leader</span> <span class="string">id</span> <span class="string">1013ba3b-6ad6-45d9-97da-43cb4979e854.</span></span><br><span class="line"><span class="attr">JobManager Web Interface:</span> <span class="string">http://worker2:44941</span></span><br></pre></td></tr></table></figure>
+<p>可以通过<a href="http://worker2:44941" target="_blank" rel="noopener">http://worker2:44941</a>访问flink UI;<br>查看YARN web<a href="http://worker1:8088/cluster" target="_blank" rel="noopener">http://worker1:8088/cluster</a><br><img src="/images/flink/flink-on-yarn.png" alt=""><br>启动一个yarn-session有2个Taskmanager，jobmanager内存2GB，taskManager2GB内存，那么脚本编写应该是这样的：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/yarn-session.sh -n <span class="number">2</span> -jm <span class="number">1024</span> -tm <span class="number">1024</span></span><br></pre></td></tr></table></figure>
+<p>yarn-session的参数介绍</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">yarn-session的参数介绍</span><br><span class="line">  -<span class="ruby">n ： 指定TaskManager的数量；</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">d:</span> 以分离模式运行；</span></span><br><span class="line"><span class="ruby">  -id：指定yarn的任务ID；</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">j:</span>Flink jar文件的路径;</span></span><br><span class="line"><span class="ruby">  -jm：JobManager容器的内存（默认值：MB）;</span></span><br><span class="line"><span class="ruby">  -nl：为YARN应用程序指定YARN节点标签;</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">nm:</span>在YARN上为应用程序设置自定义名称;</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">q:</span>显示可用的YARN资源（内存，内核）;</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">qu:</span>指定YARN队列;</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">s:</span>指定TaskManager中slot的数量;</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">st:</span>以流模式启动Flink;</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">tm:</span>每个TaskManager容器的内存（默认值：MB）;</span></span><br><span class="line"><span class="ruby">  -<span class="symbol">z:</span>命名空间，用于为高可用性模式创建Zookeeper子路径;</span></span><br></pre></td></tr></table></figure>
+<p>系统默认使用con/flink-conf.yaml里的配置。Flink on yarn将会覆盖掉几个参数：<br>jobmanager.rpc.address因为jobmanager的在集群的运行位置并不是实现确定的，前面也说到了就是am的地址；<br>taskmanager.tmp.dirs使用yarn给定的临时目录;parallelism.default也会被覆盖掉，如果在命令行里指定了slot数。<br>如果你想保证conf/flink-conf.yaml仅是全局配置，然后针对要启动的每一个yarn-session.sh都设置自己的配置，那么可以考虑使用-D修饰。</p>
+<p>上传flink-1.9.1下的README.txt到hdfs的/flink/test目录，使用自带WordCount例子测试一下。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">root@</span>master1:/usr/local/flink/flink<span class="number">-1.9</span><span class="number">.1</span># hdfs dfs -ls /flink/test</span><br><span class="line">Found <span class="number">1</span> items</span><br><span class="line">-rw-r--r--   <span class="number">3</span> root supergroup       <span class="number">1308</span> <span class="number">2020</span><span class="number">-01</span><span class="number">-22</span> <span class="number">18</span>:<span class="number">39</span> /flink/test/README.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="Flink-高可用HA参数配置"><a href="#Flink-高可用HA参数配置" class="headerlink" title="Flink 高可用HA参数配置"></a>Flink 高可用HA参数配置</h2><p>修改/usr/local/hadoop/hadoop-2.6.5/etc/hadoop/yarn-site.xml文件，此配置代表application master在重启时，尝试的最大次数。<br>注意，Flink On Yarn环境中，当Jobmanager（Application Master）失败时，yarn会尝试重启JobManager（AM），重启后，会重新启动Flink的Job（application）。因此，yarn.application-attempts的设置不应该超过yarn.resourcemanager.am.max-attemps。以上的2个配置文件都需要分发到各个节点。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.am.max-attempts<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">value</span>&gt;</span>4<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>参考：<br><a href="https://www.jianshu.com/p/1b05202c4fb6" target="_blank" rel="noopener">https://www.jianshu.com/p/1b05202c4fb6</a><br><a href="https://mp.weixin.qq.com/s?__biz=Mzg3NjAwNzM4MA==&mid=2247483718&idx=1&sn=600358cceeddf23f2e73e5b37afeb6b7&chksm=cf399bfdf84e12eb40a26fb45528bcf29a8298fbc490954c34efd88eda0dc4dcff862be85339&scene=4&subscene=126&ascene=0&devicetype=android-25&version=27000338&nettype=3gnet&abtest_cookie=BQABAAoACwASABMAFAAFACOXHgBamR4Am5keAMaZHgDTmR4AAAA%3D&lang=zh_CN&pass_ticket=UIm3jEsgAQGHITNhnnGM4cAXL4CdbSRi7%2B7S6lqO%2FMe0vpDmKkaGkEyp%2BB%2B3HvhB&wx_header=1" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=Mzg3NjAwNzM4MA==&amp;mid=2247483718&amp;idx=1&amp;sn=600358cceeddf23f2e73e5b37afeb6b7&amp;chksm=cf399bfdf84e12eb40a26fb45528bcf29a8298fbc490954c34efd88eda0dc4dcff862be85339&amp;scene=4&amp;subscene=126&amp;ascene=0&amp;devicetype=android-25&amp;version=27000338&amp;nettype=3gnet&amp;abtest_cookie=BQABAAoACwASABMAFAAFACOXHgBamR4Am5keAMaZHgDTmR4AAAA%3D&amp;lang=zh_CN&amp;pass_ticket=UIm3jEsgAQGHITNhnnGM4cAXL4CdbSRi7%2B7S6lqO%2FMe0vpDmKkaGkEyp%2BB%2B3HvhB&amp;wx_header=1</a></p>
+
+      
+    </div>
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/flink/" rel="tag"><i class="fa fa-tag"></i> flink</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/framework/model-engine/" rel="next" title="model-engine">
+                <i class="fa fa-chevron-left"></i> model-engine
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/java/gc-params/" rel="prev" title="java gc参数">
+                java gc参数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sh_it_wx.png"
+                alt="加我微信，邀你入群" />
+            
+              <p class="site-author-name" itemprop="name">加我微信，邀你入群</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lujinyong168@gmail.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/lujinyong168" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5JjTeVD" target="_blank" title="进入QQ群1">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群1</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5KllGoe" target="_blank" title="进入QQ群2">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群2</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flink-on-yarn的整个交互"><span class="nav-text">Flink on yarn的整个交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flink两种作业提交"><span class="nav-text">Flink两种作业提交</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Flink"><span class="nav-text">安装Flink</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flink-高可用HA参数配置"><span class="nav-text">Flink 高可用HA参数配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">上海IT技术圈</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">57.8k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<div class="powered-by">
+	<i class="fa fa-user-md"></i>
+	<span id="busuanzi_container_site_uv">
+		本站访客数:<span id="busuanzi_value_site_uv"></span>
+	</span>
+	<span class="post-meta-divider">|</span>
+	<span id="busuanzi_container_site_pv">
+		本站访问量<span id="busuanzi_value_site_pv"></span>
+	</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
