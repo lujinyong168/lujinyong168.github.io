@@ -1,6 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>swagger ui的使用</title>
+    <url>/springboot/swaggerui/</url>
+    <content><![CDATA[<p>这篇blog记录一下swagger ui的使用及JSR-303的校验用法，为后续使用swagger生成静态文档做个铺垫。</p>
+<h2 id="配置swagger"><a href="#配置swagger" class="headerlink" title="配置swagger"></a>配置swagger</h2><ul>
+<li>常用注解介绍<br>@Controller：修饰class，用来创建处理http请求的对象<br>@RestController：Spring4之后加入的注解，原来在@Controller中返回json需要@ResponseBody来配合，如果直接用@RestController替代@Controller就不需要再配置@ResponseBody，默认返回json格式<br>@RequestMapping：配置url映射。现在更多的也会直接用以Http Method直接关联的映射注解来定义，比如：GetMapping、PostMapping、DeleteMapping、PutMapping等</li>
+<li>RESTful API设计如下:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">请求类型</th>
+<th align="left">URL</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GET</td>
+<td align="left">/users/</td>
+<td align="left">查询用户列表</td>
+</tr>
+<tr>
+<td align="left">GET</td>
+<td align="left">/users/id</td>
+<td align="left">根据id查询用户信息</td>
+</tr>
+<tr>
+<td align="left">POST</td>
+<td align="left">/users/</td>
+<td align="left">创建一个用户</td>
+</tr>
+<tr>
+<td align="left">PUT</td>
+<td align="left">/users/id</td>
+<td align="left">根据id更新用户信息</td>
+</tr>
+<tr>
+<td align="left">DELETE</td>
+<td align="left">/users/id</td>
+<td align="left">根据id删除用户</td>
+</tr>
+</tbody></table>
+<ul>
+<li>添加maven依赖<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.spring4all<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>swagger-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.9.0.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>应用主类中添加@EnableSwagger2Doc注解<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@EnableSwagger</span>2Doc</span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootdemoApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(SpringbootdemoApplication<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>在application.properties中添加swagger配置</li>
+</ul>
+<figure class="highlight plain"><figcaption><span>config</span></figcaption><table><tr><td class="code"><pre><span class="line">#swagger 配置</span><br><span class="line">#标题</span><br><span class="line">swagger.title&#x3D;spring-boot-starter-swagger</span><br><span class="line">#描述</span><br><span class="line">swagger.description&#x3D;Starter for swagger 2.x</span><br><span class="line">#版本</span><br><span class="line">swagger.version&#x3D;1.4.0.RELEASE</span><br><span class="line">#许可证</span><br><span class="line">swagger.license&#x3D;Apache License, Version 2.0</span><br><span class="line">#许可证URL</span><br><span class="line">swagger.licenseUrl&#x3D;https:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0.html</span><br><span class="line">#服务条款URL</span><br><span class="line">swagger.termsOfServiceUrl&#x3D;https:&#x2F;&#x2F;github.com&#x2F;dyc87112&#x2F;spring-boot-starter-swagger</span><br><span class="line">#维护人</span><br><span class="line">swagger.contact.name&#x3D;kn</span><br><span class="line">#维护人URL</span><br><span class="line">swagger.contact.url&#x3D;http:&#x2F;&#x2F;sparkx.com.cn</span><br><span class="line">#维护人email</span><br><span class="line">swagger.contact.email&#x3D;lujinyong168@foxmail.com</span><br><span class="line">#swagger扫描的基础包，默认：全扫描</span><br><span class="line">swagger.base-package&#x3D;com.example</span><br><span class="line">#需要处理的基础URL规则，默认：&#x2F;**</span><br><span class="line">swagger.base-path&#x3D;&#x2F;**</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>添加User实体</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootdemo.entity;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了简化代码我使用lombok自动生成getter和setter方法，需要加入maven依赖：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>并且在idea插件中心安装lombok插件。</p>
+</li>
+<li><p>启动应用，访问：<a href="http://localhost:8080/swagger-ui.html" target="_blank" rel="noopener">http://localhost:8080/swagger-ui.html</a></p>
+</li>
+</ul>
+<h2 id="JSR-303实现请求参数校验"><a href="#JSR-303实现请求参数校验" class="headerlink" title="JSR-303实现请求参数校验"></a>JSR-303实现请求参数校验</h2><ul>
+<li>什么是JSR？<blockquote>
+<p>JSR是Java Specification Requests的缩写，意思是Java 规范提案。是指向JCP(Java Community Process)提出新增一个标准化技术规范的正式请求。任何人都可以提交JSR，以向Java平台增添新的API和服务。JSR已成为Java界的一个重要标准。</p>
+</blockquote>
+</li>
+<li>JSR-303定义的是什么标准？<blockquote>
+<p>JSR-303 是JAVA EE 6 中的一项子规范，叫做Bean Validation，Hibernate Validator 是 Bean Validation 的参考实现 . Hibernate Validator 提供了 JSR 303 规范中所有内置 constraint 的实现，除此之外还有一些附加的 constraint。</p>
+</blockquote>
+</li>
+<li>Bean Validation中内置的constraint</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">注解</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">@Null</td>
+<td align="left">被注释的元素必须为null</td>
+</tr>
+<tr>
+<td align="left">@NotNull</td>
+<td align="left">被注释的元素必须不能为null</td>
+</tr>
+<tr>
+<td align="left">@AssertTrue</td>
+<td align="left">被注释的元素必须为true</td>
+</tr>
+<tr>
+<td align="left">@AssertFalse</td>
+<td align="left">被注释的元素必须为false</td>
+</tr>
+<tr>
+<td align="left">@Min(value)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须大于等于指定的最小值</td>
+</tr>
+<tr>
+<td align="left">@Max(value)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须小于等于指定的最大值</td>
+</tr>
+<tr>
+<td align="left">@DecimalMin(value)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须大于等于指定的最小值</td>
+</tr>
+<tr>
+<td align="left">@DecimalMax(value)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须小于等于指定的最大值</td>
+</tr>
+<tr>
+<td align="left">@Size(max,min)</td>
+<td align="left">被注释的元素的大小必须在指定范围内</td>
+</tr>
+<tr>
+<td align="left">@Digits(integer,fraction)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须在可接受的范围内</td>
+</tr>
+<tr>
+<td align="left">@Past</td>
+<td align="left">被注释的元素必须是一个过去的日期</td>
+</tr>
+<tr>
+<td align="left">@Future</td>
+<td align="left">被注释的元素必须是一个将来的日期</td>
+</tr>
+<tr>
+<td align="left">@Pattern(value)</td>
+<td align="left">被注释的元素必须符合指定的正则表达式</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Hibernate Validator附加的constraint</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">注解</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">@Email</td>
+<td align="left">被注释的元素必须是电子邮箱</td>
+</tr>
+<tr>
+<td align="left">@Length</td>
+<td align="left">被注释的字符串的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td align="left">@NotEmpty</td>
+<td align="left">被注释的字符串必须非空</td>
+</tr>
+<tr>
+<td align="left">@Range</td>
+<td align="left">被注释的元素必须在合适的范围内</td>
+</tr>
+</tbody></table>
+<p>在JSR-303的标准之下，我们可以通过上面这些注解，优雅的定义各个请求参数的校验。</p>
+<h2 id="JSR快速入门"><a href="#JSR快速入门" class="headerlink" title="JSR快速入门"></a>JSR快速入门</h2><h3 id="第一步-在要校验的字段上添加-NotNUll注解，如下："><a href="#第一步-在要校验的字段上添加-NotNUll注解，如下：" class="headerlink" title="第一步:在要校验的字段上添加@NotNUll注解，如下："></a>第一步:在要校验的字段上添加<code>@NotNUll</code>注解，如下：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootdemo.entity;</span><br><span class="line"><span class="keyword">import</span> io.swagger.annotations.ApiModel;</span><br><span class="line"><span class="keyword">import</span> io.swagger.annotations.ApiModelProperty;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> javax.validation.constraints.NotNull;</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@ApiModel</span>(description = <span class="string">"用户实体"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户编号"</span>)</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户姓名"</span>)</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户年龄"</span>)</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="第二步：在需要校验的参数实体钱添加-Valid注解"><a href="#第二步：在需要校验的参数实体钱添加-Valid注解" class="headerlink" title="第二步：在需要校验的参数实体钱添加@Valid注解"></a>第二步：在需要校验的参数实体钱添加<code>@Valid</code>注解</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *处理"/users/"的POST请求创建user</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> user</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@PostMapping</span>(<span class="string">"/"</span>)</span><br><span class="line"><span class="meta">@ApiOperation</span>(value=<span class="string">"创建用户"</span>,notes=<span class="string">"根据User对象创建用户"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">postUser</span><span class="params">(@Valid @RequestBody User user)</span></span>&#123;</span><br><span class="line">	users.put(user.getId(),user);</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完成上面配置后，启动应用，并用配置的swagger提供的页面测试POST接口，把默认的json报文去掉，提交请求。<br>或者使用<code>curl -X POST &quot;http://localhost:8080/users/&quot; -H &quot;accept: */*&quot; -H &quot;Content-Type: application/json&quot; -d &quot;{}&quot;</code>请求。<br>报文如下：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"timestamp"</span>: <span class="string">"2020-03-31T14:35:40.460+0000"</span>,</span><br><span class="line">  <span class="attr">"status"</span>: <span class="number">400</span>,</span><br><span class="line">  <span class="attr">"error"</span>: <span class="string">"Bad Request"</span>,</span><br><span class="line">  <span class="attr">"errors"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"codes"</span>: [</span><br><span class="line">        <span class="string">"NotNull.user.name"</span>,</span><br><span class="line">        <span class="string">"NotNull.name"</span>,</span><br><span class="line">        <span class="string">"NotNull.java.lang.String"</span>,</span><br><span class="line">        <span class="string">"NotNull"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"arguments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">"user.name"</span>,</span><br><span class="line">            <span class="string">"name"</span></span><br><span class="line">          ],</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">"name"</span>,</span><br><span class="line">          <span class="attr">"code"</span>: <span class="string">"name"</span></span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"defaultMessage"</span>: <span class="string">"不能为null"</span>,</span><br><span class="line">      <span class="attr">"objectName"</span>: <span class="string">"user"</span>,</span><br><span class="line">      <span class="attr">"field"</span>: <span class="string">"name"</span>,</span><br><span class="line">      <span class="attr">"rejectedValue"</span>: <span class="literal">null</span>,</span><br><span class="line">      <span class="attr">"bindingFailure"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"code"</span>: <span class="string">"NotNull"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"codes"</span>: [</span><br><span class="line">        <span class="string">"NotNull.user.age"</span>,</span><br><span class="line">        <span class="string">"NotNull.age"</span>,</span><br><span class="line">        <span class="string">"NotNull.java.lang.Integer"</span>,</span><br><span class="line">        <span class="string">"NotNull"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"arguments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">"user.age"</span>,</span><br><span class="line">            <span class="string">"age"</span></span><br><span class="line">          ],</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">"age"</span>,</span><br><span class="line">          <span class="attr">"code"</span>: <span class="string">"age"</span></span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"defaultMessage"</span>: <span class="string">"不能为null"</span>,</span><br><span class="line">      <span class="attr">"objectName"</span>: <span class="string">"user"</span>,</span><br><span class="line">      <span class="attr">"field"</span>: <span class="string">"age"</span>,</span><br><span class="line">      <span class="attr">"rejectedValue"</span>: <span class="literal">null</span>,</span><br><span class="line">      <span class="attr">"bindingFailure"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"code"</span>: <span class="string">"NotNull"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"message"</span>: <span class="string">"Validation failed for object='user'. Error count: 2"</span>,</span><br><span class="line">  <span class="attr">"path"</span>: <span class="string">"/users/"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中参数说明如下：</p>
+<blockquote>
+<p>errors：具体错误原因，是一个数组类型；因为错误校验可能存在多个字段的错误，比如这里因为定义了两个参数不能为Null，所以存在两条错误记录信息<br>message：概要错误消息，返回内容中很容易可以知道，这里的错误原因是对user对象的校验失败，其中错误数量为2，而具体的错误信息就定义在上面的errors数组中</p>
+</blockquote>
+<h2 id="其他校验规则"><a href="#其他校验规则" class="headerlink" title="其他校验规则"></a>其他校验规则</h2><p><code>@Size</code>,<code>@Max</code>,<code>@Min</code>,<code>@Email</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@ApiModel</span>(description = <span class="string">"用户实体"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户编号"</span>)</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@Size</span>(min=<span class="number">2</span>,max=<span class="number">5</span>)</span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户姓名"</span>)</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@Max</span>(<span class="number">100</span>)</span><br><span class="line">    <span class="meta">@Min</span>(<span class="number">0</span>)</span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户年龄"</span>)</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@Email</span></span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户邮箱"</span>)</span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在swagger ui中post接口输入如下测试数据，并提交请求,或者用<code>curl -X POST &quot;http://localhost:8080/users/&quot; -H &quot;accept: */*&quot; -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;age\&quot;: 10, \&quot;email\&quot;: \&quot;test\&quot;, \&quot;id\&quot;: 0, \&quot;name\&quot;: \&quot;test12345678\&quot;}&quot;</code>提交请求。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"age"</span>: <span class="number">10</span>,</span><br><span class="line">  <span class="attr">"email"</span>: <span class="string">"test"</span>,</span><br><span class="line">  <span class="attr">"id"</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"test12345678"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回报文如下：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"timestamp"</span>: <span class="string">"2020-03-31T14:54:09.958+0000"</span>,</span><br><span class="line">  <span class="attr">"status"</span>: <span class="number">400</span>,</span><br><span class="line">  <span class="attr">"error"</span>: <span class="string">"Bad Request"</span>,</span><br><span class="line">  <span class="attr">"errors"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"codes"</span>: [</span><br><span class="line">        <span class="string">"Email.user.email"</span>,</span><br><span class="line">        <span class="string">"Email.email"</span>,</span><br><span class="line">        <span class="string">"Email.java.lang.String"</span>,</span><br><span class="line">        <span class="string">"Email"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"arguments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">"user.email"</span>,</span><br><span class="line">            <span class="string">"email"</span></span><br><span class="line">          ],</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">"email"</span>,</span><br><span class="line">          <span class="attr">"code"</span>: <span class="string">"email"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        [],</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">".*"</span>,</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">".*"</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"defaultMessage"</span>: <span class="string">"不是一个合法的电子邮件地址"</span>,</span><br><span class="line">      <span class="attr">"objectName"</span>: <span class="string">"user"</span>,</span><br><span class="line">      <span class="attr">"field"</span>: <span class="string">"email"</span>,</span><br><span class="line">      <span class="attr">"rejectedValue"</span>: <span class="string">"test"</span>,</span><br><span class="line">      <span class="attr">"bindingFailure"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"code"</span>: <span class="string">"Email"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"codes"</span>: [</span><br><span class="line">        <span class="string">"Size.user.name"</span>,</span><br><span class="line">        <span class="string">"Size.name"</span>,</span><br><span class="line">        <span class="string">"Size.java.lang.String"</span>,</span><br><span class="line">        <span class="string">"Size"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"arguments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">"user.name"</span>,</span><br><span class="line">            <span class="string">"name"</span></span><br><span class="line">          ],</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">"name"</span>,</span><br><span class="line">          <span class="attr">"code"</span>: <span class="string">"name"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="number">5</span>,</span><br><span class="line">        <span class="number">2</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"defaultMessage"</span>: <span class="string">"个数必须在2和5之间"</span>,</span><br><span class="line">      <span class="attr">"objectName"</span>: <span class="string">"user"</span>,</span><br><span class="line">      <span class="attr">"field"</span>: <span class="string">"name"</span>,</span><br><span class="line">      <span class="attr">"rejectedValue"</span>: <span class="string">"test12345678"</span>,</span><br><span class="line">      <span class="attr">"bindingFailure"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"code"</span>: <span class="string">"Size"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"message"</span>: <span class="string">"Validation failed for object='user'. Error count: 2"</span>,</span><br><span class="line">  <span class="attr">"path"</span>: <span class="string">"/users/"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从errors数组中的各个错误明细中，知道各个字段的defaultMessage，可以看到很清晰的错误描述。</p>
+<blockquote>
+<p>Swagger自身对JSR-303有一定的支持，但是支持的并那么完善，并没有覆盖所有的注解的。Swagger共支持以下几个注解：@NotNull、@Max、@Min、@Size、@Pattern。在实际开发过程中，我们需要分情况来处理，对于Swagger支自动生成的可以利用原生支持来产生，如果有部分字段无法产生，则可以在@ApiModelProperty注解的描述中他，添加相应的校验说明，以便于使用方查看。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>springboot入门</title>
+    <url>/springboot/springboot-start/</url>
+    <content><![CDATA[<h1 id="什么是springboot"><a href="#什么是springboot" class="headerlink" title="什么是springboot?"></a>什么是springboot?</h1><p>Spring Boot是一个更容易上手，更简单快捷地构建Spring应用的框架，可以让我们的Spring应用更加轻量化。主要优点如下：</p>
+<ul>
+<li>开箱即用，提供各种默认配置来简化项目配置</li>
+<li>内嵌式容器简化Web项目</li>
+<li>没有冗余代码生成和XML配置的要求<h1 id="创建基础项目"><a href="#创建基础项目" class="headerlink" title="创建基础项目"></a>创建基础项目</h1>Spring官方提供了非常方便的工具<a href="https://start.spring.io/" target="_blank" rel="noopener">Spring Initializr</a>来帮助我们创建Spring Boot应用。也可以使用IDEA来创建，创建方法网上自行搜索。<br>【强制】GroupID、ArtifactID、Version遵从阿里巴巴java开发手册：</li>
+<li>GroupID 格式： com.{公司/BU }.业务线 [.子业务线]，最多 4 级。<blockquote>
+<blockquote>
+<p>说明： {公司/BU} 例如： alibaba/taobao/tmall/aliexpress 等 BU 一级；子业务线可选。<br>正例： com.taobao.jstorm 或 com.alibaba.dubbo.register</p>
+</blockquote>
+</blockquote>
+</li>
+<li>ArtifactID 格式：产品线名-模块名。语义不重复不遗漏，先到中央仓库去查证一下。<blockquote>
+<blockquote>
+<p>正例： dubbo-client / fastjson-api / jstorm-tool</p>
+</blockquote>
+</blockquote>
+</li>
+<li>Version：详细规定参考下方。<blockquote>
+<blockquote>
+<p>二方库版本号命名方式：主版本号.次版本号.修订号<br>主版本号： 产品方向改变， 或者大规模 API 不兼容， 或者架构不兼容升级。<br>次版本号： 保持相对兼容性，增加主要功能特性，影响范围极小的 API 不兼容修改。<br>修订号： 保持完全兼容性， 修复 BUG、 新增次要功能特性等。</p>
+</blockquote>
+</blockquote>
+<h1 id="项目结构介绍"><a href="#项目结构介绍" class="headerlink" title="项目结构介绍"></a>项目结构介绍</h1></li>
+<li>src/main/java下的程序入口：SpringbootdemoApplication，要注意的是程序入库尽量放到最外层包内，否则controller下面的url会扫描不到；</li>
+<li>src/main/resources下的配置文件：application.properties</li>
+<li>src/test/下的测试入口：SpringbootdemoApplicationTests<h1 id="pom-xml文件"><a href="#pom-xml文件" class="headerlink" title="pom.xml文件"></a>pom.xml文件</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project xmlns&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0&quot; xmlns:xsi&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema-instance&quot;</span><br><span class="line">	xsi:schemaLocation&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0 https:&#x2F;&#x2F;maven.apache.org&#x2F;xsd&#x2F;maven-4.0.0.xsd&quot;&gt;</span><br><span class="line">	&lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line">	&lt;!--继承spring-boot-starter-parent的依赖管理，控制版本与打包等内容--&gt;</span><br><span class="line">	&lt;parent&gt;</span><br><span class="line">		&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">		&lt;artifactId&gt;spring-boot-starter-parent&lt;&#x2F;artifactId&gt;</span><br><span class="line">		&lt;version&gt;2.1.3.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;relativePath&#x2F;&gt; &lt;!-- lookup parent from repository --&gt;</span><br><span class="line">	&lt;&#x2F;parent&gt;</span><br><span class="line">	&lt;groupId&gt;com.example&lt;&#x2F;groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;springbootdemo&lt;&#x2F;artifactId&gt;</span><br><span class="line">	&lt;version&gt;0.0.1-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line">	&lt;name&gt;springbootdemo&lt;&#x2F;name&gt;</span><br><span class="line">	&lt;description&gt;Demo project for Spring Boot&lt;&#x2F;description&gt;</span><br><span class="line"></span><br><span class="line">	&lt;properties&gt;</span><br><span class="line">		&lt;java.version&gt;1.8&lt;&#x2F;java.version&gt;</span><br><span class="line">	&lt;&#x2F;properties&gt;</span><br><span class="line"></span><br><span class="line">	&lt;dependencies&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;com.google.code.gson&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;gson&lt;&#x2F;artifactId&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;commons-lang&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;commons-lang&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;version&gt;2.6&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;!--用于实现HTTP接口（该依赖中包含了Spring MVC）--&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-web&lt;&#x2F;artifactId&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;!--用于编写单元测试的依赖包--&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-test&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;scope&gt;test&lt;&#x2F;scope&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.projectlombok&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;lombok&lt;&#x2F;artifactId&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;com.spring4all&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;swagger-spring-boot-starter&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.9.0.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">	&lt;&#x2F;dependencies&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!--构建配置部分:默认使用了spring-boot-maven-plugin，配合spring-boot-starter-parent就可以把Spring Boot应用打包成JAR来直接运行。--&gt;</span><br><span class="line">	&lt;build&gt;</span><br><span class="line">		&lt;plugins&gt;</span><br><span class="line">			&lt;plugin&gt;</span><br><span class="line">				&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">				&lt;artifactId&gt;spring-boot-maven-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;&#x2F;plugin&gt;</span><br><span class="line">		&lt;&#x2F;plugins&gt;</span><br><span class="line">	&lt;&#x2F;build&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="编写HTTP接口"><a href="#编写HTTP接口" class="headerlink" title="编写HTTP接口"></a>编写HTTP接口</h1>在com.example.springbootdemo创建HelloController类，如下：<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootdemo.controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">index</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello World"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+启动主程序SpringbootdemoApplication，使用PostMan等工具发起请求:<a href="http://localhost:8080/hello,可以看到页面返回：Hello" target="_blank" rel="noopener">http://localhost:8080/hello,可以看到页面返回：Hello</a> World<h1 id="编写测试单元用例"><a href="#编写测试单元用例" class="headerlink" title="编写测试单元用例"></a>编写测试单元用例</h1>打开src/test/下的SpringbootdemoApplicationTests类，编写简单单元测试，如下：<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootdemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.example.springbootdemo.controller.HelloController;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.MediaType;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.MockMvc;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.request.MockMvcRequestBuilders;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.setup.MockMvcBuilders;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.Matchers.equalTo;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith</span>(SpringRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">SpringBootTest</span></span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">SpringbootdemoApplicationTests</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> MockMvc mvc;</span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Before</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUp</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		mvc = MockMvcBuilders.standaloneSetup(<span class="keyword">new</span> HelloController()).build();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getHello</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		mvc.perform(MockMvcRequestBuilders.get(<span class="string">"/hello"</span>).accept(MediaType.APPLICATION_JSON))</span><br><span class="line">				.andExpect(status().isOk())</span><br><span class="line">				.andExpect(content().string(equalTo(<span class="string">"Hello World"</span>)));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+使用MockServletContext来构建一个空的WebApplicationContext，这样我们创建的HelloController就可以在@Before函数中创建并传递到MockMvcBuilders.standaloneSetup()函数中。<h1 id="典型工程结构"><a href="#典型工程结构" class="headerlink" title="典型工程结构"></a>典型工程结构</h1><figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">com</span><br><span class="line">  +- example</span><br><span class="line">    +- myproject</span><br><span class="line">      +- Application.java</span><br><span class="line">      |</span><br><span class="line">      +- domain</span><br><span class="line">      |  +- Customer.java</span><br><span class="line">      |  +- CustomerRepository.java</span><br><span class="line">      |</span><br><span class="line">      +- service</span><br><span class="line">      |  +- CustomerService.java</span><br><span class="line">      |</span><br><span class="line">      +- web</span><br><span class="line">      |  +- CustomerController.java</span><br><span class="line">      |</span><br></pre></td></tr></table></figure>
+root package：com.example.myproject，所有的类和其他package都在root package之下。<br>应用主类：Application.java，该类直接位于root package下。通常我们会在应用主类中做一些框架配置扫描等配置，我们放在root package下可以帮助程序减少手工配置来加载到我们希望被Spring加载的内容。<br>com.example.myproject.domain包：用于定义实体映射关系与数据访问相关的接口和实现。<br>com.example.myproject.service包：用于编写业务逻辑相关的接口与实现。<br>com.example.myproject.web：用于编写Web层相关的实现，比如：Spring MVC的Controller等<br>上面的结构中，root package与应用主类的位置是整个结构的关键。由于应用主类在root package中，所以按照上面的规则定义的所有其他类都处于root package下的其他子包之后。默认情况下，Spring Boot的应用主类会自动扫描root package以及所有子包下的所有类来进行初始化。<h1 id="非典型结构化下的初始化"><a href="#非典型结构化下的初始化" class="headerlink" title="非典型结构化下的初始化"></a>非典型结构化下的初始化</h1>如果，我们一定要加载非root package下的内容有如下两种方法：<br>方法一：可以使用@ComponentScan注解指定具体的加载包，如下：<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(basePackages=<span class="string">"com.example"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bootstrap</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(Bootstrap<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+这种方法通过注解直接指定要扫描的包，比较直观。如果有这样的需求也是可以用的，但是原则上还是推荐以上面的典型结构来定义，这样也可以少写一些注解，代码更加简洁。<br>方法二：使用@Bean注解来初始化，如下：<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bootstrap</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(Bootstrap<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CustomerController <span class="title">customerController</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> CustomerController();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+这种方法在业务开发的时候并不是特别推荐，更适合用于框架封装等场景。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>java gc参数</title>
     <url>/java/gc-params/</url>
     <content><![CDATA[<p>Java GC相关参数介绍</p>

@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="chinaz-site-verification" content="13110D1FAE1F5D8D"> 
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java,springboot," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="上海IT技术圈" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Swagger UI的使用和JSR-303的校验用法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="swagger ui的使用">
+<meta property="og:url" content="http:&#x2F;&#x2F;sparkx.com.cn&#x2F;springboot&#x2F;swaggerui&#x2F;index.html">
+<meta property="og:site_name" content="上海IT技术圈">
+<meta property="og:description" content="Swagger UI的使用和JSR-303的校验用法">
+<meta property="article:published_time" content="2020-03-31T15:11:18.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:19:06.846Z">
+<meta property="article:author" content="加我微信，邀你入群">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="springboot">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":2,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sparkx.com.cn/springboot/swaggerui/"/>
+
+
+
+
+
+  <title>swagger ui的使用 | 上海IT技术圈</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fe2f5ba83c65630d7643754faa0867c1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">上海IT技术圈</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">IT技术</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/categories/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-java">
+          <a href="/categories/java/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Java
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-spark">
+          <a href="/categories/spark/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Spark
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-flink">
+          <a href="/categories/flink/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Flink
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/tools/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sparkx.com.cn/springboot/swaggerui/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="加我微信，邀你入群">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sh_it_wx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="上海IT技术圈">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">swagger ui的使用</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-31T23:11:18+08:00">
+                2020-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  Swagger UI的使用和JSR-303的校验用法
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇blog记录一下swagger ui的使用及JSR-303的校验用法，为后续使用swagger生成静态文档做个铺垫。</p>
+<h2 id="配置swagger"><a href="#配置swagger" class="headerlink" title="配置swagger"></a>配置swagger</h2><ul>
+<li>常用注解介绍<br>@Controller：修饰class，用来创建处理http请求的对象<br>@RestController：Spring4之后加入的注解，原来在@Controller中返回json需要@ResponseBody来配合，如果直接用@RestController替代@Controller就不需要再配置@ResponseBody，默认返回json格式<br>@RequestMapping：配置url映射。现在更多的也会直接用以Http Method直接关联的映射注解来定义，比如：GetMapping、PostMapping、DeleteMapping、PutMapping等</li>
+<li>RESTful API设计如下:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">请求类型</th>
+<th align="left">URL</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GET</td>
+<td align="left">/users/</td>
+<td align="left">查询用户列表</td>
+</tr>
+<tr>
+<td align="left">GET</td>
+<td align="left">/users/id</td>
+<td align="left">根据id查询用户信息</td>
+</tr>
+<tr>
+<td align="left">POST</td>
+<td align="left">/users/</td>
+<td align="left">创建一个用户</td>
+</tr>
+<tr>
+<td align="left">PUT</td>
+<td align="left">/users/id</td>
+<td align="left">根据id更新用户信息</td>
+</tr>
+<tr>
+<td align="left">DELETE</td>
+<td align="left">/users/id</td>
+<td align="left">根据id删除用户</td>
+</tr>
+</tbody></table>
+<ul>
+<li>添加maven依赖<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.spring4all<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>swagger-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.9.0.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>应用主类中添加@EnableSwagger2Doc注解<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableSwagger</span>2Doc</span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootdemoApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(SpringbootdemoApplication<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>在application.properties中添加swagger配置</li>
+</ul>
+<figure class="highlight plain"><figcaption><span>config</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#swagger 配置</span><br><span class="line">#标题</span><br><span class="line">swagger.title&#x3D;spring-boot-starter-swagger</span><br><span class="line">#描述</span><br><span class="line">swagger.description&#x3D;Starter for swagger 2.x</span><br><span class="line">#版本</span><br><span class="line">swagger.version&#x3D;1.4.0.RELEASE</span><br><span class="line">#许可证</span><br><span class="line">swagger.license&#x3D;Apache License, Version 2.0</span><br><span class="line">#许可证URL</span><br><span class="line">swagger.licenseUrl&#x3D;https:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0.html</span><br><span class="line">#服务条款URL</span><br><span class="line">swagger.termsOfServiceUrl&#x3D;https:&#x2F;&#x2F;github.com&#x2F;dyc87112&#x2F;spring-boot-starter-swagger</span><br><span class="line">#维护人</span><br><span class="line">swagger.contact.name&#x3D;kn</span><br><span class="line">#维护人URL</span><br><span class="line">swagger.contact.url&#x3D;http:&#x2F;&#x2F;sparkx.com.cn</span><br><span class="line">#维护人email</span><br><span class="line">swagger.contact.email&#x3D;lujinyong168@foxmail.com</span><br><span class="line">#swagger扫描的基础包，默认：全扫描</span><br><span class="line">swagger.base-package&#x3D;com.example</span><br><span class="line">#需要处理的基础URL规则，默认：&#x2F;**</span><br><span class="line">swagger.base-path&#x3D;&#x2F;**</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>添加User实体</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootdemo.entity;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了简化代码我使用lombok自动生成getter和setter方法，需要加入maven依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>并且在idea插件中心安装lombok插件。</p>
+</li>
+<li><p>启动应用，访问：<a href="http://localhost:8080/swagger-ui.html" target="_blank" rel="noopener">http://localhost:8080/swagger-ui.html</a></p>
+</li>
+</ul>
+<h2 id="JSR-303实现请求参数校验"><a href="#JSR-303实现请求参数校验" class="headerlink" title="JSR-303实现请求参数校验"></a>JSR-303实现请求参数校验</h2><ul>
+<li>什么是JSR？<blockquote>
+<p>JSR是Java Specification Requests的缩写，意思是Java 规范提案。是指向JCP(Java Community Process)提出新增一个标准化技术规范的正式请求。任何人都可以提交JSR，以向Java平台增添新的API和服务。JSR已成为Java界的一个重要标准。</p>
+</blockquote>
+</li>
+<li>JSR-303定义的是什么标准？<blockquote>
+<p>JSR-303 是JAVA EE 6 中的一项子规范，叫做Bean Validation，Hibernate Validator 是 Bean Validation 的参考实现 . Hibernate Validator 提供了 JSR 303 规范中所有内置 constraint 的实现，除此之外还有一些附加的 constraint。</p>
+</blockquote>
+</li>
+<li>Bean Validation中内置的constraint</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">注解</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">@Null</td>
+<td align="left">被注释的元素必须为null</td>
+</tr>
+<tr>
+<td align="left">@NotNull</td>
+<td align="left">被注释的元素必须不能为null</td>
+</tr>
+<tr>
+<td align="left">@AssertTrue</td>
+<td align="left">被注释的元素必须为true</td>
+</tr>
+<tr>
+<td align="left">@AssertFalse</td>
+<td align="left">被注释的元素必须为false</td>
+</tr>
+<tr>
+<td align="left">@Min(value)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须大于等于指定的最小值</td>
+</tr>
+<tr>
+<td align="left">@Max(value)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须小于等于指定的最大值</td>
+</tr>
+<tr>
+<td align="left">@DecimalMin(value)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须大于等于指定的最小值</td>
+</tr>
+<tr>
+<td align="left">@DecimalMax(value)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须小于等于指定的最大值</td>
+</tr>
+<tr>
+<td align="left">@Size(max,min)</td>
+<td align="left">被注释的元素的大小必须在指定范围内</td>
+</tr>
+<tr>
+<td align="left">@Digits(integer,fraction)</td>
+<td align="left">被注释的元素必须是一个数字，其值必须在可接受的范围内</td>
+</tr>
+<tr>
+<td align="left">@Past</td>
+<td align="left">被注释的元素必须是一个过去的日期</td>
+</tr>
+<tr>
+<td align="left">@Future</td>
+<td align="left">被注释的元素必须是一个将来的日期</td>
+</tr>
+<tr>
+<td align="left">@Pattern(value)</td>
+<td align="left">被注释的元素必须符合指定的正则表达式</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Hibernate Validator附加的constraint</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">注解</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">@Email</td>
+<td align="left">被注释的元素必须是电子邮箱</td>
+</tr>
+<tr>
+<td align="left">@Length</td>
+<td align="left">被注释的字符串的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td align="left">@NotEmpty</td>
+<td align="left">被注释的字符串必须非空</td>
+</tr>
+<tr>
+<td align="left">@Range</td>
+<td align="left">被注释的元素必须在合适的范围内</td>
+</tr>
+</tbody></table>
+<p>在JSR-303的标准之下，我们可以通过上面这些注解，优雅的定义各个请求参数的校验。</p>
+<h2 id="JSR快速入门"><a href="#JSR快速入门" class="headerlink" title="JSR快速入门"></a>JSR快速入门</h2><h3 id="第一步-在要校验的字段上添加-NotNUll注解，如下："><a href="#第一步-在要校验的字段上添加-NotNUll注解，如下：" class="headerlink" title="第一步:在要校验的字段上添加@NotNUll注解，如下："></a>第一步:在要校验的字段上添加<code>@NotNUll</code>注解，如下：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootdemo.entity;</span><br><span class="line"><span class="keyword">import</span> io.swagger.annotations.ApiModel;</span><br><span class="line"><span class="keyword">import</span> io.swagger.annotations.ApiModelProperty;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> javax.validation.constraints.NotNull;</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@ApiModel</span>(description = <span class="string">"用户实体"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户编号"</span>)</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户姓名"</span>)</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户年龄"</span>)</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="第二步：在需要校验的参数实体钱添加-Valid注解"><a href="#第二步：在需要校验的参数实体钱添加-Valid注解" class="headerlink" title="第二步：在需要校验的参数实体钱添加@Valid注解"></a>第二步：在需要校验的参数实体钱添加<code>@Valid</code>注解</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *处理"/users/"的POST请求创建user</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> user</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@PostMapping</span>(<span class="string">"/"</span>)</span><br><span class="line"><span class="meta">@ApiOperation</span>(value=<span class="string">"创建用户"</span>,notes=<span class="string">"根据User对象创建用户"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">postUser</span><span class="params">(@Valid @RequestBody User user)</span></span>&#123;</span><br><span class="line">	users.put(user.getId(),user);</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完成上面配置后，启动应用，并用配置的swagger提供的页面测试POST接口，把默认的json报文去掉，提交请求。<br>或者使用<code>curl -X POST &quot;http://localhost:8080/users/&quot; -H &quot;accept: */*&quot; -H &quot;Content-Type: application/json&quot; -d &quot;{}&quot;</code>请求。<br>报文如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"timestamp"</span>: <span class="string">"2020-03-31T14:35:40.460+0000"</span>,</span><br><span class="line">  <span class="attr">"status"</span>: <span class="number">400</span>,</span><br><span class="line">  <span class="attr">"error"</span>: <span class="string">"Bad Request"</span>,</span><br><span class="line">  <span class="attr">"errors"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"codes"</span>: [</span><br><span class="line">        <span class="string">"NotNull.user.name"</span>,</span><br><span class="line">        <span class="string">"NotNull.name"</span>,</span><br><span class="line">        <span class="string">"NotNull.java.lang.String"</span>,</span><br><span class="line">        <span class="string">"NotNull"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"arguments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">"user.name"</span>,</span><br><span class="line">            <span class="string">"name"</span></span><br><span class="line">          ],</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">"name"</span>,</span><br><span class="line">          <span class="attr">"code"</span>: <span class="string">"name"</span></span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"defaultMessage"</span>: <span class="string">"不能为null"</span>,</span><br><span class="line">      <span class="attr">"objectName"</span>: <span class="string">"user"</span>,</span><br><span class="line">      <span class="attr">"field"</span>: <span class="string">"name"</span>,</span><br><span class="line">      <span class="attr">"rejectedValue"</span>: <span class="literal">null</span>,</span><br><span class="line">      <span class="attr">"bindingFailure"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"code"</span>: <span class="string">"NotNull"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"codes"</span>: [</span><br><span class="line">        <span class="string">"NotNull.user.age"</span>,</span><br><span class="line">        <span class="string">"NotNull.age"</span>,</span><br><span class="line">        <span class="string">"NotNull.java.lang.Integer"</span>,</span><br><span class="line">        <span class="string">"NotNull"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"arguments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">"user.age"</span>,</span><br><span class="line">            <span class="string">"age"</span></span><br><span class="line">          ],</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">"age"</span>,</span><br><span class="line">          <span class="attr">"code"</span>: <span class="string">"age"</span></span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"defaultMessage"</span>: <span class="string">"不能为null"</span>,</span><br><span class="line">      <span class="attr">"objectName"</span>: <span class="string">"user"</span>,</span><br><span class="line">      <span class="attr">"field"</span>: <span class="string">"age"</span>,</span><br><span class="line">      <span class="attr">"rejectedValue"</span>: <span class="literal">null</span>,</span><br><span class="line">      <span class="attr">"bindingFailure"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"code"</span>: <span class="string">"NotNull"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"message"</span>: <span class="string">"Validation failed for object='user'. Error count: 2"</span>,</span><br><span class="line">  <span class="attr">"path"</span>: <span class="string">"/users/"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中参数说明如下：</p>
+<blockquote>
+<p>errors：具体错误原因，是一个数组类型；因为错误校验可能存在多个字段的错误，比如这里因为定义了两个参数不能为Null，所以存在两条错误记录信息<br>message：概要错误消息，返回内容中很容易可以知道，这里的错误原因是对user对象的校验失败，其中错误数量为2，而具体的错误信息就定义在上面的errors数组中</p>
+</blockquote>
+<h2 id="其他校验规则"><a href="#其他校验规则" class="headerlink" title="其他校验规则"></a>其他校验规则</h2><p><code>@Size</code>,<code>@Max</code>,<code>@Min</code>,<code>@Email</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@ApiModel</span>(description = <span class="string">"用户实体"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户编号"</span>)</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@Size</span>(min=<span class="number">2</span>,max=<span class="number">5</span>)</span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户姓名"</span>)</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@Max</span>(<span class="number">100</span>)</span><br><span class="line">    <span class="meta">@Min</span>(<span class="number">0</span>)</span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户年龄"</span>)</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@Email</span></span><br><span class="line">    <span class="meta">@ApiModelProperty</span>(<span class="string">"用户邮箱"</span>)</span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在swagger ui中post接口输入如下测试数据，并提交请求,或者用<code>curl -X POST &quot;http://localhost:8080/users/&quot; -H &quot;accept: */*&quot; -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;age\&quot;: 10, \&quot;email\&quot;: \&quot;test\&quot;, \&quot;id\&quot;: 0, \&quot;name\&quot;: \&quot;test12345678\&quot;}&quot;</code>提交请求。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"age"</span>: <span class="number">10</span>,</span><br><span class="line">  <span class="attr">"email"</span>: <span class="string">"test"</span>,</span><br><span class="line">  <span class="attr">"id"</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"test12345678"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回报文如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"timestamp"</span>: <span class="string">"2020-03-31T14:54:09.958+0000"</span>,</span><br><span class="line">  <span class="attr">"status"</span>: <span class="number">400</span>,</span><br><span class="line">  <span class="attr">"error"</span>: <span class="string">"Bad Request"</span>,</span><br><span class="line">  <span class="attr">"errors"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"codes"</span>: [</span><br><span class="line">        <span class="string">"Email.user.email"</span>,</span><br><span class="line">        <span class="string">"Email.email"</span>,</span><br><span class="line">        <span class="string">"Email.java.lang.String"</span>,</span><br><span class="line">        <span class="string">"Email"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"arguments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">"user.email"</span>,</span><br><span class="line">            <span class="string">"email"</span></span><br><span class="line">          ],</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">"email"</span>,</span><br><span class="line">          <span class="attr">"code"</span>: <span class="string">"email"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        [],</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">".*"</span>,</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">".*"</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"defaultMessage"</span>: <span class="string">"不是一个合法的电子邮件地址"</span>,</span><br><span class="line">      <span class="attr">"objectName"</span>: <span class="string">"user"</span>,</span><br><span class="line">      <span class="attr">"field"</span>: <span class="string">"email"</span>,</span><br><span class="line">      <span class="attr">"rejectedValue"</span>: <span class="string">"test"</span>,</span><br><span class="line">      <span class="attr">"bindingFailure"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"code"</span>: <span class="string">"Email"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"codes"</span>: [</span><br><span class="line">        <span class="string">"Size.user.name"</span>,</span><br><span class="line">        <span class="string">"Size.name"</span>,</span><br><span class="line">        <span class="string">"Size.java.lang.String"</span>,</span><br><span class="line">        <span class="string">"Size"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"arguments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"codes"</span>: [</span><br><span class="line">            <span class="string">"user.name"</span>,</span><br><span class="line">            <span class="string">"name"</span></span><br><span class="line">          ],</span><br><span class="line">          <span class="attr">"arguments"</span>: <span class="literal">null</span>,</span><br><span class="line">          <span class="attr">"defaultMessage"</span>: <span class="string">"name"</span>,</span><br><span class="line">          <span class="attr">"code"</span>: <span class="string">"name"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="number">5</span>,</span><br><span class="line">        <span class="number">2</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"defaultMessage"</span>: <span class="string">"个数必须在2和5之间"</span>,</span><br><span class="line">      <span class="attr">"objectName"</span>: <span class="string">"user"</span>,</span><br><span class="line">      <span class="attr">"field"</span>: <span class="string">"name"</span>,</span><br><span class="line">      <span class="attr">"rejectedValue"</span>: <span class="string">"test12345678"</span>,</span><br><span class="line">      <span class="attr">"bindingFailure"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"code"</span>: <span class="string">"Size"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"message"</span>: <span class="string">"Validation failed for object='user'. Error count: 2"</span>,</span><br><span class="line">  <span class="attr">"path"</span>: <span class="string">"/users/"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从errors数组中的各个错误明细中，知道各个字段的defaultMessage，可以看到很清晰的错误描述。</p>
+<blockquote>
+<p>Swagger自身对JSR-303有一定的支持，但是支持的并那么完善，并没有覆盖所有的注解的。Swagger共支持以下几个注解：@NotNull、@Max、@Min、@Size、@Pattern。在实际开发过程中，我们需要分情况来处理，对于Swagger支自动生成的可以利用原生支持来产生，如果有部分字段无法产生，则可以在@ApiModelProperty注解的描述中他，添加相应的校验说明，以便于使用方查看。</p>
+</blockquote>
+
+      
+    </div>
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
+          
+            <a href="/tags/springboot/" rel="tag"><i class="fa fa-tag"></i> springboot</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/springboot/springboot-start/" rel="next" title="springboot入门">
+                <i class="fa fa-chevron-left"></i> springboot入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sh_it_wx.png"
+                alt="加我微信，邀你入群" />
+            
+              <p class="site-author-name" itemprop="name">加我微信，邀你入群</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lujinyong168@gmail.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/lujinyong168" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5JjTeVD" target="_blank" title="进入QQ群1">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群1</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://jq.qq.com/?_wv=1027&k=5KllGoe" target="_blank" title="进入QQ群2">
+                      
+                        <i class="fa fa-fw fa-qq"></i>进入QQ群2</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置swagger"><span class="nav-text">配置swagger</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSR-303实现请求参数校验"><span class="nav-text">JSR-303实现请求参数校验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSR快速入门"><span class="nav-text">JSR快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步-在要校验的字段上添加-NotNUll注解，如下："><span class="nav-text">第一步:在要校验的字段上添加@NotNUll注解，如下：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步：在需要校验的参数实体钱添加-Valid注解"><span class="nav-text">第二步：在需要校验的参数实体钱添加@Valid注解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他校验规则"><span class="nav-text">其他校验规则</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">上海IT技术圈</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">61.5k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<div class="powered-by">
+	<i class="fa fa-user-md"></i>
+	<span id="busuanzi_container_site_uv">
+		本站访客数:<span id="busuanzi_value_site_uv"></span>
+	</span>
+	<span class="post-meta-divider">|</span>
+	<span id="busuanzi_container_site_pv">
+		本站访问量<span id="busuanzi_value_site_pv"></span>
+	</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
