@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="上海IT技术圈">
 <meta property="og:description" content="介绍springboot入门相关知识">
 <meta property="article:published_time" content="2020-03-30T15:03:54.000Z">
-<meta property="article:modified_time" content="2020-03-30T15:38:13.859Z">
+<meta property="article:modified_time" content="2020-04-01T00:16:52.016Z">
 <meta property="article:author" content="加我微信，邀你入群">
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="springboot">
@@ -446,7 +446,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.7k
+                  2.1k
                 </span>
               
 
@@ -462,7 +462,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  8
+                  10
                 </span>
               
             </div>
@@ -520,6 +520,7 @@ root package：com.example.myproject，所有的类和其他package都在root pa
 这种方法通过注解直接指定要扫描的包，比较直观。如果有这样的需求也是可以用的，但是原则上还是推荐以上面的典型结构来定义，这样也可以少写一些注解，代码更加简洁。<br>方法二：使用@Bean注解来初始化，如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bootstrap</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(Bootstrap<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CustomerController <span class="title">customerController</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> CustomerController();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 这种方法在业务开发的时候并不是特别推荐，更适合用于框架封装等场景。</li>
 </ul>
+<h1 id="打印启动日志中的请求路径列表"><a href="#打印启动日志中的请求路径列表" class="headerlink" title="打印启动日志中的请求路径列表"></a>打印启动日志中的请求路径列表</h1><p>Spring Boot 2.1.X版本中已经不再打印请求路径列表，主要是日志打印级别从原来的<code>INFO</code>调整为了<code>TRACE</code>，所以，当我们希望在应用启动的时候打印这些信息的话，只需要在配置文件增增加对RequestMappingHandlerMapping类的打印级别设置即可，比如在application.properties中增加下面这行配置：<br> <figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logging.level.org.springframework.web.servlet.mvc<span class="function">.<span class="keyword">method</span>.<span class="title">annotation</span>.<span class="title">RequestMappingHandlerMapping</span>=<span class="title">trace</span></span></span><br></pre></td></tr></table></figure><br> 配置好后启动项目，打印请求路径列表如下：<br> <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2020</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">08</span>:<span class="number">15</span>:<span class="number">34.182</span> TRACE <span class="number">7084</span> --- [           main] s<span class="selector-class">.w</span><span class="selector-class">.s</span><span class="selector-class">.m</span><span class="selector-class">.m</span><span class="selector-class">.a</span><span class="selector-class">.RequestMappingHandlerMapping</span> : </span><br><span class="line">	c<span class="selector-class">.e</span><span class="selector-class">.s</span><span class="selector-class">.c</span><span class="selector-class">.HelloController</span>:</span><br><span class="line">	&#123; /hello&#125;: index()</span><br><span class="line"><span class="number">2020</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">08</span>:<span class="number">15</span>:<span class="number">34.188</span> TRACE <span class="number">7084</span> --- [           main] s<span class="selector-class">.w</span><span class="selector-class">.s</span><span class="selector-class">.m</span><span class="selector-class">.m</span><span class="selector-class">.a</span><span class="selector-class">.RequestMappingHandlerMapping</span> : </span><br><span class="line">	c<span class="selector-class">.e</span><span class="selector-class">.s</span><span class="selector-class">.c</span><span class="selector-class">.UserController</span>:</span><br><span class="line">	&#123;GET /users/&#125;: getUserList()</span><br><span class="line">	&#123;POST /users/&#125;: postUser(User)</span><br><span class="line">	&#123;PUT /users/id&#125;: getUser(Long)</span><br><span class="line">	&#123;PUT /users/&#123;id&#125;&#125;: putUser(Long,User)</span><br><span class="line">	&#123;DELETE /users/&#123;id&#125;&#125;: deleteUser(Long)</span><br><span class="line"><span class="number">2020</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">08</span>:<span class="number">15</span>:<span class="number">34.194</span> TRACE <span class="number">7084</span> --- [           main] s<span class="selector-class">.w</span><span class="selector-class">.s</span><span class="selector-class">.m</span><span class="selector-class">.m</span><span class="selector-class">.a</span><span class="selector-class">.RequestMappingHandlerMapping</span> : </span><br><span class="line">	s<span class="selector-class">.d</span><span class="selector-class">.s</span><span class="selector-class">.w</span><span class="selector-class">.ApiResourceController</span>:</span><br><span class="line">	&#123; /swagger-resources/configuration/ui&#125;: uiConfiguration()</span><br><span class="line">	&#123; /swagger-resources/configuration/security&#125;: securityConfiguration()</span><br><span class="line">	&#123; /swagger-resources&#125;: swaggerResources()</span><br><span class="line"><span class="number">2020</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">08</span>:<span class="number">15</span>:<span class="number">34.200</span> TRACE <span class="number">7084</span> --- [           main] s<span class="selector-class">.w</span><span class="selector-class">.s</span><span class="selector-class">.m</span><span class="selector-class">.m</span><span class="selector-class">.a</span><span class="selector-class">.RequestMappingHandlerMapping</span> : </span><br><span class="line">	o<span class="selector-class">.s</span><span class="selector-class">.b</span><span class="selector-class">.a</span><span class="selector-class">.w</span><span class="selector-class">.s</span><span class="selector-class">.e</span><span class="selector-class">.BasicErrorController</span>:</span><br><span class="line">	&#123; /error&#125;: error(HttpServletRequest)</span><br><span class="line">	&#123; /error, produces [text/html]&#125;: errorHtml(HttpServletRequest,HttpServletResponse)</span><br></pre></td></tr></table></figure><br> 可以看到在2.1.x版本之后，除了调整了日志级别之外，对于打印内容也做了调整。现在的打印内容根据接口创建的Controller类做了分类打印，这样更有助于开发者根据自己编写的Controller来查找初始化了那些HTTP接口。</p>
 
       
     </div>
@@ -654,7 +655,7 @@ root package：com.example.myproject，所有的类和其他package都在root pa
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -750,7 +751,7 @@ root package：com.example.myproject，所有的类和其他package都在root pa
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是springboot"><span class="nav-text">什么是springboot?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建基础项目"><span class="nav-text">创建基础项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#项目结构介绍"><span class="nav-text">项目结构介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pom-xml文件"><span class="nav-text">pom.xml文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编写HTTP接口"><span class="nav-text">编写HTTP接口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编写测试单元用例"><span class="nav-text">编写测试单元用例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#典型工程结构"><span class="nav-text">典型工程结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#非典型结构化下的初始化"><span class="nav-text">非典型结构化下的初始化</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是springboot"><span class="nav-text">什么是springboot?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建基础项目"><span class="nav-text">创建基础项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#项目结构介绍"><span class="nav-text">项目结构介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pom-xml文件"><span class="nav-text">pom.xml文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编写HTTP接口"><span class="nav-text">编写HTTP接口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编写测试单元用例"><span class="nav-text">编写测试单元用例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#典型工程结构"><span class="nav-text">典型工程结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#非典型结构化下的初始化"><span class="nav-text">非典型结构化下的初始化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#打印启动日志中的请求路径列表"><span class="nav-text">打印启动日志中的请求路径列表</span></a></li></ol></div>
             
 
           </div>
@@ -785,7 +786,7 @@ root package：com.example.myproject，所有的类和其他package都在root pa
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">61.5k</span>
+    <span title="Site words total count">63.1k</span>
   
 </div>
 

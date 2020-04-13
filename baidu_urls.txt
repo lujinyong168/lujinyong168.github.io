@@ -1,3 +1,4 @@
+http://sparkx.com.cn/springboot/swagger-advanced-usage/
 http://sparkx.com.cn/springboot/swaggerui/
 http://sparkx.com.cn/springboot/springboot-start/
 http://sparkx.com.cn/java/gc-params/

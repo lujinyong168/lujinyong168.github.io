@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://sparkx.com.cn/springboot/swaggerui/</loc>
+    <loc>http://sparkx.com.cn/springboot/swagger-advanced-usage/</loc>
     
-    <lastmod>2020-03-31T15:19:06.846Z</lastmod>
+    <lastmod>2020-04-13T15:27:00.548Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://sparkx.com.cn/springboot/springboot-start/</loc>
     
-    <lastmod>2020-03-30T15:38:13.859Z</lastmod>
+    <lastmod>2020-04-01T00:16:52.016Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://sparkx.com.cn/springboot/swaggerui/</loc>
+    
+    <lastmod>2020-03-31T15:19:06.846Z</lastmod>
     
   </url>
   
